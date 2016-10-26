@@ -1,0 +1,29 @@
+function mu = test_single_direction(U)
+
+if ndims(U) ~= 4
+    disp('4D only, with 3 as size of 4th dim');
+    return;
+end
+
+[x_x, x_y, x_z] = gradient(U(:,:,:,1));
+[y_x, y_y, y_z] = gradient(U(:,:,:,2));
+[z_x, z_y, z_z] = gradient(U(:,:,:,3));
+
+sz = size(U);
+
+diag_1_1_1 = spdiags([-x_x(:) x_x(:)], [0 sz(1)], numel(x_x), numel(x_x));
+diag_1_2_2 = spdiags([-x_y(:) x_y(:)], [0 1], numel(x_y), numel(x_y));
+diag_1_3_3 = spdiags([-x_z(:) x_z(:)], [0 sz(1)*sz(2)], numel(x_z), numel(x_z));
+
+diag_2_1_2 = spdiags([-y_x(:) y_x(:)], [0 1], numel(y_x), numel(y_x));
+diag_2_2_2 = spdiags([-y_y(:) y_y(:)], [0 1], numel(y_y), numel(y_y));
+diag_2_3_2 = spdiags([-y_z(:) y_z(:)], [0 1], numel(y_z), numel(y_z));
+
+diag_3_1_3 = spdiags([-z_x(:) z_x(:)], [0 sz(1)*sz(2)], numel(z_x), numel(z_x));
+diag_3_2_3 = spdiags([-z_y(:) z_y(:)], [0 sz(1)*sz(2)], numel(z_y), numel(z_y));
+diag_3_3_3 = spdiags([-z_z(:) z_z(:)], [0 sz(1)*sz(2)], numel(z_z), numel(z_z));
+
+x_dir = 2*diag_1_1_1 + diag_2_1_2 + diag_1_2_2 + diag_3_1_3 + diag_1_3_3;
+
+K = x_dir;
+f = vec(U(:,:,:,1));
