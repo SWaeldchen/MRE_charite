@@ -1,0 +1,26 @@
+imp = zeros(1024,1);
+nfilt = 5
+filt1 = [ones(nfilt, 1)] / nfilt;
+ngauss = 9;
+filt2 = fspecial('gaussian', [ngauss, 1], 1.3);
+[b, a] = butter(4, 0.6);
+imp_1 = imp; imp_1(1:nfilt) = filt1;
+imp_2 = imp; imp_2(1:ngauss) = filt2;
+imp_3a = imp; imp_3a(1:5) = a;
+imp_3b = imp; imp_3b(1:5) = b;
+imp_1_ft = fft(imp_1);
+imp_2_ft = fft(imp_2);
+imp_3a_ft = fft(imp_3a);
+imp_3b_ft = fft(imp_3b);
+imp_3_ft = imp_3b_ft ./ imp_3a_ft;
+fig = figure(); set(fig, 'color', 'white');
+pivals = linspace(0, 3.14, 512)';
+imp_1_ft = [imp_1_ft(1:512)];
+imp_2_ft = [imp_2_ft(1:512)];
+imp_3_ft = [imp_3_ft(1:512)];
+subplot(6, 1, 1); plot(pivals, log(abs(imp_1_ft))/log(20), 'b', 'LineWidth', 3); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'}); ylim([-3 0]); xlim([0 3.14]); title('Moving Average'); ylabel('Mag (dB)', 'FontSize', 8);
+subplot(6, 1, 2); plot(pivals, angle(imp_1_ft), 'r', 'LineWidth', 3); ylabel('Phase (Rad)', 'FontSize', 8); ylim([-3.14 3.14]); xlim([0 3.14]); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'}, 'YTick', [-3.14 3.14], 'YTickLabel', {'-\pi', '\pi'}); 
+subplot(6, 1, 3); plot(pivals, log(abs(imp_2_ft))/log(20), 'b', 'LineWidth', 3); ylim([-3 0]); xlim([0 3.14]); title('Gaussian Smooth'); ylabel('Mag (dB)', 'FontSize', 8); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'});
+subplot(6, 1, 4); plot(pivals, angle(imp_2_ft), 'r', 'LineWidth', 3); ylabel('Phase (Rad)', 'FontSize', 8); ylim([-3.14 3.14]); xlim([0 3.14]); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'}, 'YTick', [-3.14 3.14], 'YTickLabel', {'-\pi', '\pi'});
+subplot(6, 1, 5); plot(pivals, log(abs(imp_3_ft))/log(20), 'b', 'LineWidth', 3); ylim([-3 0]); xlim([0 3.14]);  title('4th Order Butterworth'); ylabel('Mag (dB)', 'FontSize', 8); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'});
+subplot(6, 1, 6); plot(pivals, angle(imp_3_ft), 'r', 'LineWidth', 3); ylabel('Phase (Rad)', 'FontSize', 8); ylim([-3.14 3.14]); xlim([0 3.14]); ax = gca; set(ax, 'FontSize', 8, 'XTick', [0 3.14], 'XTickLabel', {'0' , '\pi'}, 'YTick', [-3.14 3.14], 'YTickLabel', {'-\pi', '\pi'});

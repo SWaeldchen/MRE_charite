@@ -1,0 +1,12 @@
+function band, mag_db, mag] = plotFreqResp(kernel);
+
+if ndims(kernel) > 1
+    display('1d kernels only');
+else
+    spike = zeros(size(kernel));
+    spike(1) = 1;
+    [h, w] = freqz(kernel2, spike, 1024);
+    m = abs(h)
+    p = angle(h);
+    m_db = 10*log10(m/max(m));
+    

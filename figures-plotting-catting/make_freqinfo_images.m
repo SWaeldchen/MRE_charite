@@ -1,0 +1,32 @@
+means = zeros(120,4);
+er = zeros(30,4);
+ent = zeros(30,4);
+rer = zeros(30,4);
+rent = zeros(30,4);
+er_brain = [];
+ent_brain = [];
+rer_brain = [];
+rent_brain = [];
+er_thigh = [];
+ent_thigh = [];
+rer_thigh = [];
+rent_thigh = [];
+er_liver = [];
+ent_liver = [];
+rer_liver = [];
+rent_liver = [];
+
+for n = 1:10
+         er_brain = cat(4, er_brain, cat(2, freqinfo{n,1}, freqinfo{n+30,1}, freqinfo{n+60,1}, freqinfo{n+90,1}));
+        er_thigh = cat(4, er_thigh, cat(2, freqinfo{n+10,1}, freqinfo{n+40,1}, freqinfo{n+70,1}, freqinfo{n+100,1}));
+        er_liver = cat(4, er_liver, cat(2, freqinfo{n+20,1}, freqinfo{n+50,1}, freqinfo{n+80,1}, freqinfo{n+110,1}));
+        ent_brain = cat(4, ent_brain, cat(2,  freqinfo{n,2}, freqinfo{n+30,2}, freqinfo{n+60,2}, freqinfo{n+90,2}));
+        ent_thigh = cat(4, ent_thigh, cat(2, freqinfo{n+10,2}, freqinfo{n+40,2}, freqinfo{n+70,2}, freqinfo{n+100,2}));
+        ent_liver = cat(4, ent_liver, cat(2, freqinfo{n+20,2}, freqinfo{n+50,2}, freqinfo{n+80,2}, freqinfo{n+110,2}));
+         rer_brain = cat(4, rer_brain, cat(2, freqinfo{n,3}, freqinfo{n+30,3}, freqinfo{n+60,3}, freqinfo{n+90,3}));
+        rer_thigh = cat(4, rer_thigh, cat(2,  freqinfo{n+10,3}, freqinfo{n+40,3}, freqinfo{n+70,3}, freqinfo{n+100,3}));
+        rer_liver = cat(4, rer_liver, cat(2, freqinfo{n+20,3}, freqinfo{n+50,3}, freqinfo{n+80,3}, freqinfo{n+110,3}));
+         rent_brain = cat(4, rent_brain, cat(2,  freqinfo{n,4}, freqinfo{n+30,4}, freqinfo{n+60,4}, freqinfo{n+90,4}));
+        rent_thigh = cat(4, rent_thigh, cat(2,  freqinfo{n+10,4}, freqinfo{n+40,4}, freqinfo{n+70,4}, freqinfo{n+100,4}));
+        rent_liver = cat(4, rent_liver, cat(2, freqinfo{n+20,2}, freqinfo{n+50,2}, freqinfo{n+80,2}, freqinfo{n+110,2}));
+end

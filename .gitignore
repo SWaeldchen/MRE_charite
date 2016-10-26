@@ -1,0 +1,9 @@
+*.mat
+*.tif
+*.png
+*.jpg
+*.fig
+*.zip
+*.tar.gz
+*.nii
+*.nii.gz

@@ -1,0 +1,14 @@
+function invert_plot_wave(wave)
+
+if (sz(wave,1) == 1
+	wave = permute(wave, [2 1]);
+end
+
+figure();
+subplot(3, 1, 1); complexPlot(wave);
+
+wave_lap = lap(wave);
+subplot(3, 1, 2); complexPlot(wave_lap);
+
+wave_g = abs(wave) ./ abs(wave_lap);
+subplot(3, 1, 3); plot(wave_g);

@@ -1,0 +1,8 @@
+figure(); hold on;
+weights = zeros(8,1);
+for n = 1:8
+    [comp, weight] = get_pca(voxel_4, n);
+    plot(comp);
+    weights(n) = weight;
+end
+plot(weights, '-');
