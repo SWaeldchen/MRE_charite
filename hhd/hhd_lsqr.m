@@ -1,5 +1,5 @@
 function curl_comps = hhd_lsqr(comps, niter)
-tic;
+
 
 Fx = double(comps{1});
 Fy = double(comps{2});
@@ -44,7 +44,7 @@ A =[2*[r -gradz3 +grady3 s1 r r];2*[+gradz3 r -gradx3 r s1 r];2*[-grady3 +gradx3
 %A =[[r -gradz3 +grady3 r r r];[+gradz3 r -gradx3 r r r];[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];[I r r I r r];[r I r r I r];[r r I r r I]];
 %A =[2*[r -gradz3 +grady3 r r r];2*[+gradz3 r -gradx3 r r r];2*[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];10*[I r r I r r];10*[r I r r I r];10*[r r I r r I]];
 r =zeros(szy*szx*szz,1);
-b =[r;r;r;r;10*Fx(:);10*Fy(:);10*Fz(:)];
+b =[r;r;r;r;Fx(:);Fy(:);Fz(:)];
 
 x=lsqr(A,b,10^-3,niter);
 l = length(x)/6;
@@ -56,5 +56,3 @@ R = size(Fx);
 curl_comps{1} = reshape(x(3*l+1:4*l), R);
 curl_comps{2} = reshape(x(4*l+1:5*l), R);
 curl_comps{3} = reshape(x(5*l+1:6*l), R);
-
-toc;

@@ -17,6 +17,6 @@ function y = iudwt2D(w, J, g0, g1)
 
 y = w{J+1}; % y is the lowpass
 for j = J:-1:1
-   y = sfb2D_u(y, w{j}, j, g0, g1);
+   y = sfb2D_u(y, w{j}, j, [g0, g1], [g0, g1]);
 end
 

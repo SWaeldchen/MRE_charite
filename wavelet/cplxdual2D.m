@@ -41,9 +41,7 @@ for m = 1:2
         w{J+1}{m}{n} = lo;
     end
 end
-%+ TEST EB
-before = w;
-%- TEST EB
+
 for j = 1:J
     for m = 1:3
         [w{j}{1}{1}{m} w{j}{2}{2}{m}] = pm(w{j}{1}{1}{m},w{j}{2}{2}{m});

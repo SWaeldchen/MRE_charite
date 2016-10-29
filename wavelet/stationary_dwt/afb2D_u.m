@@ -1,4 +1,4 @@
-function [lo, hi] = afb2D_u(x, j, h0, h1)
+function [lo, hi] = afb2D_u(x, j, af1, af2)
 
 % 2D Analysis Filter Bank
 %
@@ -28,9 +28,9 @@ function [lo, hi] = afb2D_u(x, j, h0, h1)
 % http://taco.poly.edu/WaveletSoftware/
 
 % filter along columns
-[L, H] = afb2D_A_u(x, j, h0, h1, 1);
+[L, H] = afb2D_A_u(x, j, af1, 1);
 
 % filter along rows
-[lo,    hi{1}] = afb2D_A_u(L, j, h0, h1, 2);
-[hi{2}, hi{3}] = afb2D_A_u(H, j, h0, h1, 2);
+[lo,    hi{1}] = afb2D_A_u(L, j, af2, 2);
+[hi{2}, hi{3}] = afb2D_A_u(H, j, af2, 2);
 

@@ -24,12 +24,15 @@ parfor n = 1:d5
         if hodge_code == 0
 			[FRx, FRy, FRz] = curl(tempx, tempy, tempz);
         elseif hodge_code == 1
+            disp('lsq hhd with guess');
+            [~, ~, ~, FRx, FRy, FRz] = hhd_curl_guess({tempx, tempy, tempz}, hodge_iter);
+        elseif hodge_code == 2
             disp('lsq hhd');
-            [~, ~, ~, FRx, FRy, FRz] = hhd_curl_guess(tempx, tempy, tempz, hodge_iter);
+            curl_comps = hhd_lsqr({tempx, tempy, tempz}, hodge_iter);
         end
-		cx(:,:,:,n) = FRx;
-		cy(:,:,:,n) = FRz;
-		cz(:,:,:,n) = FRy;
+		cx(:,:,:,n) = curl_comps{1};
+		cy(:,:,:,n) = curl_comps{2};
+		cz(:,:,:,n) = curl_comps{3};
 end
 
 for n = 1:d5

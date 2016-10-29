@@ -1,4 +1,4 @@
-function y = sfb2D_u(lo, hi, j, g0, g1)
+function y = sfb2D_u(lo, hi, j, sf1, sf2)
 
 % 2D Synthesis Filter Bank
 %
@@ -16,10 +16,10 @@ function y = sfb2D_u(lo, hi, j, g0, g1)
 % http://taco.poly.edu/WaveletSoftware/
 
 % filter along rows
-lo = sfb2D_A_u(lo,    hi{1}, j, g0, g1, 2);
-hi = sfb2D_A_u(hi{2}, hi{3}, j, g0, g1, 2);
+lo = sfb2D_A_u(lo,    hi{1}, j, sf2, 2);
+hi = sfb2D_A_u(hi{2}, hi{3}, j, sf2, 2);
 
 % filter along columns
-y = sfb2D_A_u(lo, hi, j, g0, g1, 1);
+y = sfb2D_A_u(lo, hi, j, sf1, 1);
 
 

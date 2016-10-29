@@ -1,4 +1,4 @@
-function [lo, hi] = afb2D_A_u(x, j, h0, h1, d)
+function [lo, hi] = afb2D_A_u(x, j, af, d)
 
 % 2D Analysis Filter Bank
 % (along one dimension only)
@@ -27,8 +27,8 @@ if d == 2
 end
 
 R = sqrt(2);
-h0 = h0/R;
-h1 = h1/R;
+h0 = af(:,1)/R;
+h1 = af(:,2)/R;
 
 N0 = length(h0);
 N1 = length(h1);

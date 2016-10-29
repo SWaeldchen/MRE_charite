@@ -16,10 +16,10 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, spacing, freqs, su
     U_interp = cell(sz(4), d5);
     for m = 1:sz(4)
         for n = 1:d5
-            tic
             U_interp{m,n} = U(:,:,:,m,n);
         end
     end
+    %{
     % interpolate it
     if super_factor == 1
       NITER = 1;
@@ -35,15 +35,16 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, spacing, freqs, su
             toc
         end
     end
+    %}
     % put it back in matrix format
     U = [];
     U_lap = [];
     for m = 1:sz(4)
         for n = 1:d5
             tic
-            U(:,:,:,m,n) = U_interp{m,n};
-            %U_lap(:,:,:,m,n) = get_compact_laplacian(U(:,:,:,m,n), spacing, twoD); 
-            U_lap(:,:,:,m,n) = get_wavelet_laplacian(U(:,:,:,m,n), spacing, twoD);  %#ok<AGROW>
+            U(:,:,:,m,n) = U_interp{m,n}; %#ok<AGROW>
+            U_lap(:,:,:,m,n) = get_compact_laplacian(U_interp{m,n}, spacing, twoD);  %#ok<AGROW>
+            %U_lap(:,:,:,m,n) = get_wavelet_laplacian(U(:,:,:,m,n), spacing, twoD);  %#ok<AGROW>
 
         end
     end
@@ -54,7 +55,7 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, spacing, freqs, su
 	phi_denom = zeros(sz_elasto);
     
     for m = 1:sz(4)
-		for n = 1:d5
+        for n = 1:d5
             U_temp = U(:,:,:,m,n);
             U_lap_temp = U_lap(:,:,:,m,n);
             mag_num = mag_num + abs(U_temp).*1000.*(2*pi*freqs(n)).^2;

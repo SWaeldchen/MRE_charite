@@ -1,4 +1,4 @@
-function y = sfb2D_A_u(lo, hi, j, g0, g1, d)
+function y = sfb2D_A_u(lo, hi, j, sf, d)
 
 % 2D Synthesis Filter Bank
 % (along single dimension only)
@@ -15,8 +15,8 @@ if d == 2
 end
 
 R = sqrt(2);
-g0 = g0/R;
-g1 = g1/R;
+g0 = sf(:,1)/R;
+g1 = sf(:,2)/R;
 
 N0 = length(g0);
 N1 = length(g1);

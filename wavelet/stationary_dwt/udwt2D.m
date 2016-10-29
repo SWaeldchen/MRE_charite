@@ -25,7 +25,7 @@ function w = udwt2D(x, J, h0, h1)
 % http://taco.poly.edu/WaveletSoftware/
 
 for j = 1:J
-    [x, w{j}] = afb2D_u(x, j, h0, h1);
+    [x, w{j}] = afb2D_u(x, j, [h0, h1], [h0, h1]);
 end
 w{J+1} = x;
 
