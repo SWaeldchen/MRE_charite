@@ -1,8 +1,8 @@
-function [K, f] = build_single_frequency(U, freq, spacing, diff_meth)
+function [K, f, ord_vec, sz_pad] = build_single_frequency(U, freq, spacing, diff_meth)
 
-% NOTE: The effective spacing of the gradients becomes 2H,
-% so an adjustment is made 
-spacing = spacing*2;
+% + TEST EB
+% spacing = spacing*2;
+% - TEST EB
 
 RHO = 1050;
 J = 2;
@@ -11,6 +11,9 @@ if ndims(U) ~= 4
     disp('4D only, with 3 as size of 4th dim');
     return;
 end
+
+[U, ord_vec] = pad_for_inversion(U);
+sz_pad = size(U);
 
 if diff_meth == 1
     [x_x, x_y, x_z] = gradient(U(:,:,:,1), spacing(1), spacing(2), spacing(3));
@@ -25,11 +28,10 @@ elseif diff_meth == 3
     [y_x, y_y, y_z] = wavelet_gradients_stationary(U(:,:,:,2), J, spacing);
     [z_x, z_y, z_z] = wavelet_gradients_stationary(U(:,:,:,3), J, spacing);
 end
-sz = size(U);
 
-x_diags = [0 sz(1)];
+x_diags = [0 sz_pad(1)];
 y_diags = [0 1];
-z_diags = [0 sz(1)*sz(2)];
+z_diags = [0 sz_pad(1)*sz_pad(2)];
 
 L = numel(x_x);
 
@@ -55,6 +57,9 @@ x_dir = 2*diag_1_1_1 + diag_2_1_2 + diag_1_2_2 + diag_1_3_3 + diag_3_1_3;
 y_dir = 2*diag_2_2_2 + diag_1_2_1 + diag_2_1_1 + diag_2_3_3 + diag_3_2_3;
 z_dir = 2*diag_3_3_3 + diag_2_3_2 + diag_3_2_2 + diag_1_3_1 + diag_3_1_1;
 K = [x_dir; y_dir; z_dir];
+% + TEST EB
+% K = real(K);
+% - TEST EB
 om = @(x) 2*pi*x;
 f = -RHO*om(freq).^2*vec(U);
 

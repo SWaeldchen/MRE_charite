@@ -1,20 +1,30 @@
-function [K, f] = build_single_frequency(U, freq, spacing)
+function [K, f] = build_single_frequency_sandbox(U, freq, spacing, diff_meth)
+
+% + TEST EB
+% spacing = spacing*2;
+% - TEST EB
 
 RHO = 1050;
+J = 2;
 
 if ndims(U) ~= 4
     disp('4D only, with 3 as size of 4th dim');
     return;
 end
 
-%[x_x, x_y, x_z] = gradient(U(:,:,:,1), spacing(1), spacing(2), spacing(3));
-%[y_x, y_y, y_z] = gradient(U(:,:,:,2), spacing(1), spacing(2), spacing(3));
-%[z_x, z_y, z_z] = gradient(U(:,:,:,3), spacing(1), spacing(2), spacing(3));
-
-[x_x, x_y, x_z] = get_diffs(U(:,:,:,1), spacing);
-[y_x, y_y, y_z] = get_diffs(U(:,:,:,2), spacing);
-[z_x, z_y, z_z] = get_diffs(U(:,:,:,3), spacing);
-
+if diff_meth == 1
+    [x_x, x_y, x_z] = gradient(U(:,:,:,1), spacing(1), spacing(2), spacing(3));
+    [y_x, y_y, y_z] = gradient(U(:,:,:,2), spacing(1), spacing(2), spacing(3));
+    [z_x, z_y, z_z] = gradient(U(:,:,:,3), spacing(1), spacing(2), spacing(3));
+elseif diff_meth == 2
+    [x_x, x_y, x_z] = get_diffs(U(:,:,:,1), spacing);
+    [y_x, y_y, y_z] = get_diffs(U(:,:,:,2), spacing);
+    [z_x, z_y, z_z] = get_diffs(U(:,:,:,3), spacing);
+elseif diff_meth == 3
+    [x_x, x_y, x_z] = wavelet_gradients_stationary(U(:,:,:,1), J, spacing);
+    [y_x, y_y, y_z] = wavelet_gradients_stationary(U(:,:,:,2), J, spacing);
+    [z_x, z_y, z_z] = wavelet_gradients_stationary(U(:,:,:,3), J, spacing);
+end
 sz = size(U);
 
 x_diags = [0 sz(1)];
@@ -46,6 +56,7 @@ y_dir = 2*diag_2_2_2 + diag_1_2_1 + diag_2_1_1 + diag_2_3_3;% + diag_3_2_3;
 %z_dir = 2*diag_3_3_3 + diag_2_3_2 + diag_3_2_2 + diag_1_3_1 + diag_3_1_1;
 z_dir = diag_2_3_2 + diag_3_2_2 + diag_1_3_1 + diag_3_1_1;
 K = [x_dir; y_dir; z_dir];
+K = real(K);
 om = @(x)2*pi*x;
 f = -RHO*om(freq).^2*vec(U);
 

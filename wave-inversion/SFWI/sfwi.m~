@@ -27,7 +27,7 @@ if ft > 0
     disp('FT');
     U_ft = fft(U, [], 4);
     U = squeeze(U_ft(:,:,:,2,:,:));
-    assignin('base', 'U_FT', U);
+    assign('base', 'U_FT', U);
 end
 sz = size(U);
 if numel(sz) < 5
@@ -50,10 +50,10 @@ assignin('base', 'U_denoise', U);
 
 
 %disp('Hodge Decomp')
-%tic
+tic
 %U = hodge_decomp(U, 2, 5);
-%toc
-%assignin('base', 'U_hodge', U);
+toc
+assignin('base', 'U_hodge', U);
 
 
 % inversion

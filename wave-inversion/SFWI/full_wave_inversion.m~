@@ -22,42 +22,37 @@ end
 K = [];
 f = [];
 for n = 1:d5
-    [K_n, f_n, ord_vec, sz_pad] = build_single_frequency(U(:,:,:,:,n), freqvec(n), spacing, diff_meth);
+    [K_n, f_n, ord_vec] = build_single_frequency(U(:,:,:,:,n), freqvec(n), spacing, diff_meth);
     %[K_n, f_n] = build_single_frequency_sandbox(U(:,:,:,:,n), freqvec(n), spacing, diff_meth);
     K = cat(1, K, K_n);
     f = cat(1, f, f_n);
 end
 clear K_n f_n
 
-
 if inv_meth == 1
     % backslash / L2
-    
+    tic
     % + TEST EB
-    f = real(f);
+    %f = real(f);
     % - TEST EB
 
     mu = K \ f; 
-    mu = reshape(mu, [sz_pad(1) sz_pad(2) sz_pad(3)]);
-    
+    mu = reshape(mu, [sz(1) sz(2) sz(3)]);
+    toc
 elseif inv_meth == 2
     % LSQR
-    
-    niter = 700;
-     % + TEST EB
-    % f = real(f);
-    % - TEST EB
+    tic
+    niter = 1000;
     [mu, flag, relres] = lsqr_eb(K, f, 1e-6, niter,[], [], []);
-    
-    disp(['Convergence flag: ',num2str(flag), ' residual ',num2str(relres)])
-    mu = reshape(mu, [sz_pad(1) sz_pad(2) sz_pad(3)]);
+    toc
+    disp(['Convergence flag: ',num2str(flag), ' residual ',num2str(relres)]);
 elseif inv_meth == 3
-    % HQ - reshape in method
-    mu = HQ_Additive_2(zeros(sz_pad(1), sz_pad(2), sz_pad(3)),f,K,'hub',0.1,1);
+    % HQ
+    mu = HQ_Additive_2(zeros(sz(1), sz(2), sz(3)),f,K,'hub',1,1);
 end
 % DE-PAD
 firsts = find(ord_vec == 1);
 mu = mu(:,:,firsts(1):firsts(1)+sz(3)-1);
-mu = simplecrop(mu, sz);
+
 
 

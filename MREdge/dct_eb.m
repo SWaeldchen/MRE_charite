@@ -1,4 +1,4 @@
-function b=dct(a,n)
+function b=dct_eb(a,n)
 %DCT  Discrete cosine transform.
 %
 %   Y = DCT(X) returns the discrete cosine transform of X.

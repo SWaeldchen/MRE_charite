@@ -1,14 +1,17 @@
 
-function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, spacing, freqs, super_factor, twoD)
+function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, twoD)
 
+    if nargin < 4
+        twoD = 0;
+    end
 	sz = size(U);
     if numel(sz) == 4
 		d5 = 1;
-	else
-		d5 = sz(5);
-	end
-	sz_resh = [sz(1), sz(2), sz(3), sz(4)*d5];
-	sz_super = round([sz(1)*super_factor, sz(2)*super_factor, sz(3)*super_factor]);
+    else
+        d5 = sz(5);
+    end
+	%sz_resh = [sz(1), sz(2), sz(3), sz(4)*d5];
+	%sz_super = round([sz(1)*super_factor, sz(2)*super_factor, sz(3)*super_factor]);
 	
 
 	
@@ -58,7 +61,7 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, spacing, freqs, su
         for n = 1:d5
             U_temp = U(:,:,:,m,n);
             U_lap_temp = U_lap(:,:,:,m,n);
-            mag_num = mag_num + abs(U_temp).*1000.*(2*pi*freqs(n)).^2;
+            mag_num = mag_num + abs(U_temp).*1000.*(2*pi*freqvec(n)).^2;
             mag_denom = mag_denom + abs(U_lap_temp);
             phi_num = phi_num + real(U_temp.*real(U_lap_temp) + imag(U_temp).*imag(U_lap_temp));
             phi_denom = phi_denom + abs(U_temp) .* abs(U_lap_temp);

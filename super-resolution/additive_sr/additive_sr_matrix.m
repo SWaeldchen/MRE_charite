@@ -78,7 +78,7 @@ function A = sr_matrix_3d_data(sz, sr_fac)
         row_y(index_y:1:(index_y+sr_fac-1)) = ones_kernel;
         row_z(index_z:1:(index_z+sr_fac-1)) = ones_kernel;
         row_index = (y-1) + (x-1)*sz(1) +  (z-1)*sz(1)*sz(2) + 1;
-        A(row_index, :) = kron(row_y, row_x, row_z);
+        A(row_index, :) = kron(kron(row_y, row_x), row_z);
       end
     end
   end
