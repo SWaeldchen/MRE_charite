@@ -43,22 +43,22 @@ function w_u = unwrap(w)
     mask = x.^2 + y.^2;
     
     term1 = sinx;
-    term1 = dct2(term1);
+    term1 = dct2_eb(term1);
     term1 = term1 .* mask;
-    term1 = idct2(term1);
+    term1 = idct2_eb(term1);
     term1 = term1 .* cosx;
-    term1 = dct2(term1);
+    term1 = dct2_eb(term1);
     term1 = term1 ./ mask;
-    term1 = idct2(term1);
+    term1 = idct2_eb(term1);
     
     term2 = cosx;
-    term2 = dct2(term2);
+    term2 = dct2_eb(term2);
     term2 = term2 .* mask;
-    term2 = idct2(term2);
+    term2 = idct2_eb(term2);
     term2 = term2 .* sinx;
-    term2 = dct2(term2);
+    term2 = dct2_eb(term2);
     term2 = term2 ./ mask;
-    term2 = idct2(term2);
+    term2 = idct2_eb(term2);
     
     w_u = term1 - term2;
 end

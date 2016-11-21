@@ -34,7 +34,7 @@ if inv_meth == 1
     % backslash / L2
     
     % + TEST EB
-    f = real(f);
+    % f = real(f);
     % - TEST EB
 
     mu = K \ f; 

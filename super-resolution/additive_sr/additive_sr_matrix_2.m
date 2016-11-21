@@ -1,4 +1,4 @@
-function A = additive_sr_matrix(sz, sr_fac)
+function A = additive_sr_matrix_2(sz, sr_fac)
   
   % creates A matrix for Ax = b additive SR problem.
   % sz is the dimensions of the original resolution data
@@ -34,6 +34,7 @@ end
 
 function A = sr_matrix_2d_data(sz, sr_fac)
   
+  sr_half = ceil(sr_fac/2);
   super_sz = sz * sr_fac;
   sr_length = prod(super_sz);
   sr_area = sr_fac.^2;
@@ -41,12 +42,12 @@ function A = sr_matrix_2d_data(sz, sr_fac)
   j = zeros(sr_length,1);
   s = ones(sr_length,1);
   
-  for x = 1:sz(2)
-    for y = 1:sz(1)
+  for x = sr_half +1: sz(2) - sr_half
+    for y = sr_half +1:sz(1) - sr_half
       or_index = get_2d_index(y, x, sz);
       subs = get_subs_2d(y, x, super_sz, sr_fac);
-      range = (or_index-1)*sr_area+1:or_index*sr_area;
-      i(range) = ones(sr_area,1)*or_index;
+      range = (  (or_index-1)*sr_area - sr_half + 1 : or_index*sr_area + sr_half  )';
+      i(range) = ones(sr_area + 2*sr_half,1)*or_index;
       j(range) = subs;        
     end
   end
@@ -85,11 +86,12 @@ function i = get_2d_index(y, x, sz)
 end
 
 function subs = get_subs_2d(y, x, super_sz, sr_fac)
-    y_start = (y-1)*sr_fac;
-    x_start = (x-1)*sr_fac;
+    sr_fac_half = ceil(sr_fac/2);
+    y_start = (y-1)*sr_fac - sr_fac_half + 1;
+    x_start = (x-1)*sr_fac - sr_fac_half + 1;
     subs = zeros(sr_fac^2,1);
-    for x = x_start+1:x_start+sr_fac
-        for y = y_start+1:y_start+sr_fac
+    for x = x_start+1:x_start+sr_fac+sr_fac_half
+        for y = y_start+1:y_start+sr_fac+sr_fac_half
             sub_ind = get_2d_index(y-y_start, x-x_start, [sr_fac sr_fac]);
             sr_index = get_2d_index(y, x,  super_sz);
             subs(sub_ind) = sr_index;

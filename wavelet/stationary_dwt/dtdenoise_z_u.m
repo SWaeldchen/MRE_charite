@@ -1,4 +1,4 @@
-function [U_den] = dtdenoise_z(U, fac, J)
+function [U_den] = dtdenoise_z_u(U, fac, J)
 [h0, h1, g0, g1] = daubf(3);
 if nargin < 3
     J = 1;
@@ -37,12 +37,11 @@ for m = 1:d4
             w = udwt(z_line, J, h0, h1);
 			for n = 1:J
             	a = w{n};
-				c = max(abs(a) - T, 0);
-		        w{n}{1} = real(c);
-		        w{n}{2} = imag(c);
+				c = sign(a).*max(abs(a) - T, 0);
+		        w{n} = c;
 			end
             z_line_den = iudwt(w, J, g0, g1);
-            U_den(i,j,:,m) = z_line_den;
+            U_den(i,j,:,m) = z_line_den(1:numel(z_line));
         end
     end
 end

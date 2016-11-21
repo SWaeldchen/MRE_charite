@@ -32,8 +32,8 @@ for j = 1:J
 
     L = length(x);
     M = 2^(j-1);
-    lo = zeros(1,L+M*(N0-1));
-    hi = zeros(1,L+M*(N1-1));
+    lo = zeros(L+M*(N0-1),1);
+    hi = zeros(L+M*(N1-1),1);
 
     % convolution:
     for k = 0:N1-1

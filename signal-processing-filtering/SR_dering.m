@@ -1,7 +1,7 @@
-function [y] = SR_dering_mag(x)
+function [y] = SR_dering(x)
 
 % de-ring
-x_cos = dct2(x);
+x_cos = dct2_eb(x);
 y = zeros(size(x));
 for m = 1:size(x,1)
     for n = 1:size(x,2)
@@ -13,8 +13,8 @@ for m = 1:size(x,1)
         end
     end
 end
-y = idct2(y);
-
+y = idct2_eb(y);
+%{
 %recalibrate
 medfilt_x = medfilt2(x, [3 3]);
 min_x = min(min(medfilt_x));
@@ -26,3 +26,4 @@ y = y + min_diff;
 medfilt_y = medfilt2(y, [3 3]);
 max_y = max(max(medfilt_y));
 y = y / max_y * max_x;
+%}

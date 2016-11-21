@@ -5,7 +5,7 @@ function [K, f, ord_vec, sz_pad] = build_single_frequency(U, freq, spacing, diff
 % - TEST EB
 
 RHO = 1050;
-J = 2;
+J = 1;
 
 if ndims(U) ~= 4
     disp('4D only, with 3 as size of 4th dim');
@@ -56,7 +56,7 @@ diag_3_3_3 = spdiags([-z_z(:) z_z(:)]./spacing(3), z_diags, L, L);
 x_dir = 2*diag_1_1_1 + diag_2_1_2 + diag_1_2_2 + diag_1_3_3 + diag_3_1_3; 
 y_dir = 2*diag_2_2_2 + diag_1_2_1 + diag_2_1_1 + diag_2_3_3 + diag_3_2_3;
 z_dir = 2*diag_3_3_3 + diag_2_3_2 + diag_3_2_2 + diag_1_3_1 + diag_3_1_1;
-K = [x_dir; y_dir; z_dir];
+K = 0.5*[x_dir; y_dir; z_dir];
 % + TEST EB
 % K = real(K);
 % - TEST EB

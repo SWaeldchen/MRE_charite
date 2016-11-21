@@ -30,8 +30,8 @@ for j = J:-1:1
     L0 = length(lo);
     L1 = length(hi);
 
-    y0 = zeros(1,L0+M*(N0-1));
-    y1 = zeros(1,L1+M*(N1-1));
+    y0 = zeros(L0+M*(N0-1),1);
+    y1 = zeros(L1+M*(N1-1),1);
 
     for k = 0:N0-1
         y0(M*k+(1:L0)) = y0(M*k+(1:L0)) + g0(k+1)*lo;
