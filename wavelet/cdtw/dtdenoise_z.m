@@ -37,10 +37,19 @@ for m = 1:d4
             w = udwt(z_line, J, h0, h1);
 			for n = 1:J
             	a = w{n};
+<<<<<<< HEAD
 				w{n} = max(abs(a) - T, 0);
 			end
             z_line_den = iudwt(w, J, g0, g1);
             U_den(i,j,:,m) = z_line_den(1:numel(z_line));
+=======
+				c = max(abs(a) - T, 0);
+		        w{n}{1} = real(c);
+		        w{n}{2} = imag(c);
+			end
+            z_line_den = iudwt(w, J, g0, g1);
+            U_den(i,j,:,m) = z_line_den;
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
         end
     end
 end

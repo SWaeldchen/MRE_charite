@@ -7,7 +7,10 @@ end
 if (nargin < 3)
     J = 3;
 end
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
 w = cplxdual2D_u(x,J,Faf,af);
 I = sqrt(-1);
 % loop thru scales:

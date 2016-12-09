@@ -53,11 +53,18 @@ diag_3_2_3 = spdiags([-z_y(:) z_y(:)]./spacing(3), z_diags, L, L);
 diag_3_2_2 = spdiags([-z_y(:) z_y(:)]./spacing(2), y_diags, L, L);
 diag_3_3_3 = spdiags([-z_z(:) z_z(:)]./spacing(3), z_diags, L, L);
 
+<<<<<<< HEAD
 %CAUCHY STRAIN TENSOR
 x_dir = diag_1_1_1 +                    (diag_2_1_2 + diag_1_2_2)/2 +   (diag_1_3_3 + diag_3_1_3)/2; 
 y_dir = (diag_1_2_1 + diag_2_1_1)/2 +   diag_2_2_2 +                    (diag_2_3_3 + diag_3_2_3)/2;
 z_dir = (diag_1_3_1 + diag_3_1_1)/2 +   (diag_2_3_2 + diag_3_2_2)/2 +   diag_3_3_3;
 K = [x_dir; y_dir; z_dir];
+=======
+x_dir = 2*diag_1_1_1 + diag_2_1_2 + diag_1_2_2 + diag_1_3_3 + diag_3_1_3; 
+y_dir = 2*diag_2_2_2 + diag_1_2_1 + diag_2_1_1 + diag_2_3_3 + diag_3_2_3;
+z_dir = 2*diag_3_3_3 + diag_2_3_2 + diag_3_2_2 + diag_1_3_1 + diag_3_1_1;
+K = 0.5*[x_dir; y_dir; z_dir];
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
 % + TEST EB
 % K = real(K);
 % - TEST EB

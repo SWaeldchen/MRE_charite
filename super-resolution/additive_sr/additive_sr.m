@@ -1,10 +1,15 @@
-function U_sr = additive_sr (U, fac)
+function U_sr = additive_sr (U, fac,alpha,lambda)
   
   phi = 'hub';
+<<<<<<< HEAD
   alpha = 1;
   lambda = 1;
   tol = 1e-15;
   max_iter = 20;
+=======
+  tol = 1e-15;
+  max_iter = 10;
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
   sz = size(U);
   A = additive_sr_matrix(sz(1:3), fac);
 

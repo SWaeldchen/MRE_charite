@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex) 
     if nargin < 4
 		if nargin < 3
@@ -7,6 +8,14 @@ function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex)
 		        fac = 0.1;
 		    end
 		end
+=======
+function U_den = dtdenoise_xy_pca_mad_u(U, fac, is_complex)
+    J = 4;
+    if nargin < 4
+        if nargin < 2
+            fac = 0.1;
+        end
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
         is_complex = 1;
     end
     sz = size(U);

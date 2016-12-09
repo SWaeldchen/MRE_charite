@@ -185,4 +185,3 @@ else
 %   This block should never be reached.
     error(message('images:medfilt2:incorrectPaddingOption'))
 end
-

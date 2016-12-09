@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 function [U_den] = dtdenoise_z_mad_u(U, strategy, J, is_complex)
+=======
+function [U_den] = dtdenoise_z_mad_u(U, J, strategy, is_complex)
+>>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
 if nargin < 4
     if nargin < 3
         if nargin < 2
