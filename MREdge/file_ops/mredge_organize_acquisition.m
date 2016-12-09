@@ -1,4 +1,4 @@
-%% function mredge_organize_acquisition(info)
+%% function mredge_organize_acquisition(info, prefs)
 
 %
 % Part of the MREdge software package
@@ -26,26 +26,10 @@ function mredge_organize_acquisition(info, prefs)
 called_dir = pwd;
 
 tic
-display('Organizing Acquisition Folder...');
-cd(info.path)
+disp('Organizing Acquisition Folder...');
 
-% make DICOM data table
-file_names = dir(['*', info.file_extension]);
-
-if prefs.temporal_ft == 1
-	is_time_series = 1;
-else
-	is_time_series = 0;
-end
-
-if ~exist(fullfile(info.path, 'data_table.mat'), 'file')
-    data_table = mredge_dicom_data_table(info);
-    save(fullfile(info.path, 'data_table.mat'), 'data_table');
-end
-
-load('data_table.mat', 'data_table');
-assignin('base', 'data_table', data_table);
-
+nifti_convert_command = ['dcm2niix -f %s -z y ',info.path];
+system(nifti_convert_command);
 
 %% process each series
 
@@ -53,92 +37,89 @@ if ~isempty(info.phase)
 	PHASE_SUB = fullfile(info.path,'Phase');
 	if ~exist(PHASE_SUB, 'dir')
 		mkdir(PHASE_SUB);
-	end
-	for n = info.phase
-	   mredge_dicom_to_nii(n, data_table, PHASE_SUB, is_time_series, info);
-	end
-	if info.all_freqs_one_series == 1
-	   mredge_reorganize_by_frequency(info.phase(1), PHASE_SUB, info.driving_frequencies);
+    end
+    if info.all_freqs_one_series == 1
+		mredge_break_into_frequencies(info.phase(1), PHASE_SUB, info);
 	else
-	   mredge_rename_by_frequency(info.phase, PHASE_SUB, info.driving_frequencies);
-	end
+		disp('Currently disabled for multiple series -- contact developer to enable.');
+	    %for n = info.phase
+	    %	 mredge_rename_by_frequency(info.phase, PHASE_SUB, info.driving_frequencies);
+	    %end
+    end
+    mredge_phase2double(info);
 end
 
 if ~isempty(info.magnitude)
-    MAG_SUB = fullfile(info.path, 'Magnitude');
-    if ~exist(MAG_SUB, 'dir')
-	mkdir(MAG_SUB);
+    MAG_SUB = fullfile(info.path,'Magnitude');
+	if ~exist(MAG_SUB, 'dir')
+		mkdir(MAG_SUB);
+	end
+	if info.all_freqs_one_series == 1
+		mredge_break_into_frequencies(info.magnitude(1), MAG_SUB, info);
+	else
+		disp('Currently disabled for multiple series -- contact developers to enable.');
     end
-    for n = info.magnitude
-      mredge_dicom_to_nii(n, data_table, MAG_SUB, is_time_series, info);
-    end
-    if info.all_freqs_one_series == 1
-        mredge_reorganize_by_frequency(info.magnitude(1), MAG_SUB, info.driving_frequencies);
-    else
-        mredge_rename_by_frequency(info.magnitude, MAG_SUB, info.driving_frequencies);
-    end
+    mredge_mag2double(info);
     mredge_average_magnitude(info, prefs);
 end
 
 if ~isempty(info.t1)
     T1_SUB = fullfile(info.path, 'T1');
     if ~exist(T1_SUB, 'dir')
-	mkdir(T1_SUB);
+		mkdir(T1_SUB);
     end
     for n = info.t1
-      cd(info.path)
-      mredge_dicom_to_nii(n, data_table, T1_SUB, 0, info);
+      mredge_move_non_mre_series(n, T1_SUB, info);
     end
 end
 
 if ~isempty(info.t2)
-    T2_SUB = fullfile(info.path, 'T2', 'Localizer', 'DICOM');
+    T2_SUB = fullfile(info.path, 'T2');
     if ~exist(T2_SUB, 'dir')
-	mkdir(T2_SUB);
+		mkdir(T2_SUB);
     end
     for n = info.t2
-      cd(info.path)
-      mredge_move_non_mre_series(n, data_table, T2_SUB);
+    	mredge_move_non_mre_series(n, T2_SUB, info);
     end
 end
 
 if ~isempty(info.localizer)
-    LOCALIZER_SUB = fullfile(info.path, 'Localizer', 'DICOM');
+    LOCALIZER_SUB = fullfile(info.path, 'Localizer');
     if ~exist(LOCALIZER_SUB, 'dir')
-	mkdir(LOCALIZER_SUB);
+		mkdir(LOCALIZER_SUB);
     end
     for n = info.localizer
-      mredge_move_non_mre_series(n, data_table, LOCALIZER_SUB);
+    	mredge_move_non_mre_series(n, LOCALIZER_SUB, info);
     end
 end
 
 if ~isempty(info.fieldmap)
     FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
     if ~exist(FIELDMAP_SUB, 'dir')
-	mkdir(FIELDMAP_SUB);
+		mkdir(FIELDMAP_SUB);
     end
     for n = info.fieldmap
-      mredge_dicom_to_nii(n, data_table, FIELDMAP_SUB);
+    	mredge_move_non_mre_series(n, FIELDMAP_SUB, info);
     end
 end
 
 if ~isempty(info.dti)
-    DTI_SUB = fullfile(info.path, 'DTI', 'DICOM');
+    DTI_SUB = fullfile(info.path, 'DTI');
     if ~exist(DTI_SUB, 'dir')
-	mkdir(DTI_SUB);
+		mkdir(DTI_SUB);
     end
     for n = info.dti
-      mredge_move_non_mre_series(n, data_table, DTI_SUB);
+    	mredge_move_non_mre_series(n, DTI_SUB, info);
     end
 end
 
 if ~isempty(info.other)
-    OTHER_SUB = fullfile(info.path, 'Other', 'DICOM');
+    OTHER_SUB = fullfile(info.path, 'Other');
     if ~exist(OTHER_SUB, 'dir')
-	mkdir(OTHER_SUB);
+		mkdir(OTHER_SUB);
     end
     for n = info.other
-      mredge_move_non_mre_series(n, data_table, OTHER_SUB);
+    	mredge_move_non_mre_series(n, OTHER_SUB, info);
     end
 end
 

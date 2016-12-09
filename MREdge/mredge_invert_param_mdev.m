@@ -34,18 +34,16 @@
 %
 %   none
 
-function mredge_invert_param_mdev(info, prefs, param, frequencies, freq_indices)
-    % special_freq_set is for inverting selected combinations of
-    % frequencies, and individual results are skipped
-    if nargin < 4
-        frequencies = info.driving_frequencies;
+function mredge_invert_param_mdev(info, prefs, param, freq_indices)
+	frequencies = info.driving_frequencies;
+    if isempty(freq_indices)
         freq_indices = 1:numel(frequencies);
         special_freq_set = 0;
     else
         special_freq_set = 1;
     end
 	[FT_DIRS, PARAM_SUB] =set_dirs(info, prefs, param);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     param_num_mdev = [];
     param_denom_mdev = [];
     for f_ind = freq_indices

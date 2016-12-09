@@ -1,6 +1,5 @@
 function [U_den] = dtdenoise_z(U, fac, J)
-[Faf, Fsf] = FSfarras;
-[af, sf] = dualfilt1;
+[h0, h1, g0, g1] = daubf(3);
 if nargin < 3
     J = 1;
 end
@@ -34,19 +33,14 @@ for m = 1:d4
     T = lambda*fac;
     for i=1:sz(1)
         for j =1:sz(2)
-            z_line = U(i,j,:,m);
-            w = dualtree(z_line, J, Faf, af);
+            z_line = squeeze(U(i,j,:,m));
+            w = udwt(z_line, J, h0, h1);
 			for n = 1:J
-            	a = w{n}{1};
-            	b = w{n}{2};
-            	C = a + 1i*b;
-				c = max(abs(C) - T, 0);
-                c = c./(c+T) .* C;
-		        w{n}{1} = real(c);
-		        w{n}{2} = imag(c);
+            	a = w{n};
+				w{n} = max(abs(a) - T, 0);
 			end
-            z_line_den = idualtree(w, J, Fsf, sf);
-            U_den(i,j,:,m) = z_line_den;
+            z_line_den = iudwt(w, J, g0, g1);
+            U_den(i,j,:,m) = z_line_den(1:numel(z_line));
         end
     end
 end

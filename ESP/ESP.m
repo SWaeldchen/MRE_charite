@@ -62,11 +62,12 @@ function [mag, phi, snr] = ESP(U, freqvec, spacing, denoise_meth, super_factor, 
     if unwrap > 0
         display('Unwrapping');
         U = dct_unwrap(U);
+    end
         U_ft = fft(U, [], 4);
         U_noise = squeeze(sum(abs(U_ft(:,:,:,3:end,:,:)), 4));
         U = squeeze(U_ft(:,:,:,2,:,:));
         snr = abs(U) ./ U_noise;
-    end
+    
 
 	if (ndims(U) == 4)
 		d5 = 1;
@@ -84,7 +85,7 @@ function [mag, phi, snr] = ESP(U, freqvec, spacing, denoise_meth, super_factor, 
 		elseif denoise_meth == 1
  			display('Denoising z-xy')
 			U(:,:,:,:,m) = dtdenoise_z_auto_noise_est(U(:,:,:,:,m), 1);
-	       	U(:,:,:,:,m) = dtdenoise_xy_pca_mad(U(:,:,:,:,m), 0.3, 3);
+	       	U(:,:,:,:,m) = dtdenoise_xy_pca_mad(U(:,:,:,:,m), 0.001, 3);
 		end
     end
         assignin('base', 'U_denoise', U);
@@ -95,7 +96,7 @@ function [mag, phi, snr] = ESP(U, freqvec, spacing, denoise_meth, super_factor, 
 
     % take derivatives and interpolate
   
-	[magNum, magDenom, phiNum, phiDenom] = invert(U, spacing, freqvec, super_factor, twoD);
+	[magNum, magDenom, phiNum, phiDenom] = invert(U, freqvec, spacing, twoD);
     mag = magNum ./ magDenom;
     phi = acos(-phiNum ./ phiDenom);
 	

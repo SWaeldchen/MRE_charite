@@ -35,8 +35,12 @@ function [stable_filenames, stable_frequencies] = mredge_stable_inversions(info,
         stable_group = [freqs_sorted(n), freqs_sorted(n+1), freqs_sorted(n+2)];
         stable_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
         if invert == 1
-            mredge_invert_param_mdev(info, prefs, 'Abs_G', stable_group, stable_group_indices);
-            mredge_invert_param_mdev(info, prefs, 'Phi', stable_group, stable_group_indices);
+			if prefs.inversion_strategy = 'MDEV'
+            	mredge_invert_param_mdev(info, prefs, 'Abs_G', stable_group, stable_group_indices);
+            	mredge_invert_param_mdev(info, prefs, 'Phi', stable_group, stable_group_indices);
+			elseif prefs.inversion_strategy = 'SFWI'
+				mredge_invert_sfwi(info, prefs, stable_group_indices);
+			end
         end
         stable_filenames{n} = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), '.nii.gz'];
         stable_frequencies(n) = mean(stable_group);

@@ -23,7 +23,7 @@
 function mredge_average_magnitude(info, prefs)
     tic
     [AVG_SUB, MAG_SUB] = set_dirs(info, prefs);
-    
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     if ~exist(AVG_SUB, 'dir')
         mkdir(AVG_SUB);
     end
@@ -32,7 +32,7 @@ function mredge_average_magnitude(info, prefs)
 
     for f = info.driving_frequencies
         for c = 1:3
-            mag_path = fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, '.nii.gz'));
+            mag_path = fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
             mag_vol = load_untouch_nii(mag_path);
             if isempty(avg_vol) % use first volume of first image as placeholder
                 first_path = fullfile(MAG_SUB, num2str(f), num2str(c), 'first.nii.gz');

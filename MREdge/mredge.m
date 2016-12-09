@@ -21,8 +21,10 @@ function [matlab_outputs] = mredge(info, prefs)
 %   returns a structure containing outputs as specified by prefs
 
 tic
+mredge_set_environment;
 matlab_outputs = initialize_matlab_outputs;
 disp('Organizing files');
+mredge_clean_acquisition_folder(info);
 mredge_organize_acquisition(info, prefs);
 
 % OSS SNR ROUTINES
@@ -43,11 +45,6 @@ else
     end
 
     % INVERSION
-    mredge_clean_acquisition_folder(info);
-    mredge_organize_acquisition(info, prefs);
-    mredge_mag2double(info);
-
-
 
     if prefs.distortion_correction == 1
         display('Distortion correction');
@@ -62,7 +59,7 @@ else
         
     end
     %psf stats
-    mredge_psf(info, prefs);
+    % mredge_psf(info, prefs);
     if prefs.aniso_diff == 1
         display('Anisotropic Diffusion')
         
@@ -104,16 +101,15 @@ else
     if strcmp(prefs.curl_strategy, 'none') == 0
         display('Curl Decomposition');
         
-        mredge_curl(info, prefs);
+        mredge_remove_divergence(info, prefs);
         
     end
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);
 
-    if strcmp(prefs.inversion_strategy, 'none') == 0
+    if strcmp(prefs.inversion_strategy, 'mdev') == 0
         display('Wave Inversion');
         mredge_invert(info, prefs);
-
     end
 
     mredge_stable_inversions(info, prefs, 1)

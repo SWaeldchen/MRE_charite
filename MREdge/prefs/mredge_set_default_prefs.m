@@ -31,7 +31,7 @@ function default_prefs = mredge_set_default_prefs
 		default_prefs.denoise_strategy = 'z_xy';
 		default_prefs.curl_strategy = 'lsqr';
         default_prefs.component_order = 'zyx';
-		default_prefs.inversion_strategy = 'helmholtz-wavelet';
+		default_prefs.inversion_strategy = 'MDEV';
         default_prefs.directional_filter = 0;
 		default_prefs.super_factor = 0;
         default_prefs.brain_analysis = 0;
@@ -95,7 +95,8 @@ function default_prefs = mredge_set_default_prefs
         default_prefs.df_settings.dims = 3;
         default_prefs.df_settings.num_filts = 12;
     % inversion settings
-        default_prefs.inversion_settings.laplacian_dims = 3;
+        default_prefs.inversion_settings.mdev_laplacian_dims = 3;
+		default_prefs.inversion_settings.freq_indices = [];
     % moco settings
         default_prefs.moco_method = 'spm';
 	% thresholding settings

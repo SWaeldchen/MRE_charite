@@ -25,6 +25,6 @@ function valid_options = mredge_get_valid_preference_options
 	valid_options.denoise_strategy = {'none', 'z_xy', 'z_3d', '3d', 'lowpass'};
 	valid_options.curl_strategy = {'none', 'fd', 'hipass', 'wavelet', 'lsqr', 'dfw'};
     valid_options.directional_filter = {'0','1'};
-	valid_options.inversion_strategy = {'helmholtz-fd', 'helmholtz-fd-2d', 'helmholtz-wavelet', 'pg-fd', 'pg_wavelet'};
+	valid_options.inversion_strategy = {'MDEV', 'SFWI'};
     
 end

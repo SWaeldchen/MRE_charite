@@ -19,9 +19,12 @@
 % Original code : Nikolova 2003
 % Revised code : Nikolova 29 oct 2016, nikolova@ens-cachan.fr
 % [x,it,dJ]=min_L22_smooth_regu_1D_HQ_Multiplicative(x0,y,A,phi,a,b,dJ,MxIt);
-function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt);
+function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt)
   sz = size(x0);
-
+  
+  b = mean(abs(y(:)))*b; % impact of the reg, like lambda
+  a = mean(abs(y(:)))*a; % height of Huber function
+  
   if nargin < 8 || isempty(MxIt)
     MxIt = Inf;
     if nargin < 7 || isempty(tol)
@@ -47,7 +50,8 @@ function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt);
   dJ = tol^(-10);
 
   while dJ>tol && it<MxIt
-      it=it+1 ;
+      tic
+      it=it+1
       t=G*x;
       if strcmp(phi,'log')
           s=(a+abs(t)).^(-1);
@@ -62,11 +66,15 @@ function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt);
       
       dJ = A2*x- z + b* G'*(s.*t); % grad J (x^{k-1} )
       dJ = norm(dJ)/ (n *nz) ;  
-      H=diag(s)*G;
+      H=spdiags(s, 0, n, n)*G; % H = diag(s)*G
       H=G'*H;
       H=A2+b*H;
-      x=H\z ;
+      x = lsqr(H, z, 1e-15, 500); %x=H\z
+      toc
   end
+  
+  disp(['HQ Resid: ',num2str(dJ), ' Iter: ',num2str(it)]);
+  x = reshape(x, sz);
   
  end
   

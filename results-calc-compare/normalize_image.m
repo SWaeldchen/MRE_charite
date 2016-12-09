@@ -1,4 +1,4 @@
-function [newData, mini, maxi] = normalize_image(data);
+function [newData, mini, maxi] = normalize_image(data)
 
 mini = min(min(data));
 maxi = max(max(data));

@@ -22,7 +22,9 @@
 function mredge_compat_cisnmo(info, prefs)
     phase_data = mredge_load_phase_as_6d(info, prefs);
     [ABSG,PHI,ABSG_orig,PHI_orig,AMP] = evalmmre_cisnmo(phase_data,info.driving_frequencies,info.pixel_spacing);
-    mredge_save_as_param(info, prefs, param_name
+	for param_name = {'ABSG', 'ABSG_orig', 'PHI', 'PHI_orig', 'AMP'};
+    	mredge_save_as_param(info, prefs, param_name, eval(param_name));
+	end
 end
 
 

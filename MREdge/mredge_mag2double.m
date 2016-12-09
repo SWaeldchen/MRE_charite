@@ -1,4 +1,4 @@
-%% function mredge_temporal_ft(info, prefs);
+%% function mredge_mag2double(info, prefs);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -8,7 +8,7 @@
 %
 % USAGE:
 %
-%   Temporally Fourier-transforms the complex wave field.
+%   Make all magnitude niftis double, to avoid format conflicts.
 %
 % INPUTS:
 %
@@ -22,7 +22,7 @@
 function mredge_mag2double(info)
 
 	[MAG_SUB] =set_dirs(info);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 
     for f = info.driving_frequencies
         for c = 1:3

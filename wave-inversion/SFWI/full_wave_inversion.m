@@ -1,7 +1,7 @@
 function mu = full_wave_inversion(U, freqvec, spacing, diff_meth, inv_meth)
 
 if nargin < 5
-    inv_meth = 1;
+    inv_meth = 2;
     if nargin < 4
         diff_meth = 1;
     end
@@ -34,7 +34,7 @@ if inv_meth == 1
     % backslash / L2
     
     % + TEST EB
-    f = real(f);
+    % f = real(f);
     % - TEST EB
 
     mu = K \ f; 

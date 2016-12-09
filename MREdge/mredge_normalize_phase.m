@@ -21,16 +21,13 @@
 
 function mredge_normalize_phase(info, prefs)
 
-	[PHASE_SUB] =set_dirs(info, prefs);
+	[PHASE_SUB] =set_dirs(info);
 	NIFTI_EXTENSION = '.nii.gz';
 
         for f = info.driving_frequencies
             for c = 1:3
-                time_series_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-				path_list = mredge_split_4d(PHASE_SUB, f, c, info);
-                for n = 1:numel(path_list)
-                    path = path_list{n};
-                    phase_vol = load_untouch_nii(path);
+                path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+			    phase_vol = load_untouch_nii(path);
 					if ~isempty(prefs.phase_unwrapping_settings.phase_range)
 						range_array = prefs.phase_unwrapping_settings.phase_range;
 						range = range_array(2) - range_array(1);
@@ -38,17 +35,15 @@ function mredge_normalize_phase(info, prefs)
 					else
 						phase_vol.img = normalizeImage(phase_vol.img)*2*pi;
 					end
-					save_untouch_nii(phase_vol, path);
-                end
-                mredge_3d_to_4d(path_list, PHASE_SUB, f, c);
+				save_untouch_nii(phase_vol, path);
             end
         end
-
+        mredge_phase2double(info); % because FSL automatically converts to single;
     
 
 end
 
-function [PHASE_SUB] = set_dirs(info, prefs)
+function [PHASE_SUB] = set_dirs(info)
 	PHASE_SUB = fullfile(info.path, 'Phase');
 end
 

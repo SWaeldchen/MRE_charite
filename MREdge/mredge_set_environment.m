@@ -24,4 +24,5 @@
 function mredge_set_environment
 
 setenv('TOPUP_PARAMS', fullfile(getenv('MRE'), '/project_modico/pipeline/topup_param.txt'));
-setenv('NIFTI_EXTENSION', 'nii.gz');
+setenv('NIFTI_EXTENSION', '.nii.gz');
+setenv('RHO', '1000');

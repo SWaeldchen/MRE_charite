@@ -29,10 +29,10 @@ function mredge_denoise(info, prefs)
         end
     end
 
-    for d = 1:numel(FT_DIRS);
-        parfor f_num = 1:numel(info.driving_frequencies)
+    parfor d = 1:numel(FT_DIRS);
+        for f_num = 1:numel(info.driving_frequencies)
 			f = info.driving_frequencies(f_num); %#ok<PFBNS>
-            display([num2str(f), ' Hz']);
+            disp([num2str(f), ' Hz']);
             for c = 1:3
                 display(num2str(c));
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION)); %#ok<PFBNS>
@@ -40,11 +40,11 @@ function mredge_denoise(info, prefs)
 				wavefield_img = wavefield_vol.img;
                 resid_vol = wavefield_vol;
                 if strcmp(prefs.denoise_strategy, 'z_xy') == 1 %#ok<PFBNS>
-                    wavefield_img = dtdenoise_z_auto_noise_est(wavefield_img, prefs.denoise_settings.z_level, prefs.denoise_settings.z_thresh_factor);
-                    wavefield_img = dtdenoise_xy_pca_mad(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_num_spins);
-                elseif strcmp(prefs.denoise_strategy, 'z_xy_ampguided') == 1 %#ok<PFBNS>
-                    wavefield_img = dtdenoise_z_auto_noise_est(wavefield_img, prefs.denoise_settings.z_level, prefs.denoise_settings.z_thresh_factor);
-                    wavefield_img = dtdenoise_xy_pca_mad_amp(wavefield_img, abs(wavefield_img), prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_num_spins);
+                    wavefield_img = dtdenoise_z_mad_u(wavefield_img, prefs.denoise_settings.z_thresh_factor, prefs.denoise_settings.z_level);
+                    wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_level);
+                elseif strcmp(prefs.denoise_strategy, '3d') == 1
+                    wavefield_img = dtdenoise_z_mad_u(wavefield_img, prefs.denoise_settings.z_level, prefs.denoise_settings.z_thresh_factor);
+                    wavefield_img = dtdenoise_3d_mad_ogs_undec(wavefield_img, prefs.denoise_settings.xy_level, prefs.denoise_settings.xy_thresh_factor);
                 elseif strcmp(prefs.denoise_strategy, 'lowpass') == 1
 					if prefs.lowpass_settings.dimensions == 2
 						if strcmp(prefs.lowpass_settings.cutoff_unit, 'norm') == 1

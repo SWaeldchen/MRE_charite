@@ -1,4 +1,4 @@
-function G = sfwi(U, freqvec, spacing, unwrap, ft, diff_meth, inv_meth, den_fac)
+function G = sfwi(U, freqvec, spacing, unwrap, ft, diff_meth, inv_meth, den_meth, den_fac, z_den_fac, sr_fac)
 % stacked frequency wave inversion
 % (c) Eric Barnhill 2016. All Rights Reserved.
 % For private use only.
@@ -39,13 +39,22 @@ end
 % denoise
 disp('Denoise')
 
-if den_fac > 0
-    parfor m = 1:d5
+if den_meth == 0
+    for m = 1:d5
         tic
+        U(:,:,:,:,m) = dtdenoise_z_mad_u(U(:,:,:,:,m), 3, z_den_fac, 1);
         U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac);
         toc
     end
+elseif den_meth == 1
+    disp('Denoising z-xy');
+    for m = 1:d5
+        U(:,:,:,:,m) = dtdenoise_z_mad_u(U(:,:,:,:,m), 1, z_den_fac, 1);
+        U(:,:,:,:,m) = dtdenoise_xy_pca_mad_u(U(:,:,:,:,m), 0.2, 1);
+    end
 end
+%U = U_denoise;
+clear U_denoise
 assignin('base', 'U_denoise', U);
 
 
@@ -59,5 +68,9 @@ assignin('base', 'U_denoise', U);
 % inversion
 disp('Inversion')
 tic
-G = full_wave_inversion(U, freqvec, spacing, diff_meth, inv_meth);
+if sr_fac == 1
+    G = sfwi_inversion(U, freqvec, spacing, diff_meth, inv_meth);
+else
+    G = sfwi_inversion(additive_sr(U, sr_fac), freqvec, spacing / sr_fac, diff_meth, inv_meth);
+end
 toc
