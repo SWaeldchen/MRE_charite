@@ -1,4 +1,4 @@
-% dct_octave -- a matlab-compatible modification of GNU Octave's dct.
+% dct_octave -- a Matlab-compatible modification of GNU Octave's dct. Created December 2016.
 % Below is the original documentation and copzright notice.
 %
 % Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
