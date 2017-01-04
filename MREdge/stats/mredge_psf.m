@@ -33,7 +33,7 @@ function mredge_psf(info, prefs)
       FWHM_f = zeros(3,3);
         for c = 1:3
             mag_path = fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, '.nii.gz'));
-            mag_time_series_vol = load_untouch_nii(mag_path);
+            mag_time_series_vol = load_untouch_nii_eb(mag_path);
             mag_time_series_img = mag_time_series_vol.img;
             mag_avg = mean(mag_time_series_img, 4);
             
@@ -41,7 +41,7 @@ function mredge_psf(info, prefs)
             first_path = fullfile(MAG_SUB, num2str(f), num2str(c), 'first.nii.gz');
             fslroi_command = ['fsl5.0-fslroi ', mag_path, ' ', first_path, ' ', ' 0 1'];
             system(fslroi_command);
-            mag_avg_vol = load_untouch_nii(first_path);
+            mag_avg_vol = load_untouch_nii_eb(first_path);
             delete(first_path);
             
             % fill with avg

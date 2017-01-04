@@ -20,6 +20,9 @@
 
 function mredge_clean_acquisition_folder(info)
 
+NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+delete(fullfile(info.path, ['*',NIFTI_EXTENSION]));
+
 dir_names = {'Phase', 'Magnitude', 'T1', 'T2', 'Localizer', 'Fieldmap', 'DTI', 'Other', 'Real', 'Imaginary', 'FT'};
 for n = dir_names
 	full_dir = fullfile(info.path, cell2str(n));

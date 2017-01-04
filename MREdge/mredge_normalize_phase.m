@@ -22,12 +22,12 @@
 function mredge_normalize_phase(info, prefs)
 
 	[PHASE_SUB] =set_dirs(info);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 
         for f = info.driving_frequencies
             for c = 1:3
                 path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-			    phase_vol = load_untouch_nii(path);
+			    phase_vol = load_untouch_nii_eb(path);
 					if ~isempty(prefs.phase_unwrapping_settings.phase_range)
 						range_array = prefs.phase_unwrapping_settings.phase_range;
 						range = range_array(2) - range_array(1);

@@ -1,8 +1,8 @@
-function [mu_sfwi, mu_helm] = sfwi_inversion(U, freqvec, spacing, xyz_order)
+function [mu_sfwi, mu_helm] = sfwi_inversion(U, freqvec, spacing, xyz_order, nohelm)
 
 %mu_sfwi includes all first and second order gradients
 %mu_helm neglects all first gradients
-
+%U = mir(U);
 % set constants
 RHO = 1000;
 sz = size(U);
@@ -12,8 +12,11 @@ else
     nfreqs = sz(5);
 end
 N = sz(1)*sz(2)*sz(3);
-if nargin < 4
-    xyz_order = [1 2 3];
+if nargin < 5
+    nohelm = 0;
+    if nargin < 4
+        xyz_order = [1 2 3];
+    end
 end
 y_diags = [0 1];
 x_diags = [0 sz(1)];
@@ -28,9 +31,12 @@ K1_helm = [];
 K1_sfwi = [];
 
 % create FD gradient functions
-x_grad_kern = [1 -1]  / spacing(1);
-y_grad_kern = [1; -1]  / spacing(2);
-z_grad_kern = zeros(1,1,2); z_grad_kern(:) = [1 -1]  / spacing(3);
+kern = [1 -1];
+%kern = [0.5 0 -0.5];
+%kern = [1/12 -2/3 0 2/3 -1/12];
+x_grad_kern = kern  / spacing(1);
+y_grad_kern = kern'  / spacing(2);
+z_grad_kern = zeros(1,1,numel(kern)); z_grad_kern(:) = kern  / spacing(3);
 
 xgrad = @(v) convn(v, x_grad_kern, 'same');
 ygrad = @(v) convn(v, y_grad_kern, 'same');
@@ -57,9 +63,14 @@ for n = 1:nfreqs
     z_x = xgrad(U_z); z_y = ygrad(U_z); z_z = zgrad(U_z);
 
     % INFINITESIMAL STRAIN TENSOR
-    E = {   { 2*x_x         }  {(x_y + y_x)}  {(x_z + z_x)}    ;   ...
-            {(y_x + x_y)}  { 2*y_y         }  {(y_z + z_y)}    ;   ...
-            {(z_x + x_z)}  {(z_y + y_z)}  {2*z_z          }     };
+    %E = {   { 2*x_x         }  {(x_y + y_x)}  {(x_z + z_x)}    ;   ...
+    %        {(y_x + x_y)}  { 2*y_y         }  {(y_z + z_y)}    ;   ...
+    %        {(z_x + x_z)}  {(z_y + y_z)}  {2*z_z          }     };
+    
+    E = {   { x_x         }  {(x_y + y_x)/2}  {(x_z + z_x)/2}    ;   ...
+            {(y_x + x_y)/2}  { y_y         }  {(y_z + z_y)/2}    ;   ...
+            {(z_x + x_z)/2}  {(z_y + y_z)/2}  {z_z          }     };
+        
         
     div_x = xgrad_(E{1,1}) + ygrad_(E{1,2}) + zgrad_(E{1,3}); 
     div_y = xgrad_(E{2,1}) + ygrad_(E{2,2}) + zgrad_(E{2,3}); 
@@ -96,12 +107,15 @@ K_sfwi = K1_sfwi*K2_sfwi;
 % Ku = f . LSQR method is faster and less memory intensive than
 % backslash. User should get convergence before 1000.
 
-u_helm = K_helm \ f;
-%u_helm = lsqr(K_helm, f, 1e-15, 1000);
-mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
+%u_helm = K_helm \ f;
+if (nohelm == 0)
+    u_helm = lsqr(K_helm, f, 1e-15, 100000);
+    mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
+    %mu_helm = mircrop(reshape(u_helm, [sz(1) sz(2) sz(3)]));
+end
 
-u_sfwi = K_sfwi \ f;
-%u_sfwi = lsqr(K_sfwi, f, 1e-15, 1000);
+%u_sfwi = K_sfwi \ f;
+u_sfwi = lsqr(K_sfwi, f, 1e-15, 100000);
+%mu_sfwi = mircrop(reshape(u_sfwi, [sz(1) sz(2) sz(3)]));
 mu_sfwi = reshape(u_sfwi, [sz(1) sz(2) sz(3)]);
-
 end

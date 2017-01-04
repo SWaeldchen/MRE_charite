@@ -20,8 +20,10 @@
 
 function unzip = mredge_unzip_if_zip(zip)
 
-unzip = zip(1:end-3);
 
-if exist(zip, 'file')
+if strcmp(zip(end-1:end), 'gz') == 1 && exist(zip, 'file')
+    unzip = zip(1:end-3);
 	gunzip(zip);
+else
+    unzip = zip;
 end

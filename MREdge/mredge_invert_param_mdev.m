@@ -1,4 +1,4 @@
-%% function mredge_invert(info, prefs);
+%% function mredge_invert_param_all(info, prefs, param, freq_indices);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -8,7 +8,7 @@
 %
 % USAGE:
 %
-%   create an elastogram of param using the MDEV approach
+%   create an elastogram of param using the all approach
 %
 %   If you use this method cite
 %
@@ -28,7 +28,7 @@
 %
 %   info - MREdge acquisition info structure generated with mredge_acquisition_info
 %   prefs - MREdge preferences structure generated with mredge_prefs
-%   param - name of MDEV-compatible parameter: 'absg', 'phi', 'c' or 'a'
+%   param - name of all-compatible parameter: 'absg', 'phi', 'c' or 'a'
 %
 % OUTPUTS:
 %
@@ -36,7 +36,7 @@
 
 function mredge_invert_param_mdev(info, prefs, param, freq_indices)
 	frequencies = info.driving_frequencies;
-    if isempty(freq_indices)
+    if nargin < 4
         freq_indices = 1:numel(frequencies);
         special_freq_set = 0;
     else
@@ -44,20 +44,24 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
     end
 	[FT_DIRS, PARAM_SUB] =set_dirs(info, prefs, param);
 	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    param_num_mdev = [];
-    param_denom_mdev = [];
+    param_num_all = [];
+    param_denom_all = [];
     for f_ind = freq_indices
         f = info.driving_frequencies(f_ind);
         param_num_freq = [];
         param_denom_freq = [];
         for c = 1:3
-            param_num_comp = [];
-            param_denom_comp = [];
-            for d = 1:numel(FT_DIRS);
+            for d = 1:numel(FT_DIRS)
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-                wavefield_vol = load_untouch_nii(wavefield_path);
+                wavefield_vol = load_untouch_nii_eb(wavefield_path);
                 wavefield_img = wavefield_vol.img;
-                [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] = get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info);
+                if isempty(param_num_all)
+                    [param_num_all, param_denom_all] = make_placeholders(wavefield_img);
+                end
+                if isempty(param_num_freq)
+                    [param_num_freq, param_denom_freq] = make_placeholders(wavefield_img);
+                end
+                [param_num_all, param_denom_all, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] = get_param(param, param_num_all, param_denom_all, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs);
             end
             % outputs for component
             if special_freq_set == 0
@@ -78,80 +82,63 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
             param_freq.hdr.dime.datatype = 64;
             param_freq_dir = fullfile(PARAM_SUB, num2str(f));
             if ~exist(param_freq_dir, 'dir')
-               display('MREdge ERROR: Frequency folder not found');
+               disp('MREdge ERROR: Frequency folder not found');
                return
             end
             param_freq_path = fullfile(param_freq_dir, [num2str(f), NIFTI_EXTENSION]);
             save_untouch_nii(param_freq, param_freq_path);
         end
     end
-    % mdev output
-    param_mdev = wavefield_vol;
-    param_mdev.img = divide(param, param_num_mdev, param_denom_mdev);
-    param_mdev.hdr.dime.datatype = 64;
-    param_mdev_dir = fullfile(PARAM_SUB);
-    if ~exist(param_mdev_dir, 'dir')
-       display('MREdge ERROR: Param folder not found');
+    % all output
+    param_all = wavefield_vol;
+    param_all.img = divide(param, param_num_all, param_denom_all);
+    param_all.hdr.dime.datatype = 64;
+    param_all_dir = fullfile(PARAM_SUB);
+    if ~exist(param_all_dir, 'dir')
+       disp('MREdge ERROR: Param folder not found');
        return
     end
     if special_freq_set == 0
-        param_mdev_path = fullfile(param_mdev_dir, 'MDEV.nii.gz');
+        param_all_path = fullfile(param_all_dir, ['ALL', NIFTI_EXTENSION]);
     else % make file path unique to particular frequency combination
         filename = '';
-        nfreqs = numel(frequencies);
+        curr_freqs = frequencies(freq_indices);
+        nfreqs = numel(curr_freqs);
         for n = 1:nfreqs
-            filename = [filename, num2str(frequencies(n))]; %#ok<AGROW>
+            filename = [filename, num2str(curr_freqs(n))]; %#ok<AGROW>
             if n < nfreqs
                 filename = [filename, '_']; %#ok<AGROW>
             end
         end
-        param_mdev_path = fullfile(param_mdev_dir, [filename, '.nii.gz']);
+        param_all_path = fullfile(param_all_dir, [filename, NIFTI_EXTENSION]);
     end
-   save_untouch_nii(param_mdev, param_mdev_path);
+   save_untouch_nii(param_all, param_all_path);
 
 end
 
-function [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info)
+function [param_num_all, param_denom_all, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_all, param_denom_all, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs)
     
     OMEGA = 2*pi*f;
-    RHO = 1050;
+    RHO = str2double(getenv('RHO'));
     
     if strcmp(param, 'Abs_G') == 1
-        laplacian_img_2d = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, 2);
-        laplacian_img_3d = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, 3);
+        laplacian = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims);
         param_num_comp = RHO.*OMEGA.^2.*abs(wavefield_img);
-        param_denom_comp = abs(laplacian_img_3d);
-        param_num_comp_mdev = RHO.*OMEGA.^2.*abs(wavefield_img);
-        param_denom_comp_mdev = abs(laplacian_img_3d);
-        %param_denom_comp_mdev = abs(laplacian_img_2d);
-    elseif strcmp(param, 'Phi') == 1
-        laplacian_img_2d = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, 2);
-        laplacian_img_3d = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, 3);
-        param_num_comp = real(wavefield_img).*real(laplacian_img_3d) + imag(wavefield_img).*imag(laplacian_img_3d);
-        param_denom_comp = abs(wavefield_img).*abs(laplacian_img_3d);
-        param_num_comp_mdev = real(wavefield_img).*real(laplacian_img_3d) + imag(wavefield_img).*imag(laplacian_img_3d);
-        param_denom_comp_mdev = abs(wavefield_img).*abs(laplacian_img_3d);
-        %param_num_comp = real(wavefield_img).*real(laplacian_img_2d) + imag(wavefield_img).*imag(laplacian_img_2d);
-        %param_denom_comp = abs(wavefield_img).*abs(laplacian_img_2d);
-        %param_num_comp_mdev = real(wavefield_img).*real(laplacian_img_2d) + imag(wavefield_img).*imag(laplacian_img_2d);
-        %param_denom_comp_mdev = abs(wavefield_img).*abs(laplacian_img_2d);
-    else
-        display('MREdge ERROR: Inversion parameter not yet implemented.');
-    end
-    
-    if isempty(param_num_mdev)
-        param_num_mdev = param_num_comp_mdev;
-        param_denom_mdev = param_denom_comp_mdev;
-    else 
-        param_num_mdev = param_num_mdev + param_num_comp_mdev;
-        param_denom_mdev = param_denom_mdev + param_denom_comp_mdev;
-    end
-    if isempty(param_num_freq)
-        param_num_freq = param_num_comp;
-        param_denom_freq = param_denom_comp;
-    else
+        param_denom_comp = abs(laplacian);
         param_num_freq = param_num_freq + param_num_comp;
         param_denom_freq = param_denom_freq + param_denom_comp;
+        param_num_all = param_num_all + param_num_comp;
+        param_denom_all = param_denom_all + param_denom_comp;
+    elseif strcmp(param, 'Phi') == 1
+        laplacian = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims);
+        param_num_comp = real(wavefield_img).*real(laplacian) + imag(wavefield_img).*imag(laplacian);
+        param_denom_comp = abs(wavefield_img).*abs(laplacian);
+        param_num_freq = param_num_freq + param_num_comp;
+        param_denom_freq = param_denom_freq + param_denom_comp;
+        param_num_all = param_num_all + param_num_comp;
+        param_denom_all = param_denom_all + param_denom_comp;    
+    else
+        disp('MREdge ERROR: Inversion parameter not yet implemented.');
     end
 
 end
@@ -167,6 +154,12 @@ function res = divide(param, num, denom)
     elseif strcmp(param, 'Phi') == 1
         res = acos(-num./denom);
     else
-        display('MREdge ERROR: Parameter ', param,' not implemented.');
+        disp('MREdge ERROR: Parameter ', param,' not implemented.');
     end
+end
+
+function [n, d] = make_placeholders(img)
+    sz = size(img);
+    n = zeros(sz);
+    d = zeros(sz);
 end

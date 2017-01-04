@@ -20,10 +20,10 @@
 %
 %   none
 
-function mredge_curl(info, prefs)
+function mredge_remove_divergence(info, prefs)
 
 	[FT_DIRS, RESID_DIRS] =set_dirs(info, prefs);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     for n = 1:numel(RESID_DIRS)
         if ~exist(RESID_DIRS{n}, 'dir')
             mkdir(RESID_DIRS{n});
@@ -31,14 +31,14 @@ function mredge_curl(info, prefs)
     end
     for d = 1:numel(FT_DIRS);
         for f = info.driving_frequencies
-            display([num2str(f), ' Hz']);
+            disp([num2str(f), ' Hz']);
             % make use of component order in prefs
             order_vec = get_order_vec(prefs);
             wavefield_vol = cell(3,1);
             components = cell(3,1);
             for c = 1:3
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(order_vec(c)), mredge_filename(f, order_vec(c), NIFTI_EXTENSION));
-                wavefield_vol{c} = load_untouch_nii(wavefield_path);
+                wavefield_vol{c} = load_untouch_nii_eb(wavefield_path);
                 components{order_vec(c)} = wavefield_vol{c}.img;
             end
             resid_vol = wavefield_vol;

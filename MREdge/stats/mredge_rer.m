@@ -49,7 +49,7 @@ function rer(info, prefs, param)
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
     NIFTI_EXTENSION = '.nii.gz';
     param_path = fullfile(PARAM_SUB, 'MDEV.nii.gz');
-    param_vol = load_untouch_nii(param_path);
+    param_vol = load_untouch_nii_eb(param_path);
     param_img = param_vol.img;
 	mask = mredge_load_mask(info,prefs);
 	rer_masked = double(mask).*double(mredge_rer_3d(param_img));
@@ -61,7 +61,7 @@ function rer(info, prefs, param)
     for f = info.driving_frequencies
 		display([num2str(f), 'Hz']);
         param_path = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
-        param_vol = load_untouch_nii(param_path);
+        param_vol = load_untouch_nii_eb(param_path);
         param_img = param_vol.img;
         rer_masked = double(mask).*double(mredge_rer_3d(param_img));
 		rer_masked(rer_masked == 0) = nan;

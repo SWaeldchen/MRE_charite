@@ -2,7 +2,7 @@ function mu = simple_sparse_inversion(U, freqvec, spacing)
 
 sz = size(U);
 N = sz(1)*sz(2)*sz(3);
-RHO = 1050;
+RHO = 1000;
 spdiag = @(x) spdiags(x(:), 0, N, N);
 om = @(x) 2*pi*x;
 K = [];
@@ -16,6 +16,8 @@ for n = 1:sz(5)
     f = cat(1, f, -RHO.*om(freqvec(n)).^2.*U_n(:));
 end
 
-u = lsqr(K, f, 1e-6, 1000);
+assignin('base', 'K_simple', K);
+assignin('base', 'f_simple', f);
+u = lsqr(K, f, 1e-15, 100000);
 mu = reshape(u, sz(1), sz(2), sz(3));
     

@@ -37,13 +37,13 @@ function mredge_springpot(info, prefs)
     for f_num = 1:nf
         f = df(f_num);
         absg_path = fullfile(ABSG_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
-        absg_vol = load_untouch_nii(absg_path);
+        absg_vol = load_untouch_nii_eb(absg_path);
         absg_images{f_num} = absg_vol.img; 
     end
     for f_num = 1:nf
         f = df(f_num);
         phi_path = fullfile(PHI_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
-        phi_vol = load_untouch_nii(phi_path);
+        phi_vol = load_untouch_nii_eb(phi_path);
         phi_images{f_num} = phi_vol.img; 
     end
     sz = size(absg_images{1});

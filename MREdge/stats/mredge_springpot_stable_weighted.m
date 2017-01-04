@@ -40,17 +40,17 @@ function mredge_springpot_stable_weighted(info, prefs)
 	amp_images = cell(numel(df), 1);
     for f_num = 1:nf
         absg_path = fullfile(ABSG_SUB, stable_filenames{f_num});
-        absg_vol = load_untouch_nii(absg_path);
+        absg_vol = load_untouch_nii_eb(absg_path);
         absg_images{f_num} = absg_vol.img; 
     end
     for f_num = 1:nf
         phi_path = fullfile(PHI_SUB, stable_filenames{f_num});
-        phi_vol = load_untouch_nii(phi_path);
+        phi_vol = load_untouch_nii_eb(phi_path);
         phi_images{f_num} = phi_vol.img; 
     end
     for f_num = 1:nf
         amp_path = fullfile(AMP_SUB, stable_filenames{f_num});
-        amp_vol = load_untouch_nii(amp_path);
+        amp_vol = load_untouch_nii_eb(amp_path);
         amp_images{f_num} = amp_vol.img; 
     end
     sz = size(absg_images{1});

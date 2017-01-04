@@ -32,8 +32,8 @@ function mredge_ri2pm(info, frequency, component)
     % load re and im
     path_re = fullfile(REAL_SUB, path_middle, path_filename);
     path_im = fullfile(IMAG_SUB, path_middle, path_filename);
-    re = load_untouch_nii(path_re);
-    im = load_untouch_nii(path_im);
+    re = load_untouch_nii_eb(path_re);
+    im = load_untouch_nii_eb(path_im);
     
     % create placeholder p and m
     p = re;

@@ -26,7 +26,7 @@ function mredge_amplitudes(info, prefs)
 if ~exist(AMP_SUB, 'dir')
     mkdir(AMP_SUB);
 end
-NIFTI_EXTENSION = '.nii.gz';
+NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 mdev_amp = []; % use a cat strategy, others are possible
     for d = 1:numel(FT_DIRS);
         for f = info.driving_frequencies
@@ -35,13 +35,13 @@ mdev_amp = []; % use a cat strategy, others are possible
             components = cell(3,1);
             for c = 1:3
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-                wavefield_vol = load_untouch_nii(wavefield_path);
+                wavefield_vol = load_untouch_nii_eb(wavefield_path);
                 components{c} = double(wavefield_vol.img);
             end
             amps = abs(components{1}) + abs(components{2}) + abs(components{3});
 			mdev_amp = cat(4, mdev_amp, amps);
 			% TEST EB +
-			%dummy_vol = load_untouch_nii(fullfile(info.path, 'AN_001', 'Abs_G', 'MDEV.nii'));
+			%dummy_vol = load_untouch_nii_eb(fullfile(info.path, 'AN_001', 'Abs_G', 'MDEV.nii'));
             %amp_vol = dummy_vol;
 			% TEST EB -
             amp_vol = wavefield_vol;
@@ -63,7 +63,7 @@ mdev_vol = wavefield_vol;
 mdev_vol.img = real(mdev_amp); %remove complex datatype
 mdev_vol.hdr.dime.datatype = 64;
 
-save_untouch_nii(mdev_vol, fullfile(AMP_SUB, ['MDEV', NIFTI_EXTENSION]));
+save_untouch_nii(mdev_vol, fullfile(AMP_SUB, ['ALL', NIFTI_EXTENSION]));
 
 end
 

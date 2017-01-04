@@ -25,17 +25,12 @@
 function mredge_mni_to_label_space_stable(info_mag, info_an, prefs, param)
 
     [PARAM_SUB] = set_dirs(info_mag, info_an, prefs, param);
-	NIFTI_EXTENSION = '.nii.gz';
     tpm_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
   	[stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
 	for f = 1:numel(stable_frequencies)
-		display([num2str(stable_frequencies(f)), 'Hz']);
-		freq_file_zip = fullfile(PARAM_SUB, ['w', stable_filenames{f}]);
-		freq_file_unzip = freq_file_zip(1:end-3);
-		if exist(freq_file_zip, 'file')
-			gunzip(freq_file_zip);
-		end		
-		mni_to_label_space_stable(tpm_path, freq_file_unzip)
+		disp([num2str(stable_frequencies(f)), 'Hz']);
+		freq_file = fullfile(PARAM_SUB, ['w', stable_filenames{f}]);
+		mni_to_label_space_stable(tpm_path, freq_file)
 	end
     
 end

@@ -54,7 +54,7 @@ function whole_brain(info, prefs, param)
     if exist(param_path_zip, 'file')
         gunzip(param_path_zip);
     end
-    param_vol = load_untouch_nii(param_path_unzip);
+    param_vol = load_untouch_nii_eb(param_path_unzip);
     param_img = param_vol.img;
 	mask = double(mredge_load_mask(info,prefs));
 	whole_brain_masked = double(mask).*double(param_img);
@@ -72,7 +72,7 @@ function whole_brain(info, prefs, param)
         if exist(param_path_zip, 'file')
             gunzip(param_path_zip);
         end
-        param_vol = load_untouch_nii(param_path_unzip);
+        param_vol = load_untouch_nii_eb(param_path_unzip);
         param_img = param_vol.img;
         whole_brain_masked = double(mask).*double(param_img);
         whole_brain_masked(whole_brain_masked == 0) = nan;
@@ -109,11 +109,11 @@ function whole_brain_springpot(info, prefs)
     if exist(rss_path_zip, 'file')
         gunzip(rss_path_zip);
     end
-    mu_vol = load_untouch_nii(mu_path_unzip);
+    mu_vol = load_untouch_nii_eb(mu_path_unzip);
     mu_img = mu_vol.img;
-    alpha_vol = load_untouch_nii(alpha_path_unzip);
+    alpha_vol = load_untouch_nii_eb(alpha_path_unzip);
     alpha_img = alpha_vol.img;	
-    rss_vol = load_untouch_nii(rss_path_unzip);
+    rss_vol = load_untouch_nii_eb(rss_path_unzip);
     rss_img = rss_vol.img;	    
     mask = double(mredge_load_mask(info,prefs));
 	mu_masked = double(mask).*double(mu_img);

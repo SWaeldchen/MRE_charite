@@ -56,9 +56,9 @@ end
 
 function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh)
  
-	param_coreg_vol = load_untouch_nii(param_file_path);
+	param_coreg_vol = load_untouch_nii_eb(param_file_path);
     param_img = param_coreg_vol.img;
-    labels_vol = load_untouch_nii(tpm_image_path);
+    labels_vol = load_untouch_nii_eb(tpm_image_path);
     labels_img = labels_vol.img;
     labels_file = importdata('labels_Neuromorphometrics.xls');
     label_nums = labels_file.data;

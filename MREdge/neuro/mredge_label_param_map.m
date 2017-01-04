@@ -25,29 +25,26 @@ function mredge_label_param_map(info, prefs, param)
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
     tpm_image_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
-	NIFTI_EXTENSION = '.nii.gz';
-	ABSG_NOISE_THRESH = prefs.abs_g_noise_thresh;
+	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	ABSG_NOISE_THRESH = str2num(getenv('ABSG_NOISE_THRESH'));
+    SFWI_NOISE_THRESH = str2num(getenv('SFWI_NOISE_THRESH'));
     
-    mdev_file_zip = fullfile(PARAM_SUB,'rwMDEV.nii.gz');
-    mdev_file_unzip = mdev_file_zip(1:end-3);
-    if exist(mdev_file_zip, 'file')
-        gunzip(mdev_file_zip);
-    end
-    if strcmp(param, 'Abs_G')
+    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['rwALL', NIFTI_EXTENSION]));
+    if strcmp(param, 'Abs_G') || strcmp(param, 'HELM')
         noise_thresh = ABSG_NOISE_THRESH;
+    elseif strcmp(param, 'SFWI')
+        noise_thresh = SFWI_NOISE_THRESH;
     else
         noise_thresh = eps;
     end
-    label_param_map(STATS_SUB, param, tpm_image_path, mdev_file_unzip, noise_thresh);
+    label_param_map(STATS_SUB, param, tpm_image_path, all_file, noise_thresh);
     
-    for f = info.driving_frequencies
-		freq_file_zip = fullfile(PARAM_SUB, num2str(f), ['rw', num2str(f), NIFTI_EXTENSION]);
-		freq_file_unzip = freq_file_zip(1:end-3);
-		if exist(freq_file_zip, 'file')
-			gunzip(freq_file_zip);
-		end
-		label_param_map(STATS_SUB, param, tpm_image_path, freq_file_unzip, noise_thresh, f);
-    end
+    %for f = info.driving_frequencies
+	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['rw', num2str(f), NIFTI_EXTENSION]));
+    %    if exist(freq_file, 'file')
+    %        label_param_map(STATS_SUB, param, tpm_image_path, freq_file, noise_thresh, f);
+    %    end
+    %end
        
 end
 
@@ -60,9 +57,9 @@ end
 
 function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)
  
-	param_coreg_vol = load_untouch_nii(param_file_path);
+	param_coreg_vol = load_untouch_nii_eb(param_file_path);
     param_img = param_coreg_vol.img;
-    labels_vol = load_untouch_nii(tpm_image_path);
+    labels_vol = load_untouch_nii_eb(tpm_image_path);
     labels_img = labels_vol.img;
     labels_file = importdata('labels_Neuromorphometrics.xls');
     label_nums = labels_file.data;
@@ -85,22 +82,21 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         stats(n).mean = mean(param_values);
         stats(n).median = median(param_values);
         stats(n).std = std(param_values);
-        stats(n).iqr = iqr(param_values);
         stats(n).min = min(param_values);
         stats(n).max = max(param_values);
     end
     
     if nargin < 6
         label_fileID = fopen(label_stats_path, 'w');
-        fprintf(label_fileID, 'MDEV \n');
+        fprintf(label_fileID, '0 \n');
     else
         label_fileID = fopen(label_stats_path, 'a');
         fprintf(label_fileID, '%.3d \n', f);
     end
-    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, IQR, Min, Max');
+    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, Min, Max');
     for n = 1:numel(stats)
         if stats(n).num_voxels > 0
-            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).iqr, stats(n).min, stats(n).max);
+            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
             is_wm = strfind(stats(n).label,WM);
             if any(is_wm) && stats(n).mean > noise_thresh % if this is white matter and not NaN
                 wm_sum = wm_sum + stats(n).mean;
@@ -110,7 +106,7 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
     end
     if nargin < 6
         label_fileID = fopen(wm_path, 'w');
-        fprintf(label_fileID, '%s, %1.3f \n', 'MDEV', wm_sum/wm_tally);
+        fprintf(label_fileID, '%s, %1.3f \n', 'ALL', wm_sum/wm_tally);
     else
         label_fileID = fopen(wm_path, 'a');
         fprintf(label_fileID, '%s, %1.3f \n', num2str(f), wm_sum/wm_tally);

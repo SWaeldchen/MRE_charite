@@ -10,45 +10,15 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, 
     else
         d5 = sz(5);
     end
-	%sz_resh = [sz(1), sz(2), sz(3), sz(4)*d5];
-	%sz_super = round([sz(1)*super_factor, sz(2)*super_factor, sz(3)*super_factor]);
-	
-
-	
-    % get data in cell format
-    U_interp = cell(sz(4), d5);
+    U_lap = zeros(size(U));
     for m = 1:sz(4)
         for n = 1:d5
-            U_interp{m,n} = U(:,:,:,m,n);
-        end
-    end
-    %{
-    % interpolate it
-    if super_factor == 1
-      NITER = 1;
-    else
-      NITER = 20;
-    end
-      
-    for m = 1:sz(4)
-        for n = 1:d5
-            tic
-            U_interp{m,n} = U(:,:,:,m,n); %iterative_bicubic_3d_by_1d(U(:,:,:,m,n), super_factor, NITER);
-            %U_lap_interp{m,n} = iterative_bicubic_3d(U_lap(:,:,:,m,n), super_factor, 1);            
-            toc
-        end
-    end
-    %}
-    % put it back in matrix format
-    U = [];
-    U_lap = [];
-    for m = 1:sz(4)
-        for n = 1:d5
-            tic
-            U(:,:,:,m,n) = U_interp{m,n}; %#ok<AGROW>
-            U_lap(:,:,:,m,n) = get_compact_laplacian(U_interp{m,n}, spacing, twoD);  %#ok<AGROW>
-            %U_lap(:,:,:,m,n) = get_wavelet_laplacian(U(:,:,:,m,n), spacing, twoD);  %#ok<AGROW>
-
+            U_lap(:,:,:,m,n) = get_compact_laplacian(U(:,:,:,m,n), spacing, twoD);
+            %[dx, dy, dz] = gradient(U(:,:,:,m,n), spacing(1), spacing(2), spacing(3));
+            %[dxx, ~, ~] = gradient(dx,spacing(1), spacing(2), spacing(3));
+            %[~, dyy, ~] = gradient(dy, spacing(1), spacing(2), spacing(3));
+            %[~, ~, dzz] = gradient(dz, spacing(1), spacing(2), spacing(3));
+            %U_lap(:,:,:,m,n) = dxx + dyy + dzz;
         end
     end
     sz_elasto = [size(U,1) size(U,2) size(U,3)];

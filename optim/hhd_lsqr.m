@@ -40,13 +40,16 @@ r = spalloc(size(gradx3,1),size(gradx3,2),0);
 I = speye(size(gradx3,1),size(gradx3,2));
 
 s1 = 1e-8*I;
-A =[2*[r -gradz3 +grady3 s1 r r];2*[+gradz3 r -gradx3 r s1 r];2*[-grady3 +gradx3 r r r s1];[s1 s1 s1 +gradx3 +grady3 +gradz3];10*[I r r I r r];10*[r I r r I r];10*[r r I r r I]];
+W1 = 10;
+W2 = 1;
+W3 = 1;
+A =[W1*[r -gradz3 +grady3 s1 r r];W1*[+gradz3 r -gradx3 r s1 r];W1*[-grady3 +gradx3 r r r s1];W2*[s1 s1 s1 +gradx3 +grady3 +gradz3];W3*[I r r I r r];W3*[r I r r I r];20*[r r I r r I]];
 %A =[[r -gradz3 +grady3 r r r];[+gradz3 r -gradx3 r r r];[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];[I r r I r r];[r I r r I r];[r r I r r I]];
 %A =[2*[r -gradz3 +grady3 r r r];2*[+gradz3 r -gradx3 r r r];2*[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];10*[I r r I r r];10*[r I r r I r];10*[r r I r r I]];
 r =zeros(szy*szx*szz,1);
-b =[r;r;r;r;10*Fx(:);10*Fy(:);10*Fz(:)];
-
-x=lsqr(A,b,10^-3,niter);
+b =[r;r;r;r;Fx(:);Fy(:);Fz(:)];
+tol = 1e-3;
+x=lsqr(A,b,tol,niter);
 l = length(x)/6;
 R = size(Fx);
  

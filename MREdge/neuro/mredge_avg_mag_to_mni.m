@@ -26,12 +26,11 @@ function mredge_avg_mag_to_mni(info, prefs)
     TPM_dir = fullfile(spm('Dir'),'tpm');
     spm('defaults','fmri');
     spm_jobman('initcfg');
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     [AVG_MAG_SUB, STATS_DIR] = set_dirs(info, prefs);
-    avg_mag_path = fullfile(AVG_MAG_SUB, 'Avg_Magnitude.nii.gz');
-	avg_mag_path_unzip = avg_mag_path(1:end-3);
-    gunzip(avg_mag_path);
+    avg_mag_path = fullfile(AVG_MAG_SUB, ['Avg_Magnitude', NIFTI_EXTENSION]);
     % align
-    matlabbatch{1}.spm.spatial.preproc.channel.vols = {avg_mag_path_unzip};
+    matlabbatch{1}.spm.spatial.preproc.channel.vols = {avg_mag_path};
     matlabbatch{1}.spm.spatial.preproc.channel.biasreg = 0.001;
     matlabbatch{1}.spm.spatial.preproc.channel.biasfwhm = 60;
     matlabbatch{1}.spm.spatial.preproc.channel.write = [0 0];
@@ -67,8 +66,6 @@ function mredge_avg_mag_to_mni(info, prefs)
     matlabbatch{1}.spm.spatial.preproc.warp.samp = 3;
     matlabbatch{1}.spm.spatial.preproc.warp.write = [1 1];
     spm_jobman('run',matlabbatch);
-    gzip(avg_mag_path_unzip);
-    delete(avg_mag_path_unzip);
     
     seg_filepath = fullfile(STATS_DIR, 'pct_segmented_voxels.csv');
     if exist(seg_filepath, 'file')
@@ -89,16 +86,17 @@ function [AVG_MAG_SUB, STATS_DIR] = set_dirs(info, prefs)
 end
 
 function calc_segmented_voxels(AVG_MAG_SUB, seg_filepath)
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     fileID = fopen(seg_filepath, 'a');
     pcts = zeros(5,1);
     for n = 1:5
-        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 'Avg_Magnitude.nii']);
-        seg_vol = load_untouch_nii(file_path);
+        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 'Avg_Magnitude', NIFTI_EXTENSION]);
+        seg_vol = load_untouch_nii_eb(file_path);
         seg_img = seg_vol.img;
         num_vox = numel(seg_img);
         pcts(n) = numel(seg_img(seg_img > 128)) ./ num_vox;
     end
-    fprintf(fileID, '%1.3f \n%1.3f \n %1.3f \n %1.3f \n %1.3f \n', pcts(1), pcts(2), pcts(3), pcts(4), pcts(5));
+    fprintf(fileID, '%1.3f\n%1.3f\n %1.3f\n%1.3f\n%1.3f\n', pcts(1), pcts(2), pcts(3), pcts(4), pcts(5));
 end
 
 function calc_deformation_variance(AVG_MAG_SUB, deform_filepath)
@@ -109,6 +107,6 @@ function calc_deformation_variance(AVG_MAG_SUB, deform_filepath)
         field = seg8.Twarp(:,:,:,n);
         vars(n) = var(field(:));
     end
-    fprintf(fileID, '%1.3f \n %1.3f \n %1.3f \n', vars(1), vars(2), vars(3));
+    fprintf(fileID, ' %1.3f\n%1.3f\n %1.3f\n', vars(1), vars(2), vars(3));
 end      
     

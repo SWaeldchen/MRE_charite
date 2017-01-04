@@ -25,19 +25,19 @@ for m = 1:d4
 end
 U = Uex;
 U_den = zeros(sz(1), sz(2), xDim, d4);
+z_grad = zeros(1,1,2);
+z_grad(:) = [1 -1];
 for m = 1:d4
     cube = U(:,:,:,m);
-    %lambda = getLambda(U(:,:,:,m),0);
-    lambda = median(abs(cube(:) - median(cube(:))));
-
-    T = lambda*fac;
+    z_noise_est = sum(abs(convn(cube, z_grad, 'same')), 3);
+    T = z_noise_est*fac;
     for i=1:sz(1)
         for j =1:sz(2)
             z_line = squeeze(U(i,j,:,m));
             w = udwt(z_line, J, h0, h1);
 			for n = 1:J
             	a = w{n};
-				c = sign(a).*max(abs(a) - T, 0);
+				c = sign(a).*max(abs(a) - T(i,j), 0);
 		        w{n} = c;
 			end
             z_line_den = iudwt(w, J, g0, g1);

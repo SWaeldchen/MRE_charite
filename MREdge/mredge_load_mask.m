@@ -21,8 +21,9 @@
 %	
 function mask = mredge_load_mask(info, prefs)
 
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     [AVG_SUB] = set_dirs(info,prefs);
-    mask_vol = load_untouch_nii(fullfile(AVG_SUB, 'Magnitude_Mask.nii.gz'));
+    mask_vol = load_untouch_nii_eb(fullfile(AVG_SUB, ['Magnitude_Mask', NIFTI_EXTENSION]));
 	mask = mask_vol.img;
 
 end

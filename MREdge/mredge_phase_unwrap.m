@@ -24,7 +24,7 @@ function mredge_phase_unwrap(info, prefs)
 
 PHASE_SUB = fullfile(info.path, 'Phase');
 %MAG_SUB = fullfile(info.path, 'Mag');
-NIFTI_EXTENSION = '.nii.gz';
+NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 RGA_DIFFERENCES_FILE_PATH = '/home/ericbarnhill/barnhill-eclipse-workspace/PhaseTools/differences.dat';
 
 if strcmp(prefs.phase_unwrap,'gradient') == 1
@@ -36,7 +36,7 @@ for f = info.driving_frequencies
     for c = 1:3
         vol_dir = fullfile(PHASE_SUB, num2str(f), num2str(c));
         vol_path = fullfile(vol_dir, mredge_filename(f, c, NIFTI_EXTENSION));
-        vol = load_untouch_nii(vol_path);
+        vol = load_untouch_nii_eb(vol_path);
         if strcmp(prefs.phase_unwrap, 'laplacian') == 1
             vol.img = mredge_laplacian_unwrap(vol.img, 3);
             save_untouch_nii(vol, vol_path);
@@ -80,7 +80,7 @@ for f = info.driving_frequencies
             save_untouch_nii(vol, vol_path);
         elseif strcmp(prefs.phase_unwrap, 'prelude') == 1
             MAG_SUB = mredge_analysis_path(info, prefs, 'Magnitude');
-            avg_path = fullfile(MAG_SUB, 'Avg_Magnitude.nii.gz');
+            avg_path = fullfile(MAG_SUB, ['Avg_Magnitude', NIFTI_EXTENSION]);
             %mask_path = fullfile(MAG_SUB, 'Magnitude_Mask.nii.gz');
             path_list = mredge_split_4d(PHASE_SUB, f, c, info);
             prelude_force_term = '';
@@ -90,7 +90,7 @@ for f = info.driving_frequencies
             for n = 1:numel(path_list)
                 path = path_list{n};
                 path_temp = path(1:end-7);
-                path_temp = [path_temp, '_temp.nii.gz']; %#ok<AGROW>
+                path_temp = [path_temp, '_temp', NIFTI_EXTENSION]; %#ok<AGROW>
                 copyfile(path, path_temp);
                 prelude_command = ['fsl5.0-prelude -',prelude_force_term,'v -p ',path,' -a ',avg_path,' -o ',path_temp];
                 system(prelude_command);

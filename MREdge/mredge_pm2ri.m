@@ -32,8 +32,8 @@ function mredge_pm2ri(info, frequency, component)
     path_p = fullfile(PHASE_SUB, path_middle, path_filename);
     path_m = fullfile(MAG_SUB, path_middle, path_filename);
     
-    p = load_untouch_nii(path_p);
-    m = load_untouch_nii(path_m);
+    p = load_untouch_nii_eb(path_p);
+    m = load_untouch_nii_eb(path_m);
     
     %p = mredge_load_with_spm(path_p);
     %m = mredge_load_with_spm(path_m);

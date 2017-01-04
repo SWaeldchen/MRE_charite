@@ -58,7 +58,7 @@ function cortex_stable(info, prefs, param)
         if exist(param_path_zip, 'file')
             gunzip(param_path_zip);
         end
-        param_vol = load_untouch_nii(param_path_unzip);
+        param_vol = load_untouch_nii_eb(param_path_unzip);
         param_img = param_vol.img;
         cortex_masked = double(mask).*double(param_img);
         cortex_masked(cortex_masked == 0) = nan;
@@ -72,15 +72,15 @@ function cortex_stable(info, prefs, param)
 end 
     
 function cortex_stable_springpot(info, prefs)
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 
-	display(['Cortical Medians, Springpot']);
-    MU_FILENAME = 'mu_weighted.nii.gz';
-    ALPHA_FILENAME = 'alpha_weighted.nii.gz';
-    RSS_FILENAME = 'rss_weighted.nii.gz';
+	disp(['Cortical Medians, Springpot']);
+    MU_FILENAME = ['mu_weighted', NIFTI_EXTENSION];
+    ALPHA_FILENAME = ['alpha_weighted',NIFTI_EXTENSION];
+    RSS_FILENAME = ['rss_weighted',NIFTI_EXTENSION];
     MU_MIN = 200;
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs);
-    NIFTI_EXTENSION = '.nii.gz';
     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);
@@ -96,11 +96,11 @@ function cortex_stable_springpot(info, prefs)
     if exist(rss_path_zip, 'file')
         gunzip(rss_path_zip);
     end
-    mu_vol = load_untouch_nii(mu_path_unzip);
+    mu_vol = load_untouch_nii_eb(mu_path_unzip);
     mu_img = mu_vol.img;
-    alpha_vol = load_untouch_nii(alpha_path_unzip);
+    alpha_vol = load_untouch_nii_eb(alpha_path_unzip);
     alpha_img = alpha_vol.img;	
-    rss_vol = load_untouch_nii(rss_path_unzip);
+    rss_vol = load_untouch_nii_eb(rss_path_unzip);
     rss_img = rss_vol.img;	    
     mask = double(mredge_load_mask(info,prefs));
 	mu_masked = double(mask).*double(mu_img);
@@ -151,11 +151,11 @@ function cortex_stable_springpot_weighted(info, prefs)
     if exist(rss_path_zip, 'file')
         gunzip(rss_path_zip);
     end
-    mu_vol = load_untouch_nii(mu_path_unzip);
+    mu_vol = load_untouch_nii_eb(mu_path_unzip);
     mu_img = mu_vol.img;
-    alpha_vol = load_untouch_nii(alpha_path_unzip);
+    alpha_vol = load_untouch_nii_eb(alpha_path_unzip);
     alpha_img = alpha_vol.img;	
-    rss_vol = load_untouch_nii(rss_path_unzip);
+    rss_vol = load_untouch_nii_eb(rss_path_unzip);
     rss_img = rss_vol.img;	    
     mask = double(mredge_load_mask(info,prefs));
 	mu_masked = double(mask).*double(mu_img);

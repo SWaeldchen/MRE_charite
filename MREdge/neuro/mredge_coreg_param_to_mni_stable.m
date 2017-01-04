@@ -26,7 +26,7 @@ function mredge_coreg_param_to_mni_stable(info_mag, info_an, prefs, param)
 
 	display('Coreg to MNI');
     [MAG_SUB, PARAM_SUB] = set_dirs(info_mag, info_an, prefs, param);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     
     yfile_zip = fullfile(MAG_SUB, 'y_Avg_Magnitude.nii.gz');
     yfile_unzip = yfile_zip(1:end-3);
@@ -36,13 +36,9 @@ function mredge_coreg_param_to_mni_stable(info_mag, info_an, prefs, param)
 
  	[stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
 	for f = 1:numel(stable_frequencies)
-		display([num2str(stable_frequencies(f)), 'Hz']);
-		freq_file_zip = fullfile(PARAM_SUB, stable_filenames{f});
-		freq_file_unzip = freq_file_zip(1:end-3);
-		if exist(freq_file_zip, 'file')
-			gunzip(freq_file_zip);
-		end
-		coreg_param_to_mni(yfile_unzip, freq_file_unzip, info_an.voxel_spacing*1000);
+		disp([num2str(stable_frequencies(f)), 'Hz']);
+		freq_file = fullfile(PARAM_SUB, stable_filenames{f});
+		coreg_param_to_mni(yfile_unzip, freq_file, info_an.voxel_spacing*1000);
 	end
     
     %gzip(yfile_unzip);

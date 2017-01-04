@@ -42,7 +42,7 @@ function call_aniso_diff(info, subdir, f, c)
 	file_list = mredge_split_4d(info, subdir, f, c);
 	settings = prefs.aniso_diff_settings;
 	for n = 1:numel(file_list)
-		volume = load_untouch_nii(file_list{n});
+		volume = load_untouch_nii_eb(file_list{n});
 		volume.img = anisodiff3D(volume.img, settings.num_iter, settings.delta_t, settings.kappa, settings.option, info.voxel_spacing);
 		save_untouch_nii(file_list{n}, volume);
 	end

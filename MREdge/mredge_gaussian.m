@@ -42,7 +42,7 @@ function call_gaussian(info, subdir, f, c)
 	file_list = mredge_split_4d(info, subdir, f, c);
 	settings = prefs.gaussian_settings;
 	for n = 1:numel(file_list)
-		volume = load_untouch_nii(file_list{n});
+		volume = load_untouch_nii_eb(file_list{n});
 		if settings.dimensions = 2
 			gaussian = fspecial('gaussian', [settings.support settings.support], settings.sigma)
 			volume.img = convn(volume.img, gaussian, 'same');

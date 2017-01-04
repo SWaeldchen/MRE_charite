@@ -1,4 +1,4 @@
-%% function mredge_stable_inversions(info, prefs);
+%% function mredge_stable_inversions(info, prefs,invert);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -15,7 +15,7 @@
 %
 %   info - MREdge acquisition info structure generated with mredge_acquisition_info
 %   prefs - MREdge preferences structure generated with mredge_prefs
-%	invert - flag for inverting the data. 1 creates the special inversion and
+%	invert - flag for inverting the data. 1 creates the stable inversions and
 %		0 only returns the stable filenames and frequencies
 %
 % OUTPUTS:
@@ -23,6 +23,7 @@
 %   none
 
 function [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, invert)
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     if nargin < 2
         invert = 0;
     end
@@ -35,14 +36,14 @@ function [stable_filenames, stable_frequencies] = mredge_stable_inversions(info,
         stable_group = [freqs_sorted(n), freqs_sorted(n+1), freqs_sorted(n+2)];
         stable_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
         if invert == 1
-			if prefs.inversion_strategy = 'MDEV'
-            	mredge_invert_param_mdev(info, prefs, 'Abs_G', stable_group, stable_group_indices);
-            	mredge_invert_param_mdev(info, prefs, 'Phi', stable_group, stable_group_indices);
-			elseif prefs.inversion_strategy = 'SFWI'
+			if strcmp(prefs.inversion_strategy,'MDEV') == 1
+            	mredge_invert_param_mdev(info, prefs, 'Abs_G', stable_group_indices);
+            	mredge_invert_param_mdev(info, prefs, 'Phi', stable_group_indices);
+			elseif strcmp(prefs.inversion_strategy,'SFWI') == 1
 				mredge_invert_sfwi(info, prefs, stable_group_indices);
 			end
         end
-        stable_filenames{n} = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), '.nii.gz'];
+        stable_filenames{n} = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), NIFTI_EXTENSION];
         stable_frequencies(n) = mean(stable_group);
     end
 end

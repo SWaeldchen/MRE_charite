@@ -1,8 +1,8 @@
 
-function U_den = dtdenoise_xy_pca_mad(U, fac, n_spins, is_complex) 
+function U_den = dtdenoise_xy_pca_mad(U, fac, J, is_complex) 
     if nargin < 4
-        if nargin < 2
-            fac = 0.1;
+        if nargin < 3
+            J = 2;
         end
         is_complex = 1;
     end
@@ -17,6 +17,7 @@ function U_den = dtdenoise_xy_pca_mad(U, fac, n_spins, is_complex)
     pad1 = nextpwr2(sz(1));
     pad2 = nextpwr2(sz(2));
     padMax = max(pad1, pad2);
+    n_spins = 2^J;
     for m = 1:d4
 	   mad_r = mad_est_3d(real(U(:,:,:,m)));
        mad_i = mad_est_3d(imag(U(:,:,:,m)));
@@ -26,11 +27,11 @@ function U_den = dtdenoise_xy_pca_mad(U, fac, n_spins, is_complex)
             for jiggerY = 0:n_spins
                 for jiggerX = 0:n_spins
                     U_temp = circshift(simplepad(U(:,:,k,m), [padMax, padMax]), [jiggerY jiggerX]);
-                    denR_temp = DT_2D_u(real(U_temp), lambda_r*fac);
+                    denR_temp = DT_2D(real(U_temp), lambda_r*fac, J);
                     denR_temp = circshift(denR_temp, [-jiggerY -jiggerX]);
                     denR(:,:,k,m) = denR(:,:,k,m) + denR_temp(1:sz(1), 1:sz(2), :);
                     if is_complex == 1
-                        denI_temp = DT_2D_u(imag(U_temp), lambda_i*fac);
+                        denI_temp = DT_2D(imag(U_temp), lambda_i*fac, J);
                         denI_temp = circshift(denI_temp, [-jiggerY -jiggerX]);
                         denI(:,:,k,m) = denI(:,:,k,m) + denI_temp(1:sz(1), 1:sz(2), :);
                     end

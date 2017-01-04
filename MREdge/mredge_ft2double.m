@@ -27,7 +27,7 @@ function mredge_ft2double(info,prefs)
     for f = info.driving_frequencies
         for c = 1:3
             ft_path = fullfile(FT_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-            ft_vol = load_untouch_nii(ft_path);
+            ft_vol = load_untouch_nii_eb(ft_path);
             ft_vol.img = double(ft_vol.img);
             ft_vol.hdr.dime.datatype = 64;
             save_untouch_nii(ft_vol, ft_path);

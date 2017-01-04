@@ -37,7 +37,7 @@ function mredge_denoise_nopar(info, prefs)
             for c = 1:3
                 display(num2str(c));
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION)); %#ok<PFBNS>
-                wavefield_vol = load_untouch_nii(wavefield_path);
+                wavefield_vol = load_untouch_nii_eb(wavefield_path);
 				wavefield_img = wavefield_vol.img;
                 resid_vol = wavefield_vol;
                 if strcmp(prefs.denoise_strategy, 'z_xy') == 1 %#ok<PFBNS>

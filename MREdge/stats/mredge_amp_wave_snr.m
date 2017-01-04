@@ -46,11 +46,11 @@ function mredge_amp_wave_snr(info, prefs)
             end
             snr_path = fullfile(SNR_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
             snr_path = mredge_unzip_if_zip(snr_path);
-            snr_vol = load_untouch_nii(snr_path);
+            snr_vol = load_untouch_nii_eb(snr_path);
 			snr_img = snr_vol.img;
 
 			amp_path = fullfile(AMP_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
-            amp_vol = load_untouch_nii(amp_path);
+            amp_vol = load_untouch_nii_eb(amp_path);
 			amp_img = double(amp_vol.img);
 
 			mask = double(mredge_load_mask(info,prefs));

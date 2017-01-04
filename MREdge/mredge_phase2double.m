@@ -27,7 +27,7 @@ function mredge_phase2double(info)
     for f = info.driving_frequencies
         for c = 1:3
             phase_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-            phase_vol = load_untouch_nii(phase_path);
+            phase_vol = load_untouch_nii_eb(phase_path);
             phase_vol.img = double(phase_vol.img);
             phase_vol.hdr.dime.datatype = 64;
             save_untouch_nii(phase_vol, phase_path);

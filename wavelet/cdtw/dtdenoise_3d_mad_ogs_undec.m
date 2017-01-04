@@ -1,4 +1,4 @@
-function u_den = dtdenoise_3d_mad_ogs_undec(u, fac)
+function u_den = dtdenoise_3d_mad_ogs_undec(u, fac, mask)
 
 % 3D Dualtree complex denoising 
 % with overlapping group sparsity thresholding
@@ -12,7 +12,9 @@ if numel(size(u)) < 4
 else
     d4 = size(u,4);
 end
-
+if nargin < 3
+    mask = ones(size(u));
+end
 
 for n = 1:d4
     
@@ -20,13 +22,13 @@ for n = 1:d4
 	xi = imag(u(:,:,:,n));
 	sz = size(xr);
 
-    mad_r = mad_est_3d(xr);
-    mad_i = mad_est_3d(xi);
+    mad_r = mad_est_3d(xr, mask);
+    mad_i = mad_est_3d(xi, mask);
    	lambda_r = (fac*mad_r);
     lambda_i = (fac*mad_i);
  
-    xr = DT_OGS_u(xr, k, lambda_r, 3);
-    xi = DT_OGS_u(xi, k, lambda_i, 3);
+    xr = DT_OGS_u(xr, k, lambda_r, 3, mask);
+    xi = DT_OGS_u(xi, k, lambda_i, 3, mask);
     
     u_den_vol = xr + 1i*xi;
     

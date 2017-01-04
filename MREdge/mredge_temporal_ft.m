@@ -23,18 +23,19 @@ function mredge_temporal_ft(info, prefs)
 
 	[PHASE_DIRS, FT_DIRS, SNR_DIRS] =set_dirs(info, prefs);
 	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    FSL_NIFTI_EXTENSION = '.nii.gz';
 
     for d = 1:numel(PHASE_DIRS)
         for f = info.driving_frequencies
             for c = 1:3
                 time_series_path = fullfile(PHASE_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
                 % create nifti of first volume, to populate with FT data
-                time_series_first_path = fullfile(PHASE_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION, '_FT'));
+                time_series_first_path = fullfile(PHASE_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, FSL_NIFTI_EXTENSION, '_FT'));
                 fslroi_command = ['fsl5.0-fslroi ', time_series_path, ' ', time_series_first_path, ' 0 1'];
                 system(fslroi_command);
-                time_series_vol = load_untouch_nii(time_series_path);
+                time_series_vol = load_untouch_nii_eb(time_series_path);
 				% now load the whole time series
-                ft_vol = load_untouch_nii(time_series_first_path);
+                ft_vol = load_untouch_nii_eb(time_series_first_path);
 				full_img = time_series_vol.img;
 				% call functionality here
 				full_img_ft = fft(double(full_img), [],  4);

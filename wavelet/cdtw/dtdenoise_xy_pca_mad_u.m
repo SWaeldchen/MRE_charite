@@ -1,22 +1,16 @@
 
-<<<<<<< HEAD
-function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex) 
-    if nargin < 4
-		if nargin < 3
-			J = 3;
-		    if nargin < 2
-		        fac = 0.1;
-		    end
-		end
-=======
-function U_den = dtdenoise_xy_pca_mad_u(U, fac, is_complex)
-    J = 4;
-    if nargin < 4
-        if nargin < 2
-            fac = 0.1;
+function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex, mask) 
+    if nargin < 5
+        mask = ones(size(U, 1), size(U, 2), size(U, 3));
+        if nargin < 4
+            if nargin < 3
+                J = 3;
+                if nargin < 2
+                    fac = 0.1;
+                end
+            end
+            is_complex = 1;
         end
->>>>>>> 14803ebee41767e1a5bf2a62664855d932748d33
-        is_complex = 1;
     end
     sz = size(U);
     denR = zeros(size(U));
@@ -27,8 +21,8 @@ function U_den = dtdenoise_xy_pca_mad_u(U, fac, is_complex)
 		d4 = sz(4);
     end
     for m = 1:d4
-	   mad_r = mad_est_3d(real(U(:,:,:,m)));
-       mad_i = mad_est_3d(imag(U(:,:,:,m)));
+	   mad_r = mad_est_3d(real(U(:,:,:,m)), mask)
+       mad_i = mad_est_3d(imag(U(:,:,:,m)), mask);
    	   lambda_r = (fac*mad_r);
        lambda_i = (fac*mad_i);
        for k = 1:size(U,3)

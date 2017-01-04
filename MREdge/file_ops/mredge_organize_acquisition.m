@@ -28,7 +28,7 @@ called_dir = pwd;
 tic
 disp('Organizing Acquisition Folder...');
 
-nifti_convert_command = ['dcm2niix -f %s -z y ',info.path];
+nifti_convert_command = ['dcm2niix -f %s -z n ',info.path];
 system(nifti_convert_command);
 
 %% process each series

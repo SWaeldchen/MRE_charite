@@ -26,7 +26,7 @@ function mredge_break_into_frequencies(series_number, subdir, info)
   	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 	TIME_STEPS = info.time_steps;
 	nifti_4d_path = fullfile(info.path, [num2str(series_number), NIFTI_EXTENSION]);
-	nifti_4d_vol = load_untouch_nii(nifti_4d_path);
+	nifti_4d_vol = load_untouch_nii_eb(nifti_4d_path);
 	n_freqs = numel(info.driving_frequencies);
 	for f = 1:n_freqs
 		for c = 1:3

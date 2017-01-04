@@ -23,27 +23,34 @@ function mredge_brain_analysis(info, prefs)
 % OUTPUTS:
 %
 %   none
-
+    t = tic;
 	mredge_avg_mag_to_mni(info, prefs);
 
-    if prefs.outputs.absg == 1
-        brain_analysis(info, prefs, 'Abs_G');
+    if strcmp(prefs.inversion_strategy, 'MDEV') == 1
+        if prefs.outputs.absg == 1
+            brain_analysis(info, prefs, 'Abs_G');
+        end
+        if prefs.outputs.phi == 1
+            brain_analysis(info, prefs, 'Phi');
+        end
+        if prefs.outputs.springpot == 1
+            brain_analysis_springpot(info, prefs);
+        end
+        if prefs.outputs.c == 1
+            brain_analysis(info, prefs, 'C');
+        end
+        if prefs.outputs.a == 1
+            brain_analysis(info, prefs, 'A');
+        end
+        if prefs.outputs.amplitude == 1
+            brain_analysis(info, prefs, 'Amp');
+        end
+    elseif strcmp(prefs.inversion_strategy, 'SFWI') == 1
+        brain_analysis(info, prefs, 'SFWI');
+        %brain_analysis(info, prefs, 'HELM');
     end
-    if prefs.outputs.phi == 1
-        brain_analysis(info, prefs, 'Phi');
-    end
-    if prefs.outputs.springpot == 1
-        brain_analysis_springpot(info, prefs);
-    end
-    if prefs.outputs.c == 1
-        brain_analysis(info, prefs, 'C');
-    end
-    if prefs.outputs.a == 1
-        brain_analysis(info, prefs, 'A');
-    end
-    if prefs.outputs.amplitude == 1
-        brain_analysis(info, prefs, 'Amp');
-    end
+    disp(['Brain analysis time: ', num2str(toc(t))]);
+    
 end
 
 function brain_analysis(info, prefs, param)

@@ -20,7 +20,7 @@ function [matlab_outputs] = mredge(info, prefs)
 %
 %   returns a structure containing outputs as specified by prefs
 
-tic
+a = tic;
 mredge_set_environment;
 matlab_outputs = initialize_matlab_outputs;
 disp('Organizing files');
@@ -47,13 +47,13 @@ else
     % INVERSION
 
     if prefs.distortion_correction == 1
-        display('Distortion correction');
+        disp('Distortion correction');
         
         mredge_distortion_correction(info, prefs);
         
     end
     if prefs.motion_correction == 1
-        display('Motion correction');
+        disp('Motion correction');
         
         mredge_motion_correction(info, prefs);
         
@@ -61,31 +61,31 @@ else
     %psf stats
     % mredge_psf(info, prefs);
     if prefs.aniso_diff == 1
-        display('Anisotropic Diffusion')
+        disp('Anisotropic Diffusion')
         
         mredge_aniso_diff(info, prefs);
         
     end
     if prefs.gaussian == 1
-        display('Gaussian Smoothing')
+        disp('Gaussian Smoothing')
         
         mredge_gaussian(info, prefs);
         
     end
     if strcmp(prefs.phase_unwrap, 'none') == 0
-        display('Phase Unwrapping')
+        disp('Phase Unwrapping')
         
         mredge_phase_unwrap(info, prefs);
         
     end
     % if no Temporal FT, some new routines need to be written
     if prefs.temporal_ft == 1
-        display('Temporal FT');
+        disp('Temporal FT');
         
         mredge_temporal_ft(info, prefs);
         
     else
-        display('MREdge ERROR: Not implemented without FT yet.');
+        disp('MREdge ERROR: Not implemented without FT yet.');
         return
         %mredge_copy_no_ft(info);
     end
@@ -93,22 +93,21 @@ else
     % run once while noised, once after denoising
     mredge_z_xy_noise(info, prefs);
     if strcmp(prefs.denoise_strategy, 'none') == 0
-        display('Denoising');
+        disp('Denoising');
         
         mredge_denoise(info, prefs);
         
     end
     if strcmp(prefs.curl_strategy, 'none') == 0
-        display('Curl Decomposition');
-        
+        disp('Curl Decomposition');
         mredge_remove_divergence(info, prefs);
         
     end
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);
 
-    if strcmp(prefs.inversion_strategy, 'mdev') == 0
-        display('Wave Inversion');
+    if strcmp(prefs.inversion_strategy, 'none') == 0
+        disp('Wave Inversion');
         mredge_invert(info, prefs);
     end
 
@@ -122,9 +121,9 @@ else
         %mredge_springpot_stable(info,prefs);
         mredge_springpot_stable_weighted(info, prefs);
     end
-    mredge_cortical_median(info, prefs);
-    mredge_cortical_median_stable(info, prefs);
+ 
     if prefs.brain_analysis == 1
+        mredge_masked_median(info, prefs);
         mredge_brain_analysis(info, prefs);
         mredge_brain_analysis_stable(info, prefs);
     end
@@ -150,9 +149,9 @@ else
         outputs.snr = mredge_load_snr;
     end
     %}
-    toc
   
 end
+disp(['Total MREdge time: ' num2str(toc(a)) ]);
 
 
 end

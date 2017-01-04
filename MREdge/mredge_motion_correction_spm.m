@@ -180,7 +180,7 @@ end
 function make_moco_mask(mag_path)
         moco_mask_path = mag_path(1:end-7);
         moco_mask_path = [moco_mask_path, '_moco_mask.nii.gz'];
-        mag_vol = load_untouch_nii(mag_path);
+        mag_vol = load_untouch_nii_eb(mag_path);
         mask_vol = mag_vol;
         mag_img = mag_vol.img;
         mask_img = (mag_img == 0);

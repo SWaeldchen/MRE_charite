@@ -30,21 +30,15 @@ function mredge_brain_analysis_stable(info_mag, info_an, prefs)
 	end
 	mredge_avg_mag_to_mni(info_mag, prefs);
 
-    if prefs.outputs.absg == 1
+    if strcmp(prefs.inversion_strategy, 'MDEV') == 1
         brain_analysis_stable(info_mag, info_an, prefs, 'Abs_G');
-    end
-    if prefs.outputs.phi == 1
-        brain_analysis_stable(info_mag, info_an, prefs, 'Phi');
-    end
-    if prefs.outputs.c == 1
-        brain_analysis_stable(info, prefs, 'C');
-    end
-    if prefs.outputs.a == 1
-        brain_analysis_stable(info, prefs, 'A');
-    end
-    if prefs.outputs.amplitude == 1
         brain_analysis_stable(info_mag, info_an, prefs, 'Amp');
     end
+    
+    if strcmp(prefs.inversion_strategy, 'SFWI') == 1
+        brain_analysis_stable(info_mag, info_an, prefs, 'SFWI');
+    end
+    
 end
 
 function brain_analysis_stable(info_mag, info_an, prefs, param)

@@ -58,7 +58,7 @@ function mredge_oss(info, prefs)
 			tic
 			display([num2str(f), ' ', num2str(c)]);
 			vol_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-			vol = load_untouch_nii(vol_path);
+			vol = load_untouch_nii_eb(vol_path);
 			rg4d = com.ericbarnhill.phaseTools.RG4D;
 			rg4d.setDifferencesFilePath(RGA_DIFFERENCES_FILE_PATH);
 			vol.img =  rga_progressive(vol.img, rg4d); 

@@ -25,10 +25,9 @@ function mredge_label_param_map_stable(info_mag, info_an, prefs, param)
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info_mag, info_an, prefs, param);
     tpm_image_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
-	NIFTI_EXTENSION = '.nii.gz';
 	ABSG_NOISE_THRESH = prefs.abs_g_noise_thresh;
     
-    if strcmp(param, 'Abs_G')
+    if strcmp(param, 'Abs_G') || strcmp(param, 'SFWI') || strcmp(param, 'HELM')
         noise_thresh = ABSG_NOISE_THRESH;
     else
         noise_thresh = eps;
@@ -36,13 +35,9 @@ function mredge_label_param_map_stable(info_mag, info_an, prefs, param)
 
     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
     for f = 1:numel(stable_frequencies)
-		display([num2str(stable_frequencies(f)), 'Hz']);
-		freq_file_zip = fullfile(PARAM_SUB, ['rw', stable_filenames{f}]);
-		freq_file_unzip = freq_file_zip(1:end-3);
-		if exist(freq_file_zip, 'file')
-			gunzip(freq_file_zip);
-		end
-		label_param_map(STATS_SUB, param, tpm_image_path, freq_file_unzip, noise_thresh, f);
+		disp([num2str(stable_frequencies(f)), 'Hz']);
+		freq_file = fullfile(PARAM_SUB, ['rw', stable_filenames{f}]);
+		label_param_map(STATS_SUB, param, tpm_image_path, freq_file, noise_thresh, f);
     end
        
 end
@@ -56,9 +51,9 @@ end
 
 function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)
  
-	param_coreg_vol = load_untouch_nii(param_file_path);
+	param_coreg_vol = load_untouch_nii_eb(param_file_path);
     param_img = param_coreg_vol.img;
-    labels_vol = load_untouch_nii(tpm_image_path);
+    labels_vol = load_untouch_nii_eb(tpm_image_path);
     labels_img = labels_vol.img;
     labels_file = importdata('labels_Neuromorphometrics.xls');
     label_nums = labels_file.data;
@@ -81,7 +76,6 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         stats(n).mean = mean(param_values);
         stats(n).median = median(param_values);
         stats(n).std = std(param_values);
-        stats(n).iqr = iqr(param_values);
         stats(n).min = min(param_values);
         stats(n).max = max(param_values);
     end
@@ -93,10 +87,10 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         label_fileID = fopen(label_stats_path, 'a');
         fprintf(label_fileID, '%.3d \n', f);
     end
-    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, IQR, Min, Max');
+    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, Min, Max');
     for n = 1:numel(stats)
         if stats(n).num_voxels > 0
-            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).iqr, stats(n).min, stats(n).max);
+            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
             is_wm = strfind(stats(n).label,WM);
             if any(is_wm) && stats(n).mean > noise_thresh % if this is white matter and not NaN
                 wm_sum = wm_sum + stats(n).mean;

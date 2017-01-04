@@ -27,8 +27,10 @@ for n = 1:d5
             cy(:,:,:,n) = FRy;
             cz(:,:,:,n) = FRz;
         elseif hodge_code == 1
-            disp('lsq hhd with guess');
-            [~, ~, ~, FRx, FRy, FRz] = hhd_curl_guess({tempx, tempy, tempz}, hodge_iter);
+            disp('hipass butter');
+            cx(:,:,:,n) = hipass_butter_2d(4, 0.05, tempx);
+            cy(:,:,:,n) = hipass_butter_2d(4, 0.05, tempy);
+            cz(:,:,:,n) = hipass_butter_2d(4, 0.05, tempz);
         elseif hodge_code == 2
             disp('lsq hhd');
             curl_comps = hhd_lsqr({tempx, tempy, tempz}, hodge_iter);
