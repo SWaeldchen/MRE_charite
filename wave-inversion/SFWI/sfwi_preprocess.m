@@ -10,7 +10,7 @@ if nargin < 7
 end
 if unwrap > 0
     disp('Unwrapping');
-    U = dct_unwrap(U);
+    U = dct_unwrap(U,2);
 end
 if ft > 0
     disp('FT');
@@ -39,6 +39,7 @@ elseif den_meth == 1
     disp('Denoising z-xy stationary');
     for m = 1:d5
         U(:,:,:,:,m) = dtdenoise_z_mad_u(U(:,:,:,:,m), z_den_fac, Z_DEN_LEVELS, 1);
+        %U(:,:,:,:,m) = mre_z_denoise(U(:,:,:,:,m));
         U(:,:,:,:,m) = dtdenoise_xy_pca_mad_u(U(:,:,:,:,m), den_fac, DEN_LEVELS, 1, mask);
     end
 elseif den_meth == 2

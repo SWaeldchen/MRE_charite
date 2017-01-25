@@ -53,9 +53,6 @@ for m = 1:d4
         end
     end
 end
-firsts = find(order_vector==1);
-index1 = firsts(1);
-index2 = index1 + sz(3) - 1;
-U_den = U_den(:,:,index1:index2,:,:);
+
 
 

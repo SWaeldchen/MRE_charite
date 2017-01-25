@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CURRPATH=`pwd`
-cd $MATLABMRE/mcode
-MCNIT=$MATLABMRE/mcode/mcnit
+cd $MATLABMRE/m-code
+MCNIT=`pwd`/mcnit
 rm $MCNIT/*.m
 cp misc/resh.m $MCNIT
 cp octave/isoctave.m $MCNIT

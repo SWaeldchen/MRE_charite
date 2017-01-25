@@ -48,7 +48,7 @@ function mredge_remove_divergence(info, prefs)
                 [components{1}, components{2}, components{3}] = curl(components{1}, components{2}, components{3});
             elseif strcmp(prefs.curl_strategy, 'hipass') == 1
                 for n = 1:3
-                    components{n} = hipass_butter_3d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, components{n});
+                    components{n} = butter_2d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, components{n}, 1);
                 end
             end
             for c = 1:3

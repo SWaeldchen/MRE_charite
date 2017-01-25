@@ -91,7 +91,7 @@ else
     end
     % z stats
     % run once while noised, once after denoising
-    mredge_z_xy_noise(info, prefs);
+    % mredge_z_xy_noise(info, prefs);
     if strcmp(prefs.denoise_strategy, 'none') == 0
         disp('Denoising');
         
@@ -112,6 +112,7 @@ else
     end
 
     mredge_stable_inversions(info, prefs, 1)
+    mredge_laplacian_snr_stable(info, prefs);
 
     if prefs.outputs.rer == 1
         mredge_rer(info, prefs);

@@ -43,7 +43,7 @@ function mredge_masked_median(info, prefs)
         end
     elseif strcmp(prefs.inversion_strategy, 'SFWI') == 1
         masked(info, prefs, 'SFWI');
-        masked(info, prefs, 'HELM');
+        %masked(info, prefs, 'HELM');
     end
 end
 

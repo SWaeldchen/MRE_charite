@@ -11,6 +11,8 @@ else
 	return;
 end
 
+end
+
 function w_u = dct_unwrap_2d(w)
 	sz = size(w);
 	[x, y] = meshgrid(1:sz(2), 1:sz(1));

@@ -22,7 +22,7 @@ for f = 1:n_freqs
             disp([num2str(sigmas(s)),'dB ',num2str(den_facs(df)), ' den fac']);
             U_noise = reshape(awgn_eb(U(:), sigmas(s), 'measured'), sz);
             U_noise = mir(U_noise);
-            preproc = sfwi_preprocess_stationary(U_noise(:,:,:,:,:,freq_combs{f}), 0, 1, 1, den_facs(df), den_facs(df));
+            preproc = sfwi_preprocess(U_noise(:,:,:,:,:,freq_combs{f}), 0, 1, 1, den_facs(df), den_facs(df));
             [mu_sfwi, mu_helm] = sfwi_inversion_3(preproc, freqvec(freq_combs{f}), spacing);
             mag = finish_from_hodge(preproc, freqvec, spacing, 3, 0, 0);
             sfwi_res{f,s,df} = mu_sfwi;

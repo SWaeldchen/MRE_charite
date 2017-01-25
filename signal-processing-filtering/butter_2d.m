@@ -40,8 +40,8 @@ y = reshape(x_resh, sz);
 
 end
 
-function [y, filt] = filt_slc(ord, cut, x_resh(:,:,n), hi)
-	sz = size(x_vol);
+function [y_slc, filt] = filt_slc(ord, cut, x_slc, hi)
+	sz = size(x_slc);
 	mids = floor(sz/2);
 	[x, y] = meshgrid( (1:sz(2)) - mids(2), (1:sz(1)) - mids(1) );
 	w = sqrt(x.^2 + y.^2);
@@ -51,9 +51,9 @@ function [y, filt] = filt_slc(ord, cut, x_resh(:,:,n), hi)
 	if hi == 1
 		filt = 1 - filt;
 	end
-	x_ft = fftshift(fft2(x));
+	x_ft = fftshift(fft2(x_slc));
 	x_filt = x_ft .* filt;
-	y = ifft2(ifftshift(x_filt));
+	y_slc = ifft2(ifftshift(x_filt));
 end	
-end	
+	
 	

@@ -1,4 +1,4 @@
-%% function mredge_mni_to_label_space(info, param)
+%% function mredge_labels_to_mni_space(info, param)
 
 %
 % Part of the MREdge software package
@@ -8,7 +8,8 @@
 %
 % USAGE:
 %
-% Coregisters a parameter map in MNI space to the space of the neuromorphometric SPM labels.
+% Transforms the Neuromorphometric labels to MNI space. A prerequisite for
+% transforming them in to the brain's native space.
 %
 % INPUTS:
 %
@@ -20,19 +21,19 @@
 % none
 
 %%
-function mredge_mni_to_label_space(info, prefs, param)
+function mredge_label_to_mni_space(info, prefs, param)
 
     [PARAM_SUB] = set_dirs(info, prefs, param);
 	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     tpm_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
     
     all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB,['wALL', NIFTI_EXTENSION]));
-    mni_to_label_space(tpm_path, all_file)
+    label_to_mni_space(tpm_path, all_file)
 	
 	%for f = info.driving_frequencies
 	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['w', num2str(f), NIFTI_EXTENSION]));
     %    if exist(freq_file, 'file')
-    %        mni_to_label_space(tpm_path, freq_file);
+    %        label_to_mni_space(tpm_path, freq_file);
     %    end
 	%end
     
@@ -44,11 +45,11 @@ function [PARAM_SUB] = set_dirs(info, prefs, param)
     
 end
 
-function mni_to_label_space(tpm_path, unzip_path)
+function label_to_mni_space(tpm_path, unzip_path)
 	spm('defaults','fmri');
     spm_jobman('initcfg');
-    matlabbatch{1}.spm.spatial.coreg.write.ref = {tpm_path};
-    matlabbatch{1}.spm.spatial.coreg.write.source = {unzip_path};
+    matlabbatch{1}.spm.spatial.coreg.write.source = {tpm_path};
+    matlabbatch{1}.spm.spatial.coreg.write.ref = {unzip_path};
     matlabbatch{1}.spm.spatial.coreg.write.roptions.interp = 4;
     matlabbatch{1}.spm.spatial.coreg.write.roptions.wrap = [0 0 0];
     matlabbatch{1}.spm.spatial.coreg.write.roptions.mask = 0;

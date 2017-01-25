@@ -49,7 +49,7 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
     end
 	%call inversion
 	%[g_sfwi, g_helm] = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing);
-	[g_sfwi, g_helm] = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing, 1);
+	g_sfwi = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
     % sfwi output - take last loaded volume as placeholder
 	sfwi_set = {g_sfwi, SFWI_SUB};
 	%helm_set = {g_helm, HELM_SUB};

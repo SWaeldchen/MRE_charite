@@ -1,4 +1,4 @@
-function y = dctn(x)
+function y = dctn(x, dims)
 % y = dctn(x)
 % Part of the MCNIT: M-code Complex and Nd Imaging Toolbox
 % (c) Eric Barnhill 2016 All Rights Reserved.
@@ -16,8 +16,12 @@ function y = dctn(x)
 %
 % y - n-dimensional dct of the object
 
-sz = size(x);
-for d = 1:ndims(x)
+if nargin < 2
+    dims = ndims(x);
+end
+rem_dims = ndims(x) - dims;
+for d = 1:dims
+    sz = size(x);
 	[x_resh, num_cols] = resh(x, 2);
 	for n = 1:num_cols
 		x_resh(:,n) = dct_octave(x_resh(:,n));
@@ -25,3 +29,4 @@ for d = 1:ndims(x)
 	x = reshape(x_resh, sz);
 	x = shiftdim(x, 1);
 end
+y = shiftdim(x, rem_dims);

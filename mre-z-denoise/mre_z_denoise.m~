@@ -31,13 +31,13 @@ function vol_den = den_z(vol_4d, filters, lam)
             for n = 1:T
                 z_line = squeeze(vol_4d(i,j,:,n));
                 dwts{n} = udwt(z_line, 1, filters{1}, filters{2});
-                z_image(:,n) = dwts{n}{1};
+                z_image(:,T) = dwts{n}{2};
             end
             % TVL1 STEP
-            z_image_thresh = tvl1_pd_eb(z_image, lam, 100);
-            %z_image_thresh = z_image;
+            z_image_thresh = tvl1_pd_eb(z_image, lam, 1000);
+            z_image_thresh = z_image;
             for n = 1:T
-                dwts{n}{1} = z_image_thresh(:,n);
+                dwts{n}{2} = z_image_thresh(:,T);
                 z_line_thresh = iudwt(dwts{n}, 1, filters{3}, filters{4});
                 vol_den(i,j,:,n) = z_line_thresh(1:length(z_line));
             end

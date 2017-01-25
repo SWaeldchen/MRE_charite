@@ -21,7 +21,7 @@ function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex, mask)
 		d4 = sz(4);
     end
     for m = 1:d4
-	   mad_r = mad_est_3d(real(U(:,:,:,m)), mask)
+	   mad_r = mad_est_3d(real(U(:,:,:,m)), mask);
        mad_i = mad_est_3d(imag(U(:,:,:,m)), mask);
    	   lambda_r = (fac*mad_r);
        lambda_i = (fac*mad_i);

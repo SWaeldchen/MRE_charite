@@ -42,12 +42,12 @@ function y = idct_octave (x, n)
 
   if (nargin < 1 || nargin > 2)
     print_usage;
-  endif
+  end
 
   realx = isreal(x);
-  transpose = (rows (x) == 1);
+  transpose = (size (x,1) == 1);
 
-  if transpose, x = x (:); endif
+  if transpose, x = x (:); end
   [nr, nc] = size (x);
   if nargin == 1
     n = nr;
@@ -55,7 +55,7 @@ function y = idct_octave (x, n)
     x = [ x ; zeros(n-nr,nc) ];
   elseif n < nr
     x (n-nr+1 : n, :) = [];
-  endif
+  end
 
   if ( realx && rem (n, 2) == 0 )
     w = [ sqrt(n/4); sqrt(n/2)*exp((1i*pi/2/n)*[1:n-1]') ] * ones (1, nc);
@@ -75,8 +75,8 @@ function y = idct_octave (x, n)
 
     % 3. keep only the original data; toss the reversed copy
     y = y(1:n, :);
-    if (realx) y = real (y); endif
-  endif
-  if transpose, y = y.'; endif
+    if (realx) y = real (y); end
+  end
+  if transpose, y = y.'; end
 
-endfunction
+end

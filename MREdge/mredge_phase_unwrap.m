@@ -37,11 +37,8 @@ for f = info.driving_frequencies
         vol_dir = fullfile(PHASE_SUB, num2str(f), num2str(c));
         vol_path = fullfile(vol_dir, mredge_filename(f, c, NIFTI_EXTENSION));
         vol = load_untouch_nii_eb(vol_path);
-        if strcmp(prefs.phase_unwrap, 'laplacian') == 1
-            vol.img = mredge_laplacian_unwrap(vol.img, 3);
-            save_untouch_nii(vol, vol_path);
-        elseif strcmp(prefs.phase_unwrap, 'laplacian2d') == 1
-            vol.img = mredge_laplacian_unwrap(vol.img, 2);
+        if strcmp(prefs.phase_unwrap, 'laplacian') || strcmp(prefs.phase_unwrap, 'laplacian2d')
+            vol.img = dct_unwrap(vol.img, 2);
             save_untouch_nii(vol, vol_path);
         elseif strcmp(prefs.phase_unwrap, 'gradient') == 1
             [x_gradient, y_gradient] = mredge_gradient_unwrap(vol.img,prefs);

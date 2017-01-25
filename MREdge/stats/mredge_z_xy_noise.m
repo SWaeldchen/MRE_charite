@@ -40,14 +40,14 @@ function mredge_z_xy_noise(info, prefs)
             lap_noise = zeros(3,1);
             for c = 1:3
                 display(num2str(c));
+				mask = mredge_load_mask(info, prefs);
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
 				wavefield_img = wavefield_vol.img;
                 z_noise(c) = z_noise_est(real(wavefield_img));
-                field_mid = middle_square(wavefield_img);
-                lap_mid = middle_square(lap(wavefield_img));
-				xy_noise(c) = mad_est_3d(wavefield_img) ./ mean(field_mid(:));
-                lap_noise(c) = mad_est_3d(lap(wavefield_img)) ./ mean(lap_mid(:));
+				noise = mad_est_3d(wavefield_img, mask);
+				xy_noise(c) = noise ./ signal_power(wavefield_img, mask);
+                lap_noise(c) = noise ./ signal_power(mredge_compact_laplacian(wavefield_img, [1 1 1], 3), mask);
             end
             z_noise_ID = fopen(z_noise_filepath, 'a');
             xy_noise_ID = fopen(xy_noise_filepath, 'a');
