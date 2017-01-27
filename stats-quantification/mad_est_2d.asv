@@ -1,0 +1,35 @@
+function sigma = mad_est_2d(volume, mask)
+if nargin < 2
+    mask = ones(size(volume));
+end
+sz = size(volume);
+if numel(sz) == 2
+    d3 = 1;
+else
+    d3 = sz(3);
+end
+[h0, h1, g0, g1] = daubf(3);
+w = crop_hipass(udwt2D(volume, 1, h0, h1), h0);
+coef_cat = cell2cat(w{1});
+coef_cat = reshape(coef_cat, [size(coef_cat, 1), size(coef_cat, 2), 3]);
+coef_cat = coef_cat(end-sz(1)+1:end,1:sz(2), 3);
+mask = vec(mask);
+if d3 > 1
+    mask = repmat(mask, [1 1 sz(3)]);
+end
+% mask
+%disp(['coef ',num2str(numel(coef_cat)),' mask ',num2str(numel(mask_cat))])
+volvec = coef_cat(:) .* mask;
+% kill nan
+volvec(isnan(volvec)) = 0;
+% exclude zero
+volvec_nonzero = volvec(volvec ~= 0);
+volvec_median = median(real(volvec_nonzero));
+sigma = 1.4826*median(abs(volvec_nonzero - volvec_median));
+
+end
+
+function w = crop_hipass(w, h0)
+c_len = numel(h0) - 1;
+w{1} = w{1}(1:end-c_len, 1:end-c_len);
+w{2} = w{2}

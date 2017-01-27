@@ -19,7 +19,7 @@ function w_u = dct_unwrap_2d(w)
     mask = x.^2 + y.^2;
 	[w_resh, n_slcs] = resh(w, 3);
 	w_u = zeros(size(w_resh));
-	for n = 1:n_slcs
+	parfor n = 1:n_slcs
 		w_u(:,:,n) = unwrap(w_resh(:,:,n), mask);
 	end
 	w_u = reshape(w_u, sz);
@@ -31,7 +31,7 @@ function w_u = dct_unwrap_3d(w)
     mask = x.^2 + y.^2 + z.^2;
 	[w_resh, n_vols] = resh(w, 4);
 	w_u = zeros(size(w_resh));
-	for n = 1:n_vols
+	parfor n = 1:n_vols
 		w_u(:,:,:,n) = unwrap(w_resh(:,:,:,n), mask);
 	end
 	w_u = reshape(w_u, sz);
@@ -43,7 +43,7 @@ function w_u = dct_unwrap_4d(w)
     mask = x.^2 + y.^2 + z.^2 + t.^2;
 	[w_resh, n_acqs] = resh(w, 5);
 	w_u = zeros(size(w_resh));
-	for n = 1:n_acqs
+	parfor n = 1:n_acqs
 		w_u(:,:,:,:,n) = unwrap(w_resh(:,:,:,:,n), mask);
 	end
 	w_u = reshape(w_u, sz);
