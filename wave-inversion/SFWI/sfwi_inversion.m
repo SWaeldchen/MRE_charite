@@ -1,4 +1,4 @@
-function [mu_sfwi, mu_helm] = sfwi_inversion(U, freqvec, spacing, xyz_order, nohelm)
+function [mu_sfwi, mu_helm] = sfwi_inversion(U, freqvec, spacing, xyz_order, nohelm, kern_ord)
 
 %mu_sfwi includes all first and second order gradients
 %mu_helm neglects all first gradients
@@ -31,9 +31,18 @@ K1_helm = [];
 K1_sfwi = [];
 
 % create FD gradient functions
-kern = [1 -1];
-%kern = [0.5 0 -0.5];
-%kern = [1/12 -2/3 0 2/3 -1/12];
+if nargin < 6
+    kern = [1 -1];
+else
+    switch kern_ord
+        case 1
+             kern = [1 -1];
+        case 2
+            kern = [0.5 0 -0.5];
+        case 3
+            kern = [1/12 -2/3 0 2/3 -1/12];
+    end
+end
 x_grad_kern = kern  / spacing(1);
 y_grad_kern = kern'  / spacing(2);
 z_grad_kern = zeros(1,1,numel(kern)); z_grad_kern(:) = kern  / spacing(3);

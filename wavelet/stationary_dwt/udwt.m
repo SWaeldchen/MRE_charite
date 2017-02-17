@@ -7,10 +7,11 @@ function w = udwt(x, J, h0, h1)
 %   J  : number of stages
 %   h0 : low-pass analysis filter
 %   h1 : high-pass analysis filter
-% OUTPUT
-%   w  : wavelet coefficients
 %
-% % Example:
+% OUTPUT
+%   w  : cell array of wavelet coefficients
+%
+% EXAMPLE 
 %  [h0, h1, g0, g1] = daubf(3);
 %  N = 20;
 %  x = rand(1,N);
@@ -19,9 +20,18 @@ function w = udwt(x, J, h0, h1)
 %  y = iudwt(w,  J, g0, g1);
 %  err = x - y(1:N);
 %  max(abs(err))
+%
+% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+% http://taco.poly.edu/WaveletSoftware/
 
 R = sqrt(2);
 h0 = h0/R;
+if size(h0, 1) == 1
+    h0 = permute(h0, [2 1]);
+end
+if size(h1, 1) == 1
+    h1 = permute(h1, [2 1]);
+end
 h1 = h1/R;
 
 N0 = length(h0);

@@ -29,7 +29,7 @@ tic
 disp('Organizing Acquisition Folder...');
 
 nifti_convert_command = ['dcm2niix -f %s -z n ',info.path];
-system(nifti_convert_command);
+evalc('system(nifti_convert_command);');
 
 %% process each series
 

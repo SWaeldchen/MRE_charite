@@ -1,4 +1,4 @@
-%% function mredge_cortical_median(info, prefs);
+% mredge_masked_median(info, prefs);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -66,7 +66,7 @@ function masked(info, prefs, param)
     fprintf(fileID, 'ALL, %1.4f \n', param_masked);
 	save(fullfile(PARAM_SUB, 'ALL_masked_image.mat'), 'masked');
     for f = info.driving_frequencies
-		disp([num2str(f), 'Hz']);
+		%disp([num2str(f), 'Hz']);
         param_path = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]));
         if exist(param_path, 'file')
             param_vol = load_untouch_nii_eb(param_path);
@@ -92,7 +92,7 @@ function masked_stable(info, prefs, param)
     fprintf(fileID, 'F, Masked Median \n');
     fclose(fileID);
     for f = 1:numel(stable_frequencies)
-		disp([num2str(stable_frequencies(f)), 'Hz']);
+		%disp([num2str(stable_frequencies(f)), 'Hz']);
         param_path = mredge_unzip_if_zip(fullfile(PARAM_SUB, stable_filenames{f}));
         if exist(param_path, 'file')
             param_vol = load_untouch_nii_eb(param_path);

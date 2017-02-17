@@ -41,18 +41,11 @@ H = sfb3D_A_u(HL, HH, j, sf2, 2);
 % filter along dimension 1
 y = sfb3D_A_u(L, H, j, sf1, 1);
 
+end
 
 % LOCAL FUNCTION
 
 function y = sfb3D_A_u(lo, hi, j, sf, d)
-
-% 3D Synthesis Filter Bank
-% (along single dimension only)
-%
-% y = sfb3D_A(lo, hi, sf, d);
-% sf - synthesis filters
-% d  - dimension of filtering
-% see afb2D_A
 
 R = sqrt(2);
 g0 = sf(:, 1) / R;     % lowpass filter
@@ -65,7 +58,6 @@ N = N0 + N1;
 p = mod(d-1+[0:2], 3) + 1;
 lo = permute(lo, p);
 hi = permute(hi, p);
-
 
 sz0 = size(lo);
 L0 = sz0(1);
@@ -95,9 +87,7 @@ y(1:size(y1,1), 1:size(y1,2), 1:size(y1,3)) = y(1:size(y1,1), 1:size(y1,2), 1:si
 L = M*(N/2-1);
 y = y(L+1:end,:,:);
 
-
-
 % permute dimensions of y (inverse permutation)
 y = ipermute(y, p);
 
-
+end

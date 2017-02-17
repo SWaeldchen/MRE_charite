@@ -62,8 +62,8 @@ end
 domain = ones(mn);
     order1 = prod(mn)/2;
     order2 = order1+1;
-    b = ordfilt2(a, order1, domain, padopt);
-    b2 = ordfilt2(a, order2, domain, padopt);
+    b = ordfilt2_eb(a, order1, domain, padopt);
+    b2 = ordfilt2_eb(a, order2, domain, padopt);
 	if islogical(b)
 		b = b | b2;
 	else

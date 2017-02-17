@@ -27,8 +27,8 @@ for n = 1:d4
    	lambda_r = (fac*mad_r);
     lambda_i = (fac*mad_i);
  
-    xr = DT_OGS_u(xr, k, lambda_r, 3, mask);
-    xi = DT_OGS_u(xi, k, lambda_i, 3, mask);
+    xr = DT_OGS_u(xr, k, lambda_r, 3);
+    xi = DT_OGS_u(xi, k, lambda_i, 3);
     
     u_den_vol = xr + 1i*xi;
     

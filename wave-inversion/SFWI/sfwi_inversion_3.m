@@ -28,8 +28,8 @@ K1_helm = [];
 K1_sfwi = [];
 
 % create FD gradient functions
-%kern = [1 -1];
-kern = [0.5 0 -0.5];
+kern = [1 -1];
+%kern = [0.5 0 -0.5];
 %kern = [1/12 -2/3 0 2/3 -1/12];
 x_grad_kern = kern  / spacing(1);
 y_grad_kern = kern'  / spacing(2);
@@ -99,6 +99,7 @@ for n = 1:nfreqs
     f = cat(1, f, -RHO*om(freqvec(n)).^2.*[U_x(:); U_y(:); U_z(:)]);
 end
 
+clear K1_helm_n K1_sfwi_n
 % SFWI matrix K2 = [I; NablaX; NablaY; NablaZ]
 % This is just the identity matrix in HELM
 
@@ -110,20 +111,19 @@ K2_sfwi = [  spdiag(onevec); ...
          
 K_helm = K1_helm*K2_helm;
 
-assignin('base', 'K_helm', K_helm);
-assignin('base', 'f_swfi', f);
-
 K_sfwi = K1_sfwi*K2_sfwi;
 
 % Ku = f . LSQR method is faster and less memory intensive than
 % backslash. User should get convergence before 1000.
 
-%u_helm = K_helm \ f;
-u_helm = lsqr(K_helm, f, 1e-15, 100000);
-mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
-
 %u_sfwi = K_sfwi \ f;
 u_sfwi = lsqr(K_sfwi, f, 1e-15, 100000);
 mu_sfwi = reshape(u_sfwi, [sz(1) sz(2) sz(3)]);
+
+clear K_sfwi K1_sfwi K2_sfwi u_sfwi
+
+%u_helm = K_helm \ f;
+u_helm = lsqr(K_helm, f, 1e-15, 100000);
+mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
 
 end

@@ -53,6 +53,6 @@ function mni_to_label_space(tpm_path, unzip_path)
     matlabbatch{1}.spm.spatial.coreg.write.roptions.wrap = [0 0 0];
     matlabbatch{1}.spm.spatial.coreg.write.roptions.mask = 0;
     matlabbatch{1}.spm.spatial.coreg.write.roptions.prefix = 'r';
-    spm_jobman('run',matlabbatch);
+    evalc('spm_jobman(''run'',matlabbatch);');
 end
     

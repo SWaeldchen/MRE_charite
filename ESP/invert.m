@@ -5,13 +5,18 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, 
         twoD = 0;
     end
 	sz = size(U);
-    if numel(sz) == 4
+    if numel(sz) < 5
 		d5 = 1;
     else
         d5 = sz(5);
     end
+    if numel(sz) < 5
+		d4 = 1;
+    else
+        d4 = sz(4);
+    end
     U_lap = zeros(size(U));
-    for m = 1:sz(4)
+    for m = 1:d4
         for n = 1:d5
             U_lap(:,:,:,m,n) = get_compact_laplacian(U(:,:,:,m,n), spacing, twoD);
             %[dx, dy, dz] = gradient(U(:,:,:,m,n), spacing(1), spacing(2), spacing(3));
@@ -27,7 +32,7 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, 
 	phi_num = zeros(sz_elasto);
 	phi_denom = zeros(sz_elasto);
     
-    for m = 1:sz(4)
+    for m = 1:d4
         for n = 1:d5
             U_temp = U(:,:,:,m,n);
             U_lap_temp = U_lap(:,:,:,m,n);

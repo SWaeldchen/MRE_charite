@@ -36,7 +36,7 @@ function mredge_coreg_param_to_mni_stable(info_mag, info_an, prefs, param)
 
  	[stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
 	for f = 1:numel(stable_frequencies)
-		disp([num2str(stable_frequencies(f)), 'Hz']);
+		%disp([num2str(stable_frequencies(f)), 'Hz']);
 		freq_file = fullfile(PARAM_SUB, stable_filenames{f});
 		coreg_param_to_mni(yfile_unzip, freq_file, info_an.voxel_spacing*1000);
 	end
@@ -66,5 +66,5 @@ function coreg_param_to_mni(mag_file, param_file, voxel_spacing)
     matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = voxel_spacing;
     matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
     matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'w';
-    spm_jobman('run',matlabbatch);
+    evalc('spm_jobman(''run'',matlabbatch);');
 end

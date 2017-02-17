@@ -37,7 +37,7 @@ function mredge_displacement_snr_stable(info, prefs)
     fprintf(fID, 'Displacement_Noise_Stable\n');
  	[stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 0);
 	for f = 1:numel(stable_frequencies)
-		disp([num2str(stable_frequencies(f)), 'Hz']);
+		%disp([num2str(stable_frequencies(f)), 'Hz']);
 		amp_file = fullfile(AMP_SUB, stable_filenames{f});
         amp_vol = load_untouch_nii(amp_file);
 		displacement_noise(amp_vol.img, filepath, mask);

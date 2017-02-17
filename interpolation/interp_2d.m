@@ -46,18 +46,18 @@ end
 
 sz = size(x);
 [x_resh, n_slcs] = resh(x, 3);
-sz_interp = sz(1:2)*factor - (factor-1);
-x_interp = zeros(sz_interp(1), sz_interp(2), n_vols);
+sz_interp = sz(1:2)*factor;
+x_interp = zeros(sz_interp(1), sz_interp(2), n_slcs);
 
 for n = 1:n_slcs
-	x_resh(:,:,n) = interp_slc(x_resh(:,:,n), factor, method, polar, niter);
+	x_interp(:,:,n) = interp_slc(x_resh(:,:,n), factor, method, polar, niter);
 end
 
-y = reshape(x_resh, [sz_interp(1), sz_interp(2), sz(3:end)]);
+y = reshape(x_interp, [sz_interp(1), sz_interp(2), sz(3:end)]);
 
 end
 
-function y = interp_vol(x, factor, method, polar, niter)
+function y = interp_slc(x, factor, method, polar, niter)
 	increment = factor .^ (1 / niter);
 	for n = 1:niter
 		old_rowspace = linspace(1, size(x,1), size(x,1));
@@ -66,12 +66,14 @@ function y = interp_vol(x, factor, method, polar, niter)
 		new_rowspace = linspace(1, size(x,1), size(x,1)*increment);
 		new_colspace = linspace(1, size(x,2), size(x,2)*increment);
 		[x_new, y_new] = meshgrid(new_colspace, new_rowspace);
-		if iscomplex(x)
+		if ~isreal(x)
 			if polar == 0
 				y_re = interp2(x_old, y_old, real(x), x_new, y_new, method);
 				y_im = interp2(x_old, y_old, imag(x), x_new, y_new, method);
 				y = y_re + 1i*y_im;
-			else
+            else
+                x_re = real(x);
+                x_im = imag(x);
 				[~, r] = cart2pol(x_re, x_im);
 				r = interp2(x_old, y_old, x, x_new, y_new, method);
 				t_re = interp2(x_old, y_old, x_re, x_new, y_new, method);
@@ -81,7 +83,7 @@ function y = interp_vol(x, factor, method, polar, niter)
 				y = y_re + 1i*y_im;
 			end
 		else
-			x = interp2(x_old, y_old, z_old, x, x_new, y_new, z_new, method);
+			y = interp2(x_old, y_old, x, x_new, y_new, method);
 		end
 	end
 end	

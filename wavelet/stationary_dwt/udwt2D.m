@@ -1,18 +1,19 @@
 function w = udwt2D(x, J, h0, h1)
 
-% discrete 2-D wavelet transform
+% Undecimated 2-D Discrete Wavelet Transform
 %
-% USAGE:
-%   w = dwt2D(x, stages, af)
-% INPUT:
-%   x - N by M matrix
+% INPUT
+%   x : N by M matrix
 %       1) M, N are both even
 %       2) min(M,N) >= 2^(J-1)*length(af)
-%   J - number of stages
-%   af - analysis filters
-% OUPUT:
-%   w - cell array of wavelet coefficients
-% EXAMPLE:
+%   J : number of stages
+%   h0 : low-pass analysis filter
+%   h1 : high-pass analysis filter
+%
+% OUTPUT
+%   w : cell array of wavelet coefficients
+%
+% EXAMPLE
 %   [af, sf] = farras;
 %   x = rand(128,64);
 %   J = 3;

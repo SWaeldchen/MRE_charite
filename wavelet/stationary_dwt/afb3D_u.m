@@ -1,6 +1,6 @@
 function [lo, hi] = afb3D_u(x, j, af1, af2, af3)
 
-% 3D Analysis Filter Bank
+% Undecimated 3D Analysis Filter Bank
 %
 % USAGE:
 %    [lo, hi] = afb3D(x, af1, af2, af3);
@@ -36,14 +36,14 @@ end
 [L, H] = afb3D_A_u(x, j, af1, 1);
 
 % filter along dimension 2
-[LL LH] = afb3D_A_u(L, j, af2, 2);
-[HL HH] = afb3D_A_u(H, j, af2, 2);
+[LL, LH] = afb3D_A_u(L, j, af2, 2);
+[HL, HH] = afb3D_A_u(H, j, af2, 2);
 
 % filter along dimension 3
-[LLL LLH] = afb3D_A_u(LL, j, af3, 3);
-[LHL LHH] = afb3D_A_u(LH, j, af3, 3);
-[HLL HLH] = afb3D_A_u(HL, j, af3, 3);
-[HHL HHH] = afb3D_A_u(HH, j, af3, 3);
+[LLL, LLH] = afb3D_A_u(LL, j, af3, 3);
+[LHL, LHH] = afb3D_A_u(LH, j, af3, 3);
+[HLL, HLH] = afb3D_A_u(HL, j, af3, 3);
+[HHL, HHH] = afb3D_A_u(HH, j, af3, 3);
 
 lo    = LLL;
 hi{1} = LLH;
@@ -54,33 +54,11 @@ hi{5} = HLH;
 hi{6} = HHL;
 hi{7} = HHH;
 
+end
 
 % LOCAL FUNCTION
 
 function [lo, hi] = afb3D_A_u(x, j, af, d)
-
-% 3D Analysis Filter Bank
-% (along one dimension only)
-%
-% [lo, hi] = afb3D_A(x, af, d);
-% INPUT:
-%    x - N1xN2xN2 matrix, where min(N1,N2,N3) > 2*length(filter)
-%           (Ni are even)
-%    af - analysis filter for the columns
-%    af(:, 1) - lowpass filter
-%    af(:, 2) - highpass filter
-%    d - dimension of filtering (d = 1, 2 or 3)
-% OUTPUT:
-%     lo, hi - lowpass, highpass subbands
-%
-% % Example
-% x = rand(32,64,16);
-% [af, sf] = farras;
-% d = 2;
-% [lo, hi] = afb3D_A(x, af, d);
-% y = sfb3D_A(lo, hi, sf, d);
-% err = x - y;
-% max(max(max(abs(err))))
 
 R = sqrt(2);
 h0 = af(:, 1) / R;     % lowpass filter
@@ -88,7 +66,7 @@ h1 = af(:, 2) / R;     % highpass filter
 N0 = length(h0);
 N1 = length(h1);
 % permute dimensions of x so that dimension d is first.
-p = mod(d-1+[0:2], 3) + 1;
+p = mod(d-1+[0:2], 3) + 1; %#ok<NBRAK>
 x = permute(x, p);
 
 % filter along dimension 1
@@ -99,11 +77,6 @@ M = 2^(j-1);
 lo = zeros(sz(1)+M*(N0-1),sz(2),sz(3));
 hi = zeros(sz(1)+M*(N1-1),sz(2),sz(3));
 
-% convolution
-
-% EB - make filtering matrix
-
-
 for k = 0:N1-1
     hi(M*k+(1:L),:,:) = hi(M*k+(1:L),:,:) + h1(k+1)*x;
 end
@@ -111,10 +84,8 @@ for k = 0:N0-1
     lo(M*k+(1:L),:,:) = lo(M*k+(1:L),:,:) + h0(k+1)*x;
 end
 
-
 % permute dimensions of x (inverse permutation)
 lo = ipermute(lo, p);
 hi = ipermute(hi, p);
 
-
-
+end

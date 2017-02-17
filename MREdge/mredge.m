@@ -89,9 +89,11 @@ else
         return
         %mredge_copy_no_ft(info);
     end
-    % z stats
-    % run once while noised, once after denoising
-    % mredge_z_xy_noise(info, prefs);
+    % measure signal SNR before denoising
+    mredge_amplitudes(info, prefs);
+    mredge_stable_amplitudes(info, prefs);
+
+    
     if strcmp(prefs.denoise_strategy, 'none') == 0
         disp('Denoising');
         
@@ -99,12 +101,14 @@ else
         
     end
     if strcmp(prefs.curl_strategy, 'none') == 0
-        disp('Curl Decomposition');
+        disp('Divergence Removal');
         mredge_remove_divergence(info, prefs);
         
     end
+    %now remake amplitudes to contain denoising
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);
+    mredge_displacement_snr_stable(info, prefs);
 
     if strcmp(prefs.inversion_strategy, 'none') == 0
         disp('Wave Inversion');

@@ -1,4 +1,4 @@
-function [sfwi_res, helm_res, mdev_res] = sfwi_simulation_tests(U, freqvec, spacing, den_facs, freq_combs, sigmas)
+function [sfwi_res, helm_res, mdev_res] = sfwi_simulation_tests(U, freqvec, spacing, den_facs, freq_combs, sigmas, tempfile)
 
 %den_facs = [0.05 0.1 0.3 0.5]; %#ok<*NBRAK>
 n_den_facs = numel(den_facs);
@@ -28,7 +28,7 @@ for f = 1:n_freqs
             sfwi_res{f,s,df} = mu_sfwi;
             helm_res{f,s,df} = mu_helm;
             mdev_res{f,s,df} = mag;
-            save('sfwi_simulation_test_temp');
+            save(tempfile);
             toc
         end
     end

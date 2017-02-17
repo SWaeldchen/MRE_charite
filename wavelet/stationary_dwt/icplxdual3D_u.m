@@ -1,25 +1,28 @@
 function y = icplxdual3D_u(w, J, Fsf, sf)
 
-% Inverse 3D Complex Dual-Tree Discrete Wavelet Transform
+% Inverse Dual-Tree Complex Undecimated 3D Discrete Wavelet Transform
 %
-% USAGE:
-%   y = icplxdual3D(w, J, Fsf, sf)
-% INPUT:
-%   J - number of stages
-%   Fsf - synthesis filter for last stage
-%   sf - synthesis filters for preceeding stages
+% USAGE
+%   y : icplxdual3D_u(w, J, Fsf, sf)
+%
+% INPUT
+%   J : number of stages
+%   Fsf : synthesis filter for last stage
+%   sf : synthesis filters for preceeding stages
+%
 % OUTPUT:
-%   y - output array
-% See cplxdual3D
+%   y : output array
+%
+% See icplxdual3D, cplxdual3D_u
 %
 % WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
 % http://taco.poly.edu/WaveletSoftware/
 
 for j = 1:J
     for m = 1:7
-        [w{j}{1}{1}{1}{m} w{j}{2}{2}{1}{m} w{j}{2}{1}{2}{m} w{j}{1}{2}{2}{m}] = ...
+        [w{j}{1}{1}{1}{m}, w{j}{2}{2}{1}{m}, w{j}{2}{1}{2}{m}, w{j}{1}{2}{2}{m}] = ...
             pm4inv(w{j}{1}{1}{1}{m}, w{j}{2}{2}{1}{m}, w{j}{2}{1}{2}{m}, w{j}{1}{2}{2}{m});
-         [w{j}{2}{2}{2}{m} w{j}{1}{1}{2}{m} w{j}{1}{2}{1}{m} w{j}{2}{1}{1}{m}] = ...
+         [w{j}{2}{2}{2}{m}, w{j}{1}{1}{2}{m}, w{j}{1}{2}{1}{m}, w{j}{2}{1}{1}{m}] = ...
             pm4inv(w{j}{2}{2}{2}{m}, w{j}{1}{1}{2}{m}, w{j}{1}{2}{1}{m}, w{j}{2}{1}{1}{m});
     end
 end
@@ -40,5 +43,8 @@ end
 
 % normalization
 y = y/sqrt(8);
+
+m = size(Fsf{1},1)-1;
+y = y(1:end-m, 1:end-m, 1:end-m);
 
 

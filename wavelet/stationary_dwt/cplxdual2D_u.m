@@ -34,9 +34,9 @@ x = x/2;
 
 for m = 1:2
     for n = 1:2
-        [lo w{1}{m}{n}] = afb2D_u(x, 1, Faf{m}, Faf{n});
+        [lo, w{1}{m}{n}] = afb2D_u(x, 1, Faf{m}, Faf{n});
         for j = 2:J
-            [lo w{j}{m}{n}] = afb2D_u(lo, j, af{m}, af{n});
+            [lo, w{j}{m}{n}] = afb2D_u(lo, j, af{m}, af{n});
         end
         w{J+1}{m}{n} = lo;
     end
@@ -44,8 +44,8 @@ end
 
 for j = 1:J
     for m = 1:3
-        [w{j}{1}{1}{m} w{j}{2}{2}{m}] = pm(w{j}{1}{1}{m},w{j}{2}{2}{m});
-        [w{j}{1}{2}{m} w{j}{2}{1}{m}] = pm(w{j}{1}{2}{m},w{j}{2}{1}{m});
+        [w{j}{1}{1}{m}, w{j}{2}{2}{m}] = pm(w{j}{1}{1}{m},w{j}{2}{2}{m});
+        [w{j}{1}{2}{m}, w{j}{2}{1}{m}] = pm(w{j}{1}{2}{m},w{j}{2}{1}{m});
     end
 end
 

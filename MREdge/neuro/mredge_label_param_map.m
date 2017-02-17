@@ -93,23 +93,27 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         label_fileID = fopen(label_stats_path, 'a');
         fprintf(label_fileID, '%.3d \n', f);
     end
-    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, Min, Max');
+    fprintf(label_fileID, '%s\n', 'Label,NumVoxels,Mean,Median,Std,Min,Max');
+    wm_cat = [];
+    wm_voxnum_cat = [];
     for n = 1:numel(stats)
         if stats(n).num_voxels > 0
-            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
+            fprintf(label_fileID, '%s,%d,%1.3f,%1.3f,%1.3f,%1.3f,%1.3f\n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
             is_wm = strfind(stats(n).label,WM);
             if any(is_wm) && stats(n).mean > noise_thresh % if this is white matter and not NaN
-                wm_sum = wm_sum + stats(n).mean;
-                wm_tally = wm_tally + 1;
+                % NOTE that thresholding is already accomplished above,
+                % this only ensures removal of all-NaN regions
+                wm_cat = cat(1, wm_cat, stats(n).mean);
+                wm_voxnum_cat = cat(1, wm_voxnum_cat, stats(n).num_voxels);
             end
         end
     end
     if nargin < 6
         label_fileID = fopen(wm_path, 'w');
-        fprintf(label_fileID, '%s, %1.3f \n', 'ALL', wm_sum/wm_tally);
+        fprintf(label_fileID, '%s,%d,%1.3f,%1.3f,%d\n', 'ALL', sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
     else
         label_fileID = fopen(wm_path, 'a');
-        fprintf(label_fileID, '%s, %1.3f \n', num2str(f), wm_sum/wm_tally);
+        fprintf(label_fileID, '%s,%d,%1.3f,%1.3f%d\n', num2str(f), sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
     end
     fclose('all');
     

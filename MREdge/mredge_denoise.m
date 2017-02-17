@@ -30,7 +30,7 @@ function mredge_denoise(info, prefs)
     end
     mask = mredge_load_mask(info, prefs);
     for d = 1:numel(FT_DIRS)
-        for f_num = 1:numel(info.driving_frequencies)
+        parfor f_num = 1:numel(info.driving_frequencies)
 			f = info.driving_frequencies(f_num);
             disp([num2str(f), ' Hz']);
             for c = 1:3

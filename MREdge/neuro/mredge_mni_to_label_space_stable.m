@@ -28,7 +28,7 @@ function mredge_mni_to_label_space_stable(info_mag, info_an, prefs, param)
     tpm_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
   	[stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
 	for f = 1:numel(stable_frequencies)
-		disp([num2str(stable_frequencies(f)), 'Hz']);
+		%disp([num2str(stable_frequencies(f)), 'Hz']);
 		freq_file = fullfile(PARAM_SUB, ['w', stable_filenames{f}]);
 		mni_to_label_space_stable(tpm_path, freq_file)
 	end
@@ -50,6 +50,6 @@ function mni_to_label_space_stable(tpm_path, unzip_path)
     matlabbatch{1}.spm.spatial.coreg.write.roptions.wrap = [0 0 0];
     matlabbatch{1}.spm.spatial.coreg.write.roptions.mask = 0;
     matlabbatch{1}.spm.spatial.coreg.write.roptions.prefix = 'r';
-    spm_jobman('run',matlabbatch);
+    evalc('spm_jobman(''run'',matlabbatch);');
 end
     

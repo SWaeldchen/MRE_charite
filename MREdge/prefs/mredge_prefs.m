@@ -177,7 +177,7 @@ for n = 1:2:nargin
     else
         field_is_valid = 0;
     end
-    if field_is_valid == 0;
+    if field_is_valid == 0
         display(['MREdge ERROR: Invalid preferences field ', varargin{n}]);
         prefs = [];
         return

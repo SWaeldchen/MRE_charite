@@ -5,7 +5,7 @@ end
 sz = size(volume);
 [h0, h1, g0, g1] = daubf(3);
 af = [h0 h1];
-w = dwt3D_u(volume, 1, af);
+w = udwt3D(volume, 1, af);
 coef_cat = cell2cat(w{1});
 coef_cat = reshape(coef_cat, [size(coef_cat, 1), size(coef_cat, 2), size(coef_cat, 3)/7, 7]);
 coef_cat = vec(simplecrop(coef_cat, [sz(1) sz(2) sz(3) 7]));

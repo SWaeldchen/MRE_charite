@@ -32,7 +32,7 @@ function [stable_filenames, stable_frequencies] = mredge_stable_inversions(info,
     stable_filenames = cell(nf-2, 1);
     stable_frequencies = zeros(nf-2, 1);
     [freqs_sorted, freq_indices] = sort(info.driving_frequencies, 'ascend');
-    for n = 1:nf-2
+    parfor n = 1:nf-2
         stable_group = [freqs_sorted(n), freqs_sorted(n+1), freqs_sorted(n+2)];
         stable_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
         if invert == 1

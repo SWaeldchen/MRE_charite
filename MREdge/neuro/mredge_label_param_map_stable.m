@@ -35,7 +35,7 @@ function mredge_label_param_map_stable(info_mag, info_an, prefs, param)
 
     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info_an, prefs, 0);
     for f = 1:numel(stable_frequencies)
-		disp([num2str(stable_frequencies(f)), 'Hz']);
+		%disp([num2str(stable_frequencies(f)), 'Hz']);
 		freq_file = fullfile(PARAM_SUB, ['rw', stable_filenames{f}]);
 		label_param_map(STATS_SUB, param, tpm_image_path, freq_file, noise_thresh, f);
     end
@@ -87,10 +87,10 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         label_fileID = fopen(label_stats_path, 'a');
         fprintf(label_fileID, '%.3d \n', f);
     end
-    fprintf(label_fileID, '%s \n', 'Label, Num Voxels, Mean, Median, Std, Min, Max');
+    fprintf(label_fileID, '%s\n', 'Label,NumVoxels,Mean,Median,Std,Min,Max');
     for n = 1:numel(stats)
         if stats(n).num_voxels > 0
-            fprintf(label_fileID, '%s, %d, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
+            fprintf(label_fileID, '%s,%d,%1.3f,%1.3f,%1.3f,%1.3f,%1.3f\n', stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
             is_wm = strfind(stats(n).label,WM);
             if any(is_wm) && stats(n).mean > noise_thresh % if this is white matter and not NaN
                 wm_sum = wm_sum + stats(n).mean;
@@ -100,10 +100,10 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
     end
     if nargin < 6
         label_fileID = fopen(wm_path, 'w');
-        fprintf(label_fileID, '%s, %1.3f \n', 'MDEV', wm_sum/wm_tally);
+        fprintf(label_fileID, '%s,%1.3f\n', 'ALL', wm_sum/wm_tally);
     else
         label_fileID = fopen(wm_path, 'a');
-        fprintf(label_fileID, '%s, %1.3f \n', num2str(f), wm_sum/wm_tally);
+        fprintf(label_fileID, '%s,%d,%1.3f\n', num2str(f), wm_tally, wm_sum/wm_tally);
     end
     fclose('all');
     

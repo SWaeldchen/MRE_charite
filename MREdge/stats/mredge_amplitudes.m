@@ -30,7 +30,7 @@ NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 mdev_amp = []; % use a cat strategy, others are possible
     for d = 1:numel(FT_DIRS);
         for f = info.driving_frequencies
-            display([num2str(f), ' Hz']);
+            %display([num2str(f), ' Hz']);
             % make use of component order in prefs
             components = cell(3,1);
             for c = 1:3

@@ -2,15 +2,19 @@ function y = iudwt(w, J, g0, g1)
 
 % y = iudwt(w, J, g0, g1)
 %
-% Inverse undecimated discrete wavelet transform
+% Inverse Undecimated Discrete Wavelet Transform
+%
 % INPUT
 %   w : wavelet coefficients
 %   J : number of stages
 %   g0 : low-pass synthesis filter
 %   g1 : high-pass synthesis filter
+%
 % OUTPUT
 %   y : output signal
-
+%
+% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+% http://taco.poly.edu/WaveletSoftware/
 
 R = sqrt(2);
 g0 = g0/R;

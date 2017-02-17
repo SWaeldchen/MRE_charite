@@ -59,5 +59,5 @@ function coreg_param_to_mni(mag_file, param_file, voxel_spacing)
     matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = voxel_spacing;
     matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
     matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'w';
-    spm_jobman('run',matlabbatch);
+    evalc('spm_jobman(''run'',matlabbatch);');
 end
