@@ -1,8 +1,14 @@
 
-function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, twoD)
+function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, ndims, ord, iso)
 
-    if nargin < 4
-        twoD = 0;
+    if nargin < 6
+        iso = 1;
+        if nargin < 5
+            ord = 4;
+            if nargin < 4
+                ndims = 3;
+            end
+        end
     end
 	sz = size(U);
     if numel(sz) < 5
@@ -18,12 +24,7 @@ function [mag_num, mag_denom, phi_num, phi_denom] = invert(U, freqvec, spacing, 
     U_lap = zeros(size(U));
     for m = 1:d4
         for n = 1:d5
-            U_lap(:,:,:,m,n) = get_compact_laplacian(U(:,:,:,m,n), spacing, twoD);
-            %[dx, dy, dz] = gradient(U(:,:,:,m,n), spacing(1), spacing(2), spacing(3));
-            %[dxx, ~, ~] = gradient(dx,spacing(1), spacing(2), spacing(3));
-            %[~, dyy, ~] = gradient(dy, spacing(1), spacing(2), spacing(3));
-            %[~, ~, dzz] = gradient(dz, spacing(1), spacing(2), spacing(3));
-            %U_lap(:,:,:,m,n) = dxx + dyy + dzz;
+            U_lap(:,:,:,m,n) = laplacian_image(U(:,:,:,m,n), spacing, ndims, ord, iso);
         end
     end
     sz_elasto = [size(U,1) size(U,2) size(U,3)];

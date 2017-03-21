@@ -29,7 +29,7 @@ function mredge_remove_divergence(info, prefs)
             mkdir(RESID_DIRS{n});
         end
     end
-    for d = 1:numel(FT_DIRS);
+    for d = 1:numel(FT_DIRS)
         for f = info.driving_frequencies
             disp([num2str(f), ' Hz']);
             % make use of component order in prefs
@@ -59,7 +59,7 @@ function mredge_remove_divergence(info, prefs)
                 if ~exist(resid_dir, 'dir')
                     mkdir(resid_dir);
                 end
-                resid_path = fullfile(resid_dir, mredge_filename(f, c, NIFTI_EXTENSION)); %#ok<PFBNS>
+                resid_path = fullfile(resid_dir, mredge_filename(f, c, NIFTI_EXTENSION));
                 resid_vol{c}.img = resid_vol{c}.img - wavefield_vol{c}.img;
                 save_untouch_nii(resid_vol{c}, resid_path);
             end

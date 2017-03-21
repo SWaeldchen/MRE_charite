@@ -23,13 +23,10 @@
 %	
 function mredge_distortion_correction(info)
     tic
-    display('MREdge Distortion Correction');
-    FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
-    REAL_SUB = fullfile(info.path, 'Real');
-    IMAG_SUB = fullfile(info.path, 'Imaginary');
-
+    disp('MREdge Distortion Correction');
+    [FIELDMAP_SUB, REAL_SUB, IMAG_SUB] = set_dirs(info);
     if ~exist(FIELDMAP_SUB, 'dir')
-        display('MREdge ERROR: No fieldmap directory for this acquisition.');
+        disp('MREdge ERROR: No fieldmap directory for this acquisition.');
         return
     end
     cd(FIELDMAP_SUB);
@@ -47,17 +44,14 @@ function mredge_distortion_correction(info)
     name_4d = fullfile(FIELDMAP_SUB, 'Distortion_Map_4d.nii');
     mredge_3d_to_4d(cell_array, name_4d);
 
-    display('Prepping...');
+    disp('Prepping...');
 	topup_command = ['fsl5.0-topup --imain=', name_4d, ' --datain=', getenv('TOPUP_PARAMS'), ' --config=b02b0.cnf --out=topup_results --fout=topup_field --iout=topup_field_map'];
-    %system(topup_command);
+    system(topup_command);
     TOPUP_RESULTS = fullfile(FIELDMAP_SUB, 'topup_results');
 
     for f = info.driving_frequencies
-        display([num2str(f), 'Hz']);
         for c = 1:3
-            display(['    ', num2str(c)]);
             mredge_pm2ri(info, f, c);
-			display('Applying...')
             apply_topup(REAL_SUB, f, c, TOPUP_RESULTS);
             apply_topup(IMAG_SUB, f, c, TOPUP_RESULTS);
             mredge_ri2pm(info, f, c);
@@ -68,11 +62,19 @@ end
 
 function apply_topup(subdir, f, c, TOPUP_RESULTS)
 
-    path = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  '.nii.gz'));
-    path_temp = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  '.nii.gz', '_temp'));
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    path = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  NIFTI_EXTENSION));
+    path_temp = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  '.nii.gz', 'temp'));
     copyfile(path, path_temp);
 	apply_topup_command = ['fsl5.0-applytopup --imain=', path_temp, ' --inindex=1 --datain=', getenv('TOPUP_PARAMS') ' --topup=', TOPUP_RESULTS, ' --method=jac --interp=spline --out=', path];
     system(apply_topup_command);
+    mredge_unzip_if_zip(path);
     delete(path_temp);
             
+end
+
+function [FIELDMAP_SUB, REAL_SUB, IMAG_SUB] = set_dirs(info)
+    FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
+    REAL_SUB = fullfile(info.path, 'Real');
+    IMAG_SUB = fullfile(info.path, 'Imaginary');
 end

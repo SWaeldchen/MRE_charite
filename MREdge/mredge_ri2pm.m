@@ -20,14 +20,14 @@
 % none
 
 function mredge_ri2pm(info, frequency, component)
-    
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     acq_path = info.path;
     PHASE_SUB = fullfile(acq_path, 'Phase');
     MAG_SUB = fullfile(acq_path, 'Magnitude');
     REAL_SUB = fullfile(acq_path, 'Real');
     IMAG_SUB = fullfile(acq_path, 'Imaginary');
     path_middle = [num2str(frequency), '/', num2str(component)];
-    path_filename = mredge_filename(frequency, component, '.nii.gz');
+    path_filename = mredge_filename(frequency, component, NIFTI_EXTENSION);
     
     % load re and im
     path_re = fullfile(REAL_SUB, path_middle, path_filename);

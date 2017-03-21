@@ -21,7 +21,6 @@
 % none
 %	
 function mredge_average_magnitude(info, prefs)
-    tic
     [AVG_SUB, MAG_SUB] = set_dirs(info, prefs);
     NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     if ~exist(AVG_SUB, 'dir')
@@ -55,7 +54,6 @@ function mredge_average_magnitude(info, prefs)
     avg_vol.img = double(avg_vol.img);
 	mask_path = fullfile(AVG_SUB, 'Magnitude_Mask', NIFTI_EXTENSION);
 	save_untouch_nii(avg_vol, mask_path);
-    toc
 end
 
 function [AVG_SUB, MAG_SUB] = set_dirs(info, prefs)

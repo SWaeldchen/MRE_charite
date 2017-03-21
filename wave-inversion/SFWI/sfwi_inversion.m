@@ -32,7 +32,7 @@ K1_sfwi = [];
 
 % create FD gradient functions
 if nargin < 6
-    kern = [1 -1];
+    kern = [0.5 0 -0.5];
 else
     switch kern_ord
         case 1

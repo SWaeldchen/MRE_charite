@@ -23,13 +23,13 @@ function default_prefs = mredge_set_default_prefs
 	%%
 	% set broad strategies
 		default_prefs.distortion_correction = 0;
-		default_prefs.motion_correction = 1;
+		default_prefs.motion_correction = 0;
 		default_prefs.aniso_diff = 0;
 		default_prefs.gaussian = 0;
 		default_prefs.phase_unwrap = 'laplacian2d';
 		default_prefs.temporal_ft = 1;
-		default_prefs.denoise_strategy = 'z_xy';
-		default_prefs.curl_strategy = 'lsqr';
+		default_prefs.denoise_strategy = 'lowpass';
+		default_prefs.curl_strategy = 'hipass';
         default_prefs.component_order = 'zyx';
 		default_prefs.inversion_strategy = 'MDEV';
         default_prefs.directional_filter = 0;
@@ -65,9 +65,9 @@ function default_prefs = mredge_set_default_prefs
 		default_prefs.gaussian_settings.dimensions = 3;
 	% denoise settings
 		default_prefs.denoise_settings.z_level = 1;
-		default_prefs.denoise_settings.z_thresh_factor = 'w2';
+		default_prefs.denoise_settings.z_thresh_factor = 1.5;
 		default_prefs.denoise_settings.xy_level = 3;
-		default_prefs.denoise_settings.xy_thresh_factor =  0.3;
+		default_prefs.denoise_settings.xy_thresh_factor =  1.5;
 		default_prefs.denoise_settings.xy_spin = 1;
 		default_prefs.denoise_settings.xy_num_spins = 3;
 		default_prefs.denoise_settings.full3d_level = 3;
@@ -75,11 +75,11 @@ function default_prefs = mredge_set_default_prefs
 		default_prefs.denoise_settings.full3d_num_spins = 3;
 	% bandpass settings
 		default_prefs.highpass_settings.order = 4;
-		default_prefs.highpass_settings.cutoff = 0.05;
-		default_prefs.highpass_settings.dimensions = 3;
+		default_prefs.highpass_settings.cutoff = 0.03;
+		default_prefs.highpass_settings.dimensions = 2;
 		default_prefs.lowpass_settings.order = 4;
-		default_prefs.lowpass_settings.cutoff = 0.3;
-		default_prefs.lowpass_settings.dimensions = 3;
+		default_prefs.lowpass_settings.cutoff = 0.2;
+		default_prefs.lowpass_settings.dimensions = 2;
 		default_prefs.lowpass_settings.cutoff_unit = 'norm';
 	% wavelet curl settings
 		default_prefs.wavelet_curl_settings.level = 1;
@@ -95,7 +95,7 @@ function default_prefs = mredge_set_default_prefs
         default_prefs.df_settings.dims = 3;
         default_prefs.df_settings.num_filts = 12;
     % inversion settings
-        default_prefs.inversion_settings.mdev_laplacian_dims = 3;
+        default_prefs.inversion_settings.mdev_laplacian_dims = 2;
 		default_prefs.inversion_settings.freq_indices = [];
     % moco settings
         default_prefs.moco_method = 'spm';

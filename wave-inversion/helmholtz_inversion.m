@@ -1,12 +1,18 @@
-function [mag, phi] = helmholtz_inversion(U_denoise, freqvec, spacing, twoD)
+function [mag, phi] = helmholtz_inversion(U_denoise, freqvec, spacing, ndims, ord, iso)
 
 U = U_denoise;
-if nargin < 4
-    twoD = 0;
+if nargin < 6
+    iso = 1;
+    if nargin < 5
+        ord = 4;
+        if nargin < 4
+            ndims = 3;
+        end
+    end
 end
 % take derivatives and interpolate
 
-[magNum, magDenom, phiNum, phiDenom] = invert(U, freqvec, spacing, twoD);
+[magNum, magDenom, phiNum, phiDenom] = invert(U, freqvec, spacing, ndims, ord, iso);
 mag = magNum ./ magDenom;
 phi = acos(-phiNum ./ phiDenom);
 

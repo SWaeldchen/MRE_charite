@@ -81,7 +81,7 @@ function [vol_den, rc_mean, rc_std] = den_z(vol, thresh)
             % CONSTRUCT ZT IMAGE
             for n = 1:T
                 z_line = squeeze(vol(i,j,:,n));
-                dwts{n} = dualtree(z_line, 2, Faf, af);
+                dwts{n} = dualtree_u(z_line, 2, Faf, af);
                 z_image_L1(:,n) = dwts{n}{1}{1} + 1i*dwts{n}{1}{2};
                 z_image_L2(:,n) = dwts{n}{2}{1} + 1i*dwts{n}{2}{2};
                 %z_image_L3(:,n) = dwts{n}{3}{1} + 1i*dwts{n}{3}{2};
@@ -104,7 +104,7 @@ function [vol_den, rc_mean, rc_std] = den_z(vol, thresh)
                 dwts{n}{2}{2} = imag(z_image_L2(:,n));
                 %dwts{n}{3}{1} = real(z_image_L3(:,n));
                 %dwts{n}{3}{2} = imag(z_image_L3(:,n));
-                z_line_thresh = idualtree(dwts{n}, 2, Fsf, sf);
+                z_line_thresh = idualtree_u(dwts{n}, 2, Fsf, sf);
                 vol_den(i,j,:,n) = z_line_thresh;
             end
         end

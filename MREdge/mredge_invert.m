@@ -21,7 +21,7 @@
 
 function mredge_invert(info, prefs)
 
-if strcmp(prefs.inversion_strategy, 'MDEV') == 1
+if strcmpi(prefs.inversion_strategy, 'MDEV')
     if prefs.outputs.absg == 1
         mredge_invert_param_mdev(info, prefs, 'Abs_G');
     end
@@ -34,7 +34,7 @@ if strcmp(prefs.inversion_strategy, 'MDEV') == 1
     if prefs.outputs.a == 1
         mredge_invert_param_mdev(info, prefs, 'a');
     end
-elseif strcmp(prefs.inversion_strategy, 'SFWI') == 1
+elseif strcmpi(prefs.inversion_strategy, 'SFWI')
 	mredge_invert_sfwi(info, prefs);
 end
 

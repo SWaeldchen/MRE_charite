@@ -25,9 +25,9 @@ function mredge_organize_acquisition(info, prefs)
 
 called_dir = pwd;
 
-tic
-disp('Organizing Acquisition Folder...');
 
+disp('Organizing Acquisition Folder...');
+NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 nifti_convert_command = ['dcm2niix -f %s -z n ',info.path];
 evalc('system(nifti_convert_command);');
 
@@ -69,7 +69,7 @@ if ~isempty(info.t1)
 		mkdir(T1_SUB);
     end
     for n = info.t1
-      mredge_move_non_mre_series(n, T1_SUB, info);
+      movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), T1_SUB);
     end
 end
 
@@ -79,7 +79,7 @@ if ~isempty(info.t2)
 		mkdir(T2_SUB);
     end
     for n = info.t2
-    	mredge_move_non_mre_series(n, T2_SUB, info);
+       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), T2_SUB);
     end
 end
 
@@ -89,7 +89,7 @@ if ~isempty(info.localizer)
 		mkdir(LOCALIZER_SUB);
     end
     for n = info.localizer
-    	mredge_move_non_mre_series(n, LOCALIZER_SUB, info);
+       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), LOCALIZER_SUB);
     end
 end
 
@@ -99,7 +99,7 @@ if ~isempty(info.fieldmap)
 		mkdir(FIELDMAP_SUB);
     end
     for n = info.fieldmap
-    	mredge_move_non_mre_series(n, FIELDMAP_SUB, info);
+       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), FIELDMAP_SUB, 'f');
     end
 end
 
@@ -109,7 +109,7 @@ if ~isempty(info.dti)
 		mkdir(DTI_SUB);
     end
     for n = info.dti
-    	mredge_move_non_mre_series(n, DTI_SUB, info);
+       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), DTI_SUB);
     end
 end
 
@@ -119,7 +119,7 @@ if ~isempty(info.other)
 		mkdir(OTHER_SUB);
     end
     for n = info.other
-    	mredge_move_non_mre_series(n, OTHER_SUB, info);
+       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), OTHER_SUB);
     end
 end
 
@@ -129,5 +129,5 @@ if ~exist(STATS_SUB, 'dir')
 end
 
 cd(called_dir)
+delete(fullfile(info.path, '*.nii'));
 
-toc

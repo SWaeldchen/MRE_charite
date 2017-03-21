@@ -31,7 +31,11 @@ if strcmp(prefs.phase_unwrap,'gradient') == 1
     PHASE_X_SUB = fullfile(info.path, 'Phase_X');
     PHASE_Y_SUB = fullfile(info.path, 'Phase_Y');
 end
-mredge_normalize_phase(info, prefs);
+%if strcmpi(prefs.phase_unwrap, 'prelude')
+%    mredge_normalize_phase_prelude(info,prefs);
+%else
+    mredge_normalize_phase(info, prefs);
+%end
 for f = info.driving_frequencies
     for c = 1:3
         vol_dir = fullfile(PHASE_SUB, num2str(f), num2str(c));
@@ -80,14 +84,15 @@ for f = info.driving_frequencies
             avg_path = fullfile(MAG_SUB, ['Avg_Magnitude', NIFTI_EXTENSION]);
             %mask_path = fullfile(MAG_SUB, 'Magnitude_Mask.nii.gz');
             path_list = mredge_split_4d(PHASE_SUB, f, c, info);
-            prelude_force_term = '';
             if prefs.phase_unwrapping_settings.force_prelude_3d == 1
                 prelude_force_term = 'f';
+            else
+                prelude_force_term = 's';
             end
             for n = 1:numel(path_list)
                 path = path_list{n};
                 path_temp = path(1:end-7);
-                path_temp = [path_temp, '_temp', NIFTI_EXTENSION]; %#ok<AGROW>
+                path_temp = [path_temp, '_temp', 'nii.gz']; %#ok<AGROW>
                 copyfile(path, path_temp);
                 prelude_command = ['fsl5.0-prelude -',prelude_force_term,'v -p ',path,' -a ',avg_path,' -o ',path_temp];
                 system(prelude_command);

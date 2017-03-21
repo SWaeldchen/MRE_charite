@@ -23,7 +23,7 @@
 
 function mredge_set_environment
 
-setenv('TOPUP_PARAMS', fullfile(getenv('MRE'), '/project_modico/pipeline/topup_param.txt'));
+setenv('TOPUP_PARAMS', fullfile(getenv('MRE'), 'projects/project_modico/pipeline/topup_param.txt'));
 setenv('NIFTI_EXTENSION', '.nii');
 setenv('RHO', '1000');
 setenv('ABSG_NOISE_THRESH', '300');

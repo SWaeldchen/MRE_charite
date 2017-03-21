@@ -34,7 +34,7 @@ sz = size(x);
 [x_resh, n_vols] = resh(x, 4);
 
 for n = 1:n_vols
-	[x_resh(:,:,n), filt] = filt_vol(ord, cut, x_resh(:,:,:,n), hi);
+	[x_resh(:,:,:,n), filt] = filt_vol(ord, cut, x_resh(:,:,:,n), hi);
 end
 
 y = reshape(x_resh, sz);
@@ -43,7 +43,7 @@ end
 
 function [y, filt] = filt_vol(ord, cut, x_vol, hi)
 	sz = size(x_vol);
-	mids = floor(sz/2);
+	mids = floor(sz/2) + 1;
 	[x, y, z] = meshgrid( (1:sz(2)) - mids(2), (1:sz(1)) - mids(1), (1:sz(3)) - mids(3));
 	w = sqrt(x.^2 + y.^2 + z.^2);
 	w = w ./ max(w(:));

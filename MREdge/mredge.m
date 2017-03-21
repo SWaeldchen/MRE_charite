@@ -34,22 +34,12 @@ mredge_organize_acquisition(info, prefs);
 if strcmp(prefs.compat, 'cisnmo') == 1
     matlab_outputs = mredge_compat_cisnmo(info, prefs);
 else
-
-    if prefs.outputs.snr == 1
-        mredge_clean_acquisition_folder(info);
-        mredge_organize_acquisition(info, prefs);
-        mredge_mag2double(info);
-        mredge_average_magnitude(info, prefs);
-        mredge_amp_wave_snr(info, prefs);
-        mredge_oss(info, prefs);
-    end
-
     % INVERSION
 
     if prefs.distortion_correction == 1
         disp('Distortion correction');
         
-        mredge_distortion_correction(info, prefs);
+        mredge_distortion_correction(info);
         
     end
     if prefs.motion_correction == 1
@@ -89,6 +79,7 @@ else
         return
         %mredge_copy_no_ft(info);
     end
+    mredge_slice_align(info,prefs);
     % measure signal SNR before denoising
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);

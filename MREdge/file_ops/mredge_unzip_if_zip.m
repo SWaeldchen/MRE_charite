@@ -24,6 +24,11 @@ function unzip = mredge_unzip_if_zip(zip)
 if strcmp(zip(end-1:end), 'gz') == 1 && exist(zip, 'file')
     unzip = zip(1:end-3);
 	gunzip(zip);
+    delete(zip);
 else
     unzip = zip;
+    if exist([zip,'.gz'], 'file')
+        gunzip([zip,'.gz']);
+        delete([zip,'.gz']);
+    end
 end

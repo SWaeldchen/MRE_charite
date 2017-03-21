@@ -42,7 +42,7 @@ end
 
 function [y_slc, filt] = filt_slc(ord, cut, x_slc, hi)
 	sz = size(x_slc);
-	mids = floor(sz/2);
+	mids = floor(sz/2)+1;
 	[x, y] = meshgrid( (1:sz(2)) - mids(2), (1:sz(1)) - mids(1) );
 	w = sqrt(x.^2 + y.^2);
 	w = w ./ max(w(:));

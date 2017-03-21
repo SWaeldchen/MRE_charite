@@ -38,7 +38,7 @@ function mredge_temporal_ft(info, prefs)
                 ft_vol = load_untouch_nii_eb(time_series_first_path);
 				full_img = time_series_vol.img;
 				% call functionality here
-				full_img_ft = fft(double(full_img), [],  4);
+				full_img_ft = fft(align_phase(double(full_img)), [],  4);
 				ft_vol.img = full_img_ft(:,:,:,2);
 				% make nifti adjustments
 				ft_vol.hdr.dime.datatype = 32; % change to complex data type

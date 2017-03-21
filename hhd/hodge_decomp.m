@@ -28,9 +28,9 @@ for n = 1:d5
             cz(:,:,:,n) = FRz;
         elseif hodge_code == 1
             disp('hipass butter');
-            cx(:,:,:,n) = hipass_butter_2d(4, 0.05, tempx);
-            cy(:,:,:,n) = hipass_butter_2d(4, 0.05, tempy);
-            cz(:,:,:,n) = hipass_butter_2d(4, 0.05, tempz);
+            cx(:,:,:,n) = butter_2d(4, 0.05, tempx, 1);
+            cy(:,:,:,n) = butter_2d(4, 0.05, tempy, 1);
+            cz(:,:,:,n) = butter_2d(4, 0.05, tempz, 1);
         elseif hodge_code == 2
             disp('lsq hhd');
             curl_comps = hhd_lsqr({tempx, tempy, tempz}, hodge_iter);

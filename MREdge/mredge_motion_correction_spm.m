@@ -26,7 +26,7 @@ function mredge_motion_correction_spm(info, prefs)
     cd(info.path);
     [MAG_SUB, REAL_SUB, IMAG_SUB, STATS_SUB] = set_dirs(info, prefs);
     
-    NIFTI_EXTENSION = '.nii.gz';
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 	time_steps = info.time_steps;
 	total_acqs = numel(info.driving_frequencies)*time_steps*3;
     full_unzipped_file_list_mag = cell(total_acqs, 1);
@@ -116,7 +116,7 @@ function mredge_motion_correction_spm(info, prefs)
            % get binary masks for realignment later
  			index = (time_steps*3)*(f_num-1) + time_steps*(c-1) + 1;
             index_end = index + time_steps - 1;
-            mag_path =  fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, '.nii.gz'));
+            mag_path =  fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
             make_moco_mask(mag_path);
         end
    end

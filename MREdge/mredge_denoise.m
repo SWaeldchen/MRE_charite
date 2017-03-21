@@ -47,18 +47,21 @@ function mredge_denoise(info, prefs)
                     wavefield_img = dtdenoise_3d_mad_ogs_undec(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_level, 1);
                 elseif strcmp(prefs.denoise_strategy, 'lowpass') == 1
 					if prefs.lowpass_settings.dimensions == 2
-						if strcmp(prefs.lowpass_settings.cutoff_unit, 'norm') == 1
-							wpm = mredge_convert_norm_thresh_to_wpm(prefs.lowpass_settings.cutoff, info.voxel_spacing(1), size(wavefield_img, 1), size(wavefield_img, 2));
-						elseif strcmp(prefs.lowpass_settings.cutoff_unit, 'wpm') == 1
-                            disp('wpm');
+						if strcmpi(prefs.lowpass_settings.cutoff_unit, 'norm')
+                            for z=1:size(wavefield_img,3)
+                               wavefield_img(:,:,z) = butter_2d(prefs.lowpass_settings.order, prefs.lowpass_settings.cutoff, wavefield_img(:,:,z));
+                            end
+                        elseif strcmpi(prefs.lowpass_settings.cutoff_unit, 'wpm')
 							wpm = prefs.lowpass_settings.cutoff;
-						else
-							display('MREdge ERROR: Lowpass denoise settings not compatible.');
-						end
-						for z=1:size(wavefield_img,3)
-						   wavefield_img(:,:,z) = uh_filtspatio2d(wavefield_img(:,:,z),[info.voxel_spacing(1); info.voxel_spacing(2)],prefs.lowpass_settings.cutoff,1,0,5, 'bwlow', 0);
-						end
-					end
+                            for z=1:size(wavefield_img,3)
+                               wavefield_img(:,:,z) = uh_filtspatio2d(wavefield_img(:,:,z),[info.voxel_spacing(1); info.voxel_spacing(2)],prefs.lowpass_settings.cutoff,1,0,5, 'bwlow', 0);
+                            end
+                        else
+                            disp('MREdge ERROR: lowpass units not recognized');
+                        end
+                    else
+                        wavefield_img = butter_3d(prefs.lowpass_settings.order, prefs.lowpass_settings.cutoff, wavefield_img);
+                    end
                 elseif strcmp(prefs.denoise_strategy, '3d') == 1
                     wavefield_img = mredge_denoise_3d(wavefield_img);
                 end

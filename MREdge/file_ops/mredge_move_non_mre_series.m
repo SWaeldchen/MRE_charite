@@ -21,14 +21,14 @@
 %% collect series numbers
 
 function mredge_move_non_mre_series(series_num, subdir, info)
-
+NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 display(['Moving non-mre series ', num2str(series_num)])
 if ~exist(subdir)
-	mkdir(subdir, 'dir);
+	mkdir(subdir, 'dir');
 end
 file_list = dir(info.path);
 for n = 1:numel(file_list)
-	if ~isempty(regexp(file_list(n).name, regexptranslate('wildcard', [num2str(series_num),'*.nii.gz'])))
+	if ~isempty(regexp(file_list(n).name, regexptranslate('wildcard', [num2str(series_num),'*',NIFTI_EXTENSION])))
 		movefile(file_list(n).name, subdir);
 	end
 end

@@ -32,14 +32,12 @@ end
 
 PHASE_SUB = fullfile(info.path,'Phase');
 if exist(PHASE_SUB, 'dir')
-    movefile(fullfile(PHASE_SUB, 'DICOM/*'), info.path);
     rmdir(PHASE_SUB,'s');
 end
 
 if ~isempty(info.magnitude)
     MAG_SUB = fullfile(info.path,'Magnitude');
     if exist(MAG_SUB, 'dir')
-        movefile(fullfile(MAG_SUB, 'DICOM/*'), info.path);
         rmdir(MAG_SUB,'s');
     end
 end
@@ -47,7 +45,6 @@ end
 if ~isempty(info.t1)
     T1_SUB = fullfile(info.path,'T1');
     if exist(T1_SUB, 'dir')
-        movefile(fullfile(T1_SUB, 'DICOM/*'), info.path);
         rmdir(T1_SUB,'s');
     end
 end
@@ -55,7 +52,6 @@ end
 if ~isempty(info.t2)
     T2_SUB = fullfile(info.path,'T2');
     if exist(T2_SUB, 'dir')
-        movefile(fullfile(T2_SUB, 'DICOM/*'), info.path);
         rmdir(T2_SUB,'s');
     end
 end
@@ -63,7 +59,6 @@ end
 if ~isempty(info.localizer)
     LOCALIZER_SUB = fullfile(info.path, 'Localizer');
     if exist(LOCALIZER_SUB, 'dir')
-        movefile(fullfile(LOCALIZER_SUB, 'DICOM/*'), info.path);
         rmdir(LOCALIZER_SUB,'s');
     end
 end
@@ -71,7 +66,6 @@ end
 if ~isempty(info.fieldmap)
     FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
     if exist(FIELDMAP_SUB, 'dir')
-        movefile(fullfile(FIELDMAP_SUB, 'DICOM/*'), info.path);
         rmdir(FIELDMAP_SUB,'s');
     end
 end
@@ -79,7 +73,6 @@ end
 if ~isempty(info.dti)
     DTI_SUB = fullfile(info.path, 'DTI');
     if exist(DTI_SUB, 'dir')
-        movefile(fullfile(DTI_SUB, 'DICOM/*'), info.path);
         rmdir(DTI_SUB,'s');
     end
 end
@@ -87,7 +80,6 @@ end
 if ~isempty(info.other)
     OTHER_SUB = fullfile(info.path, 'OTHER');
     if exist(OTHER_SUB, 'dir')
-        movefile(fullfile(OTHER_SUB, 'DICOM/*'), info.path);
         rmdir(OTHER_SUB,'s');
     end
 end

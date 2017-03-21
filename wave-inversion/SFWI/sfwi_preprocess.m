@@ -34,13 +34,12 @@ elseif den_meth == 1
     else
         d5 = sz(5);
     end
-    for m = 1:d5
+    parfor m = 1:d5
         U(:,:,:,:,m) = dtdenoise_z_mad_u(U(:,:,:,:,m), z_den_fac, Z_DEN_LEVELS, 1);
         %U(:,:,:,:,m) = mre_z_denoise(U(:,:,:,:,m));
         U(:,:,:,:,m) = dtdenoise_xy_pca_mad_u(U(:,:,:,:,m), den_fac, DEN_LEVELS, 1, mask);
     end
 elseif den_meth == 2
-    %U = mre_z_denoise(U, z_den_fac);
     if ft > 0
         disp('FT');
         U_ft = fft(U, [], 4);
@@ -53,9 +52,12 @@ elseif den_meth == 2
     else
         d5 = sz(5);
     end
+    U = dejitter_phase_2(U, 0.5, 256);
     parfor m = 1:d5
         tic
-        U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac);
+%        U(:,:,:,:,m) = zden_3D_DWT(real(U(:,:,:,:,m)), Z_DEN_LEVELS, mask) + 1i*zden_3D_DWT(imag(U(:,:,:,:,m)), Z_DEN_LEVELS, mask);
+        %U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
+        U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac, DEN_LEVELS, mask);
         toc
     end
 end

@@ -23,7 +23,7 @@
 function mredge_3d_to_4d(cell_array, subdir, series, component)
   
   method = 'fsl';
-  NIFTI_EXTENSION = '.nii.gz';
+  NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 
   if nargin == 4
      name_4d = fullfile(subdir, num2str(series), num2str(component), mredge_filename(series, component, NIFTI_EXTENSION));
@@ -48,4 +48,10 @@ function mredge_3d_to_4d(cell_array, subdir, series, component)
     end
 	merge_command = ['fsl5.0-fslmerge -t ', name_4d, file_list];
     system(merge_command);
+    for n = 1:numel(cell_array)
+      zip_path = [cell_array{n}, '.gz'];
+      if exist(zip_path, 'file')
+        delete(zip_path);
+      end
+    end
  end

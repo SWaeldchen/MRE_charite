@@ -20,13 +20,14 @@
 % none
 
 function mredge_pm2ri(info, frequency, component)
+    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
     acq_path = info.path;
     PHASE_SUB = fullfile(acq_path, 'Phase');
     MAG_SUB = fullfile(acq_path, 'Magnitude');
     REAL_SUB = fullfile(acq_path, 'Real');
     IMAG_SUB = fullfile(acq_path, 'Imaginary');
     path_middle = [num2str(frequency), '/', num2str(component)];
-    path_filename = mredge_filename(frequency, component, '.nii.gz');
+    path_filename = mredge_filename(frequency, component, NIFTI_EXTENSION);
     
     % load phase and mag
     path_p = fullfile(PHASE_SUB, path_middle, path_filename);
@@ -46,7 +47,7 @@ function mredge_pm2ri(info, frequency, component)
     m_img = double(m.img);
 
     % calculate
-    cplx = m_img .* exp(1i.*p_img*2*pi/(4096*2));
+    cplx = m_img .* exp(1i.*p_img*2*pi/(4096));
     re.img = real(cplx);
     im.img = imag(cplx);
     re.hdr.dime.datatype = 64;

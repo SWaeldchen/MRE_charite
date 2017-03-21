@@ -19,6 +19,7 @@ AMP=0;
 
 
 h = waitbar(0,['eval MMRE: ' num2str(length(find(Nf))) ' freqs, ' num2str(length(find(Nc))) ' comps']);
+W_den = zeros(size(W));
 inc=0;
  for kf=Nf
      for kc=Nc
@@ -31,8 +32,11 @@ inc=0;
  
         
         for k_filter=1:size(W,3)
-           %U(:,:,k_filter) = uh_filtspatio2d(U(:,:,k_filter),[pixel_spacing(1); pixel_spacing(2)],lowpassthreshold,1,0,5, 'bwlow', 0);
+           U(:,:,k_filter) = uh_filtspatio2d(U(:,:,k_filter),[pixel_spacing(1); pixel_spacing(2)],lowpassthreshold,1,0,5, 'bwlow', 0);
         end
+        
+        W_den(:,:,:,kc,kf) = U;
+        
         
         [wx wy]     = gradient(U,pixel_spacing(1),pixel_spacing(2),1);
         [wxx tmp]   = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
@@ -58,3 +62,5 @@ denom_G(denom_G == 0) = eps;
 
 PHI = acos(-numer_phi./denom_phi);
 ABSG = numer_G./denom_G;
+
+assignin('base', 'W_den', W_den);
