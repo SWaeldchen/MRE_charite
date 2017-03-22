@@ -36,10 +36,10 @@ if strcmp(prefs.compat, 'cisnmo') == 1
 else
     % INVERSION
 
-    if prefs.distortion_correction == 1
+    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'raw')
         disp('Distortion correction');
         
-        mredge_distortion_correction(info);
+        mredge_distortion_correction(info, prefs);
         
     end
     if prefs.motion_correction == 1
@@ -84,7 +84,12 @@ else
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);
 
-    
+    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'ft')
+        disp('Distortion correction');
+        
+        mredge_distortion_correction(info, prefs);
+        
+    end
     if strcmp(prefs.denoise_strategy, 'none') == 0
         disp('Denoising');
         

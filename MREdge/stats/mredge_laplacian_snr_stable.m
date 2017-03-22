@@ -30,7 +30,7 @@ function mredge_laplacian_snr_stable(info, prefs)
     filepath = fullfile(STATS_SUB, 'laplacian_snr_single.csv');
     fID = fopen(filepath, 'w');		
     amp_file = fullfile(AMP_SUB, ['ALL', NIFTI_EXTENSION]);
-    amp_vol = load_untouch_nii(amp_file);
+    amp_vol = load_untouch_nii_eb(amp_file);
     laplacian_noise(amp_vol.img, filepath, mask);
     filepath = fullfile(STATS_SUB, 'laplacian_snr_stable.csv');
     fID = fopen(filepath, 'w');
@@ -39,7 +39,7 @@ function mredge_laplacian_snr_stable(info, prefs)
 	for f = 1:numel(stable_frequencies)
 		%disp([num2str(stable_frequencies(f)), 'Hz']);
 		amp_file = fullfile(AMP_SUB, stable_filenames{f});
-        amp_vol = load_untouch_nii(amp_file);
+        amp_vol = load_untouch_nii_eb(amp_file);
 		laplacian_noise(amp_vol.img, filepath, mask);
 	end
     

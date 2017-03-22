@@ -108,6 +108,9 @@ function default_prefs = mredge_set_default_prefs
 	% phase unwrapping settings
 		default_prefs.phase_unwrapping_settings.phase_range = [];
 		default_prefs.phase_unwrapping_settings.force_prelude_3d = 0;
+    % distortion correction
+		default_prefs.dico_method = 'ft';
+        
 
 
         

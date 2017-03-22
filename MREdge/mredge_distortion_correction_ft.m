@@ -1,4 +1,4 @@
-%% function mredge_distortion_correction(info, prefs);
+%% function mredge_distortion_correction_ft(info, prefs);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -21,10 +21,10 @@
 %
 % none
 %	
-function mredge_distortion_correction_raw(info)
+function mredge_distortion_correction_ft(info, prefs)
     tic
     disp('MREdge Distortion Correction');
-    [FIELDMAP_SUB, FT_SUB] = set_dirs(info);
+    [FIELDMAP_SUB, FT_R_SUB, FT_L_SUB] = set_dirs(info, prefs);
     if ~exist(FIELDMAP_SUB, 'dir')
         disp('MREdge ERROR: No fieldmap directory for this acquisition.');
         return
@@ -51,10 +51,8 @@ function mredge_distortion_correction_raw(info)
 
     for f = info.driving_frequencies
         for c = 1:3
-            mredge_pm2ri(info, f, c);
-            apply_topup(REAL_SUB, f, c, TOPUP_RESULTS);
-            apply_topup(IMAG_SUB, f, c, TOPUP_RESULTS);
-            mredge_ri2pm(info, f, c);
+            apply_topup(FT_R_SUB, f, c, TOPUP_RESULTS);
+            apply_topup(FT_L_SUB, f, c, TOPUP_RESULTS);
         end
     end
     toc
@@ -63,7 +61,7 @@ end
 function apply_topup(subdir, f, c, TOPUP_RESULTS)
 
     NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    path = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  NIFTI_EXTENSION));
+    path = mredge_filepath(subdir, f, c);
     path_temp = fullfile(subdir, num2str(f), num2str(c), mredge_filename(f, c,  '.nii.gz', 'temp'));
     copyfile(path, path_temp);
 	apply_topup_command = ['fsl5.0-applytopup --imain=', path_temp, ' --inindex=1 --datain=', getenv('TOPUP_PARAMS') ' --topup=', TOPUP_RESULTS, ' --method=jac --interp=spline --out=', path];
@@ -73,7 +71,8 @@ function apply_topup(subdir, f, c, TOPUP_RESULTS)
             
 end
 
-function [FIELDMAP_SUB, FT_SUB] = set_dirs(info)
+function [FIELDMAP_SUB, FT_R_SUB, FT_L_SUB] = set_dirs(info, prefs)
     FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
-    FT = fullfile(info.path, 'FT');
+    FT_R_SUB = mredge_analysis_path(info, prefs, 'FT_R');
+    FT_L_SUB = mredge_analysis_path(info, prefs, 'FT_I');
 end

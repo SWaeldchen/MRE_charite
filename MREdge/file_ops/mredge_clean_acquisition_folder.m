@@ -19,7 +19,7 @@
 % none
 
 function mredge_clean_acquisition_folder(info)
-
+mredge_set_environment;
 NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
 delete(fullfile(info.path, ['*',NIFTI_EXTENSION]));
 

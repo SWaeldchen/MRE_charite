@@ -65,7 +65,8 @@ function mredge_avg_mag_to_mni(info, prefs)
     matlabbatch{1}.spm.spatial.preproc.warp.fwhm = 0;
     matlabbatch{1}.spm.spatial.preproc.warp.samp = 3;
     matlabbatch{1}.spm.spatial.preproc.warp.write = [1 1];
-    evalc('spm_jobman(''run'',matlabbatch);');
+    %evalc('spm_jobman(''run'',matlabbatch);');
+    spm_jobman('run',matlabbatch);
     
     seg_filepath = fullfile(STATS_DIR, 'pct_segmented_voxels.csv');
     if exist(seg_filepath, 'file')
