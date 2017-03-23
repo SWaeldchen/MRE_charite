@@ -41,7 +41,7 @@ function mredge_denoise(info, prefs)
                   wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_level, 1, mask);
               elseif strcmp(prefs.denoise_strategy, '3d') == 1
                   wavefield_img = zden_3D_DWT(real(wavefield_img), prefs.denoise_settings.z_level, mask) + 1i*zden_3D_DWT(imag(wavefield_img), prefs.denoise_settings.z_level, mask);
-                  wavefield_img = dtdenoise_3d_mad_ogs_undec(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_level, 1);
+                  wavefield_img = dtdenoise_3d_mad_ogs_undec(wavefield_img, prefs.denoise_settings.full3d_thresh, prefs.denoise_settings.full3d_level, mask);
               elseif strcmp(prefs.denoise_strategy, 'lowpass') == 1
                   if prefs.lowpass_settings.dimensions == 2
                       if strcmpi(prefs.lowpass_settings.cutoff_unit, 'norm')

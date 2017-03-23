@@ -16,7 +16,8 @@ for j = 1:J
         for s2 = 1:3
             C = w{j}{1}{s1}{s2} + I*w{j}{2}{s1}{s2};
             %C = ( C - T^2 ./ C ) .* (abs(C) > T);  SOFT
-            C = ogs2(C, 3, 3, T, 'atan', 1, 5);
+            C = max(abs(C), T) .* sign(C);
+            %C = ogs2(C, 3, 3, T, 'atan', 1, 5);
             w{j}{1}{s1}{s2} = real(C);
             w{j}{2}{s1}{s2} = imag(C);
         end

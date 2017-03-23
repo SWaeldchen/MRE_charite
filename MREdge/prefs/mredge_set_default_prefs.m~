@@ -70,8 +70,7 @@ function default_prefs = mredge_set_default_prefs
 		default_prefs.denoise_settings.xy_thresh_factor =  1.5;
 		default_prefs.denoise_settings.xy_spin = 1;
 		default_prefs.denoise_settings.xy_num_spins = 3;
-		default_prefs.denoise_settings.full3d_thresh = 0.5;
-		default_prefs.denoise_settings.full3d_level = 3;
+		default_prefs.denoise_settings.3d_level = 3;
 		default_prefs.denoise_settings.full3d_spin = 0;
 		default_prefs.denoise_settings.full3d_num_spins = 3;
 	% bandpass settings

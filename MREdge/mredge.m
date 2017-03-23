@@ -84,16 +84,17 @@ else
     mredge_amplitudes(info, prefs);
     mredge_stable_amplitudes(info, prefs);
 
-    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'ft')
-        disp('Distortion correction');
-        
-        mredge_distortion_correction(info, prefs);
-        
-    end
+
     if strcmp(prefs.denoise_strategy, 'none') == 0
         disp('Denoising');
         
         mredge_denoise(info, prefs);
+        
+    end
+    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'ft')
+        disp('Distortion correction');
+        
+        mredge_distortion_correction(info, prefs);
         
     end
     if strcmp(prefs.curl_strategy, 'none') == 0

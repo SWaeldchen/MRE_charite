@@ -21,7 +21,10 @@
 function mredge_clean_acquisition_folder(info)
 mredge_set_environment;
 NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-delete(fullfile(info.path, ['*',NIFTI_EXTENSION]));
+if strcmpi(NIFTI_EXTENSION, '.nii')  || strcmpi(NIFTI_EXTENSION, '.nii.gz') 
+   delete(fullfile(info.path, ['*',NIFTI_EXTENSION]));
+end
+   
 
 dir_names = {'Phase', 'Magnitude', 'T1', 'T2', 'Localizer', 'Fieldmap', 'DTI', 'Other', 'Real', 'Imaginary', 'FT'};
 for n = dir_names
