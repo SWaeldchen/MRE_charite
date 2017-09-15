@@ -1,4 +1,4 @@
-%% function mredge_motion_correction(info, prefs);
+function mredge_motion_correction_fsl(info)
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -9,7 +9,7 @@
 % USAGE:
 %
 % This function will perform motion correction on an acquisition.
-% Requires SPM 12.
+% Requires a typical Debian or Linux installation of FSL 5.0+
 %
 % INPUTS:
 %
@@ -20,48 +20,26 @@
 %
 % none
 %	
-function mredge_motion_correction_fsl(info)
     tic
-    display('MREdge Motion Correction with FSL');
-    cd(info.path);
-    MAG_SUB = fullfile(info.path, 'Magnitude');
-    REAL_SUB = fullfile(info.path, 'Real');
-    IMAG_SUB = fullfile(info.path, 'Imaginary');
-    NIFTI_EXTENSION = '.nii.gz';
-    
-    for f = info.driving_frequencies
-        display([num2str(f), 'Hz']);
-        for c = 1:3
-            
-            display(['    ', num2str(c)]);
-            mredge_pm2ri(info, f, c);
-            
-            path_component = fullfile(num2str(f), num2str(c));
-            path_end = fullfile(path_component, mredge_filename(f, c,  NIFTI_EXTENSION));
-            path_end_temp = fullfile(num2str(f), num2str(c), mredge_filename(f, c,  NIFTI_EXTENSION, 'temp'));
-            
-            path_mag = fullfile(MAG_SUB, path_end);
-            path_mag_temp = fullfile(MAG_SUB, path_end_temp);
-            copyfile(path_mag, path_mag_temp);
-			mcflirt_command = ['fsl5.0-mcflirt -in ', path_mag_temp, ' -out ', path_mag,' -smooth 0.5 -mats -stats' ];
-            system(mcflirt_command);
-            path_mag_mat = [path_mag, '.mat'];
-                       
-            apply_moco(REAL_SUB, path_end, path_component, path_mag_mat, info);
-            apply_moco(IMAG_SUB, path_end, path_component, path_mag_mat, info);
-            
-            mredge_ri2pm(info, f, c);
-  
-        end
+    disp('MREdge Motion Correction with FSL');
+    mredge_pm2ri(info);
+    for subdir = info.ds.subdirs_comps
+        % make a copy, motion correct with copy in, original out
+        subdir_temp = [mredge_remove_nifti_extension(subdir), '_temp', NIF_EXT];
+        copyfile([info.ds.list(info.ds.enum.magnitude), subdir], [info.ds.list(info.ds.enum.magnitude), subdir_temp]);
+        mcflirt_command = ['fsl5.0-mcflirt -in ', subdir_temp, ' -out ', subdir,' -smooth 0.5 -mats -stats' ];
+        system(mcflirt_command);
+        delete(subdir_temp);
+        subdir_mat = [mredge_remove_nifti_extension(subdir), '.mat'];
+        apply_moco(info.ds.list(info.ds.enum.real), subdir, subdir_mat, info);
+        apply_moco(info.ds.list(info.ds.enum.imaginary), subdir, subdir_mat, info);
     end
+    mredge_ri2pm(info);
     toc
 end
 
-function apply_moco(subdir, path_end, path_component, path_mag_mat, info)
-    % a bit to intricate to use mredge_split_4d
-    path_re = fullfile(subdir, path_end);
-    system(['fsl5.0-fslsplit ',path_re,' ',fullfile(subdir,path_component),'/vol']);
-    splitfiles = ' ';
+function apply_moco(path, path_mag_mat, info)
+    path_split_list = mredge_split_4d(path);
     for t = 1:info.time_steps
       	split_image_temp = [fullfile(subdir, path_component), '/vol000', num2str(t-1), '.nii.gz'];
       	split_image_temp_trans = [fullfile(subdir, path_component), '/vol000', num2str(t-1), '_trans.nii.gz'];

@@ -44,7 +44,7 @@ function cortex(info, prefs, param)
 	display(['Cortical Averages ',param]);
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     param_path = fullfile(PARAM_SUB, 'MDEV.nii.gz');
     param_vol = load_untouch_nii_eb(param_path);
     param_img = param_vol.img;
@@ -58,7 +58,7 @@ function cortex(info, prefs, param)
 	save(fullfile(PARAM_SUB, 'MDEV_cortex_image.mat'), 'cortex_masked');
     for f = info.driving_frequencies
 		display([num2str(f), 'Hz']);
-        param_path = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+        param_path = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]);
         param_vol = load_untouch_nii_eb(param_path);
         param_img = param_vol.img;
         cortex_masked = double(mask).*double(mredge_cortex_3d(param_img));

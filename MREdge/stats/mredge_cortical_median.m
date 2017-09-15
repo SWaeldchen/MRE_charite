@@ -47,7 +47,7 @@ function cortex(info, prefs, param)
 	display(['Cortical Medians ',param]);
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     param_path_zip = fullfile(PARAM_SUB, 'MDEV.nii.gz');
     param_path_unzip = param_path_zip(1:end-3);
     if exist(param_path_zip, 'file')
@@ -65,7 +65,7 @@ function cortex(info, prefs, param)
 	save(fullfile(PARAM_SUB, 'MDEV_cortex_image.mat'), 'cortex_masked');
     for f = info.driving_frequencies
 		display([num2str(f), 'Hz']);
-        param_path_zip = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+        param_path_zip = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]);
          param_path_unzip = param_path_zip(1:end-3);
         if exist(param_path_zip, 'file')
             gunzip(param_path_zip);
@@ -91,7 +91,7 @@ function cortex_springpot(info, prefs)
     MU_MIN = 200;
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);

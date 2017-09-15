@@ -13,7 +13,7 @@ else
 end
 N = sz(1)*sz(2)*sz(3);
 if nargin < 5
-    nohelm = 0;
+    nohelm = 1;
     if nargin < 4
         xyz_order = [1 2 3];
     end
@@ -124,7 +124,8 @@ if (nohelm == 0)
 end
 
 %u_sfwi = K_sfwi \ f;
-u_sfwi = lsqr(K_sfwi, f, 1e-15, 100000);
+%u_sfwi = lsqr(K_sfwi, f, 1e-15, 100000);
+u_sfwi = lsqr(K_sfwi, f, 1e-15, 20000);
 %mu_sfwi = mircrop(reshape(u_sfwi, [sz(1) sz(2) sz(3)]));
 mu_sfwi = reshape(u_sfwi, [sz(1) sz(2) sz(3)]);
 end

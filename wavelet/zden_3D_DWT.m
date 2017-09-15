@@ -1,10 +1,11 @@
-function [u_den] = zden_3D_DWT(u, J, mask, debug)
-if nargin < 5
-    debug = 0;
+function [u_den] = zden_3D_DWT(u, J, mask, cut)
+if nargin < 4
+    cut = 0.25;
 end
 if nargin < 4
     mask = ones(size(u,1), size(u,2), size(u,3));
 end
+ORD = 4;
 % Dualtree complex denoising 
 % with overlapping group sparsity thresholding
 
@@ -12,10 +13,12 @@ end
 
 [u_resh, n_vols] = resh(u, 4);
 u_den = zeros(size(u_resh));
+szu = size(u);
+PAD = 5;
 
 for n = 1:n_vols
-    mask = mir(mask);
-    w = udwt3D(mir(u_resh(:,:,:,n)),J,h0,h1);
+    mask = mir(mask, PAD);
+    w = udwt3D(mir(u_resh(:,:,:,n),PAD),J,h0,h1);
     % loop thru scales
     for j = 1:J
         % ---
@@ -40,11 +43,13 @@ for n = 1:n_vols
         %}
         % ---
         % hipass version
-        w{j}{1} = butter_2d(4, 0.25, w{j}{1}, 1);
+        w{j}{1} = butter_2d(ORD, cut, w{j}{1}, 1);
+        % orthogonal views in paper were = x = 54 y = 26 z = 18 (ImageJ
+        % coords)
         %
     end
 
-    u_den(:,:,:,n) = mircrop(iudwt3D(w,J,g0,g1));
+    u_den(:,:,:,n) = mircrop(iudwt3D(w,J,g0,g1),PAD);
 end
 
 u_den = reshape(u_den, size(u));

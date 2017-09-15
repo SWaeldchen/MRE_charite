@@ -49,8 +49,8 @@ function [c, Lambda, amplitude, shearWaveField, waveField] = kMDEV( MRsignal, in
 
 % smooth the complex MREsignal---------------------------------------------
 sigma = 2.75 * 10^-3;%[m] filter strength for gaussien smoothing
-MRsignalSmoothed = smoothMRsignal( MRsignal, inplaneResolution, sigma);
-assignin('base', 'smoothed_signal', MRsignalSmoothed);
+%MRsignalSmoothed = smoothMRsignal( MRsignal, inplaneResolution, sigma);
+%assignin('base', 'smoothed_signal', MRsignalSmoothed);
 % sigma = 2.75 * 10^-3;%[m] filter strength for gaussien smoothing
 % alpha = 1;% interpolation between constant c and k (0 <= alpha <= 1)
 % sigma2 = sigma * mean(frequency)./frequency .* (alpha*(frequency/mean(frequency)-1) + 1);%[m] frequency dependent filter strength
@@ -58,18 +58,17 @@ assignin('base', 'smoothed_signal', MRsignalSmoothed);
 
 
 % calculate the temporally resolved wave field (phase of the complex MRsignal)
-temporalWaveField = imag(log( MRsignalSmoothed ));
-
-
+%temporalWaveField = imag(log( MRsignalSmoothed ));
 % unwrap the phase and decompose the frequency componets-------------------
-waveField = gunwrapFFT( temporalWaveField );
+% waveField = gunwrapFFT( temporalWaveField );
+waveField = MRsignal;
 
 
 % directional and radial filtering of the complex wave field---------------
 
-% FilterRho.method = 'off';% flag for the radial filter
+ FilterRho.method = 'off';% flag for the radial filter
 
- FilterRho.method = 'diff';% flag for the radial filter
+% FilterRho.method = 'diff';% flag for the radial filter
 
 % FilterRho.method = 'gauss';% flag for the radial filter
 % FilterRho.value = 2.25 * 10^-3;%[m] HP-value for the radial filter

@@ -25,11 +25,11 @@ function mredge_label_param_map(info, prefs, param)
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
     tpm_image_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
 	ABSG_NOISE_THRESH = str2num(getenv('ABSG_NOISE_THRESH'));
     SFWI_NOISE_THRESH = str2num(getenv('SFWI_NOISE_THRESH'));
     
-    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['rwALL', NIFTI_EXTENSION]));
+    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['rwALL', NIF_EXT]));
     if strcmp(param, 'Abs_G') || strcmp(param, 'HELM')
         noise_thresh = ABSG_NOISE_THRESH;
     elseif strcmp(param, 'SFWI')
@@ -40,7 +40,7 @@ function mredge_label_param_map(info, prefs, param)
     label_param_map(STATS_SUB, param, tpm_image_path, all_file, noise_thresh);
     
     %for f = info.driving_frequencies
-	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['rw', num2str(f), NIFTI_EXTENSION]));
+	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['rw', num2str(f), NIF_EXT]));
     %    if exist(freq_file, 'file')
     %        label_param_map(STATS_SUB, param, tpm_image_path, freq_file, noise_thresh, f);
     %    end

@@ -22,11 +22,11 @@
 function mredge_ft2double(info,prefs)
 
 	[FT_SUB] =set_dirs(info,prefs);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
 
     for f = info.driving_frequencies
         for c = 1:3
-            ft_path = fullfile(FT_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+            ft_path = fullfile(FT_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
             ft_vol = load_untouch_nii_eb(ft_path);
             ft_vol.img = double(ft_vol.img);
             ft_vol.hdr.dime.datatype = 64;

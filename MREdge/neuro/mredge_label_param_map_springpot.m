@@ -25,13 +25,13 @@ function mredge_label_param_map_springpot(info, prefs)
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs(info, prefs);
     tpm_image_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
 	MU_THRESH = 201;
     
     springpot_files = {'mu', 'mu_weighted', 'alpha', 'alpha_weighted', 'rss', 'rss_weighted'};
     for n = 1:numel(springpot_files)
         param = springpot_files{n};
-        param_file_zip = fullfile(SPRINGPOT_SUB,['rw',param, NIFTI_EXTENSION]);
+        param_file_zip = fullfile(SPRINGPOT_SUB,['rw',param, NIF_EXT]);
         param_file_unzip = param_file_zip(1:end-3);
         if exist(param_file_zip, 'file')
             gunzip(param_file_zip);

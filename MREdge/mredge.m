@@ -1,5 +1,4 @@
 function [matlab_outputs] = mredge(info, prefs)
-%% function [outputs] = mredge(info, prefs);
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -25,109 +24,55 @@ mredge_set_environment;
 matlab_outputs = initialize_matlab_outputs;
 disp('Organizing files');
 mredge_clean_acquisition_folder(info);
-mredge_organize_acquisition(info, prefs);
+mredge_dicom_to_nifti(info);
+mredge_organize_acquisition(info);
+mredge_average_magnitude(info, prefs);
 
 % OSS SNR ROUTINES
 
 % check for compabitility routines
 
-if strcmp(prefs.compat, 'cisnmo') == 1
+if strcmp(prefs.compat, 'cisnmo')
     matlab_outputs = mredge_compat_cisnmo(info, prefs);
 else
-    % INVERSION
+    % no compatibility routines
 
-    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'raw')
+    if prefs.distortion_correction && strcmpi(prefs.dico_method, 'raw')
         disp('Distortion correction');
-        
         mredge_distortion_correction(info, prefs);
-        
     end
-    if prefs.motion_correction == 1
+    if prefs.motion_correction
         disp('Motion correction');
-        
         mredge_motion_correction(info, prefs);
-        
     end
-    %psf stats
-    % mredge_psf(info, prefs);
-    if prefs.aniso_diff == 1
-        disp('Anisotropic Diffusion')
-        
-        mredge_aniso_diff(info, prefs);
-        
-    end
-    if prefs.gaussian == 1
-        disp('Gaussian Smoothing')
-        
-        mredge_gaussian(info, prefs);
-        
-    end
-    if strcmp(prefs.phase_unwrap, 'none') == 0
+    if ~strcmp(prefs.phase_unwrap, 'none')
         disp('Phase Unwrapping')
-        
         mredge_phase_unwrap(info, prefs);
-        
     end
-    % if no Temporal FT, some new routines need to be written
-    if prefs.temporal_ft == 1
-        disp('Temporal FT');
-        
-        mredge_temporal_ft(info, prefs);
-        
-    else
-        disp('MREdge ERROR: Not implemented without FT yet.');
-        return
-        %mredge_copy_no_ft(info);
-    end
+    
+    mredge_temporal_ft(info, prefs);
     mredge_slice_align(info,prefs);
-    % measure signal SNR before denoising
-    mredge_amplitudes(info, prefs);
-    mredge_stable_amplitudes(info, prefs);
 
-
-    if strcmp(prefs.denoise_strategy, 'none') == 0
+    if prefs.remove_ipds
+        disp('IPD Removal');
+        mredge_remove_ipds(info, prefs);
+    end
+    if ~strcmpi(prefs.denoise_strategy, 'none')
         disp('Denoising');
-        
         mredge_denoise(info, prefs);
-        
     end
-    if prefs.distortion_correction == 1 && strcmpi(prefs.dico_method, 'ft')
-        disp('Distortion correction');
-        
-        mredge_distortion_correction(info, prefs);
-        
-    end
-    if strcmp(prefs.curl_strategy, 'none') == 0
+    if ~strcmpi(prefs.curl_strategy, 'none')
         disp('Divergence Removal');
         mredge_remove_divergence(info, prefs);
-        
     end
-    %now remake amplitudes to contain denoising
-    mredge_amplitudes(info, prefs);
-    mredge_stable_amplitudes(info, prefs);
-    mredge_displacement_snr_stable(info, prefs);
-
-    if strcmp(prefs.inversion_strategy, 'none') == 0
+    if ~strcmp(prefs.inversion_strategy, 'none')
         disp('Wave Inversion');
         mredge_invert(info, prefs);
     end
-
-    mredge_stable_inversions(info, prefs, 1)
-    mredge_laplacian_snr_stable(info, prefs);
-
-    if prefs.outputs.rer == 1
-        mredge_rer(info, prefs);
-    end
-    if prefs.outputs.springpot == 1
-        mredge_springpot(info, prefs);
-        %mredge_springpot_stable(info,prefs);
-        mredge_springpot_stable_weighted(info, prefs);
-    end
- 
-    if prefs.brain_analysis == 1
-        mredge_masked_median(info, prefs);
+    mredge_amplitudes(info, prefs);
+    mredge_masked_median(info, prefs);
+    if prefs.brain_analysis
         mredge_brain_analysis(info, prefs);
-        mredge_brain_analysis_stable(info, prefs);
     end
 
     % set outputs
@@ -154,8 +99,7 @@ else
   
 end
 disp(['Total MREdge time: ' num2str(toc(a)) ]);
-
-
+cd(mredge_analysis_path(info, prefs));
 end
 
 

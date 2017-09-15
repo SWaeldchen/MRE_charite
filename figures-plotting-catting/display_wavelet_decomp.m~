@@ -1,0 +1,11 @@
+function display_wavelet_decomp(w, MIJ);
+
+J = numel(w);
+
+for j = 1:J
+    if j < J
+        K = numel(w{j});
+        for k = 1:K
+            openImage(w{j}{k}, MIJ, [num2str(j), ' ', num2str(k)]);
+            
+    

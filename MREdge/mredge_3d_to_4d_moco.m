@@ -23,10 +23,10 @@
 function mredge_3d_to_4d_moco(cell_array, subdir, series, component)
   
   method = 'fsl';
-  NIFTI_EXTENSION = '.nii.gz';
+  NIF_EXT = '.nii.gz';
 
   if nargin == 4
-     name_4d = fullfile(subdir, num2str(series), num2str(component), mredge_filename(series, component, NIFTI_EXTENSION, 'MOCO_MASK'));
+     name_4d = fullfile(subdir, num2str(series), num2str(component), mredge_filename(series, component, NIF_EXT, 'MOCO_MASK'));
   else
      name_4d = [subdir, '_MOCO_MASK'];
   end

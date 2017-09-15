@@ -83,7 +83,7 @@ function y = interp_slc(x, factor, method, polar, niter)
 				y = y_re + 1i*y_im;
 			end
 		else
-			x = interp2(x_old, y_old, z_old, x, x_new, y_new, z_new, method);
+			y = interp2(x_old, y_old, x, x_new, y_new, method);
 		end
 	end
 end	

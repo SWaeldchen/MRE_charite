@@ -153,7 +153,7 @@
 % 'dfw_settings' - can set subfield 'dfthresh', 'ndfthresh'
 function prefs = mredge_prefs(varargin)
 
-prefs = mredge_set_default_prefs;
+prefs = mredge_default_prefs;
 for n = 1:2:nargin
     field_is_valid = 1;
     field_break = strfind(varargin{n}, '.');

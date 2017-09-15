@@ -1,131 +1,161 @@
 
-function [c, Lambda, amplitude] = k_recovery(shearWaveField,inplaneResolution,frequency,weightingFactor)
+function [c, sum_amp, rings] = k_recovery(uw, mask, freqvec, spacing)
 
-%get the dimensions
-n1 = size(shearWaveField,1);% number of rows
-n2 = size(shearWaveField,2);% number of columns
-nSlice = size(shearWaveField,3);% number of slices
-nTheta = size(shearWaveField,4);% number of directions used in the directional filter
-nComponent = size(shearWaveField,5);% number of components
-nFrequency = size(shearWaveField,6);% number of frequencies
+%% set parameters
 
-% preallocate the frequency averaged (standard) output values
-standardC = zeros( n1, n2, nSlice );%[m/s] shear wave speed
-stdC = zeros( n1, n2, nSlice );%[m/s] standard devitation of shear wave speed
-inverseCTotal = zeros( n1, n2, nTheta,  nComponent, nFrequency );%[s/m] temporal inverse shear wave speed
-weightTotal = zeros( n1, n2, nTheta,  nComponent, nFrequency );% temporal weight
-standardLambda = zeros( n1, n2, nSlice );%[m] penetration depth
-standardAmplitude = zeros( n1, n2, nSlice );% amplitude
+% for z denoise 
+z_lev = 3;
+NORM = 0.5;
+% for log-gabor bank - ALL VALUES FROM FERRARI 2012
+% EXCEPT A SHORTER WAVELENGTH IS ADDED AND AN ADDITIONAL SCALE
+% FERRARI WAS MIN WAVELENGTH 7, 3 OCTAVES
+% HERE MIN WAVELENGTH IS 3.5, 4, OCTAVES
+sig_ang = 25/360*2*pi;
+MIN_WAVELENGTH = 3.5;
+OCTAVES = 4;
+eta_b = exp(-1/4*sqrt(2*log(2))*OCTAVES);
+mult = 2.1;
+w0 = zeros(OCTAVES, 1)';
+for scale = 1:OCTAVES
+    lam = MIN_WAVELENGTH * mult^(scale-1);
+    w0(scale) = 1 / lam;
+end
+rings = cell(OCTAVES,1);
+num_theta = 6;
+%num_theta = 1;
+num_phi = 4;
+%num_phi = 1;
+% for wavelet bank
+[Faf, Fsf] = FSfarras;
+[af, sf] = dualfilt1;
+J = 1;
+% for phase gradient recovery
+W = 4;
+if size(freqvec, 1) > 1
+    freqvec = freqvec';
+end
+freqvec = 2*pi*vec(repmat(freqvec, [3 1]));
 
-% preallocate the frequency resolved output values
-fC = zeros( n1, n2, nSlice, nFrequency );%[m/s] shear wave speed
-fLambda = zeros( n1, n2, nSlice, nFrequency );%[m] penetration depth
-fAmplitude = zeros( n1, n2, nSlice, nFrequency );% amplitude
+% reshape and allocate data
+% uw = temporal_ft(uw);
+[U, nvols] = resh(uw, 4);
+weighted_k = zeros(size(U(:,:,:,1)));
+sum_weights = weighted_k;
+sum_amp = weighted_k;
 
-for iSlice = 1 : nSlice
-    
-    % initialize the nominators and denominator
-    nominatorC = 0;
-    nominatorLambda = 0;
-    nominatorAmplitude = 0;
-    denominator = 0;
-    
-    for iFrequency = 1 : nFrequency
-        currentFrequency = frequency( iFrequency );%[Hz] selected frequency
-    
-        % initialize the nominators and denominator for frequency resolved values
-        fNominatorC = 0;
-        fNominatorLambda = 0;
-        fNominatorAmplitude = 0;
-        fDenominator = 0;
-        
-        for iTheta = 1 : nTheta % loop over directions
-            for iComponent = 1 : nComponent % loop over components
-                
-                currentSWF = shearWaveField(:, :, iSlice, iTheta, iComponent, iFrequency);
-                
-                
-                % amplitude -----------------------------------------------
-                currentAmplitude =  abs(currentSWF);
-                weight = currentAmplitude.^weightingFactor;% calculate the weight
-                weightTotal(:, :, nTheta, iComponent, iFrequency) = weight;%sum of the weigthed amplitude
-                fNominatorAmplitude = fNominatorAmplitude + currentAmplitude .* weight;
-                fDenominator = fDenominator + weight;%sum of the weigths
+%% strip interslice artifact
+disp('Interslice artifact removal...');
+tic
+parfor n = 1:nvols
+   U(:,:,:,n) = zden_3D_DWT(dejitter_phase_mask(U(:,:,:,n), mask, NORM), z_lev, mask);
+end
+toc
 
-                phaseDifference1 = angle( conj(currentSWF(1:end-1,:)) .* currentSWF(2:end,:) ) / inplaneResolution(1);
-                phaseDifference2 = angle( conj(currentSWF(:,1:end-1)) .* currentSWF(:,2:end) ) / inplaneResolution(2);
-                %phaseDifference1 = [phaseDifference1; zeros(1,n2)];
-                %phaseDifference2 = [phaseDifference2 zeros(n1, 1)];
-                %T = 0.5;
-                %phaseDifference1 = dtdenoise_xy_pca_mad_u(phaseDifference1, T, 1, 0, [], 4);
-                %phaseDifference2 = dtdenoise_xy_pca_mad_u(phaseDifference2, T, 1, 0, [], 4);
-
-                G1 = [phaseDifference1(1,:); (phaseDifference1(1:end-1,:)+phaseDifference1(2:end,:)) / 2; phaseDifference1(end,:)];
-                G2 = [phaseDifference2(:,1), (phaseDifference2(:,1:end-1)+phaseDifference2(:,2:end)) / 2, phaseDifference2(:,end)];
-                %G1 = dtdenoise_xy_pca_mad_u(G1, T, 1, 0, [], 4);
-                %G2 = dtdenoise_xy_pca_mad_u(G2, T, 1, 0, [], 4);
-                currentKreal = sqrt( abs(G1).^2 + abs(G2).^2);%[rad/m] real part of the wave vector k
-                inverseCTotal(:, :, nTheta, iComponent, iFrequency) = currentKreal / (2*pi*currentFrequency);%[s/m]
-                fNominatorC = fNominatorC + currentKreal .* weight;% sum of the weigthed real k
-                
-                % calculate the penetration depth -------------------------
-                [G2,G1] = gradient( currentAmplitude, inplaneResolution(2), inplaneResolution(1) );%gradients of amplitude
-                if nTheta>1 % if directional filter 'on'
-                    % projection of amplitude gradient in filter direction
-                    unitvector1 = -sin( (iTheta-1)*2*pi/nTheta);
-                    unitvector2 = +cos( (iTheta-1)*2*pi/nTheta);
-                    
-                    currentKimag = abs(G1.*unitvector1 + G2.*unitvector2) ./ currentAmplitude;%[1/m] imag part of the wave vector k
-                    
-                    [G2,G1] = gradient( currentKimag, inplaneResolution(2), inplaneResolution(1) );%gradients of firt guess of imag k
-                    corretion = sqrt( abs(G1.*unitvector1 + G2.*unitvector2) );%[1/m] should be 1/r of point source
-                    currentKimag = abs( currentKimag - corretion );
-                else % directional filter 'off'
-                    currentKimag = sqrt( G1.^2 + G2.^2 ) ./ currentAmplitude;%[1/m] imag part of the wave vector k
-                end
-                fNominatorLambda = fNominatorLambda+ currentKimag .* weight;% sum of the weigthed imag k
+%% wavelet decomposition of image
+disp('Simultanous decomposition, denoise, directional filter')
+for v = 1:nvols
+    disp(['volume ', num2str(v)])
+    tic
+    % blind noise estimation
+    %sigma = sigma_mad_wavelet(U(:,:,:,v), mask);
+    sigma = mad_est_3d(U(:,:,:,v), mask);
+    % undecimated directional complex wavelet decomposition
+    w = cplxdual3D_u(U(:,:,:,v), J, Faf, af);
+    % denoise wavelet coefficients with nonnegative garotte
+    w = denoise_wavelet_coefficients(w, sigma, J);
+    % TEST EB
+    %U_den = icplxdual3D_u(w, J, Fsf, sf);
+    %U_den(isnan(U_den)) = 0;
+    % convolve scaling images with log-gabor filter bank. estimate weighted
+    % k and weights
+    parfor scale = 1:OCTAVES
+        %disp(['scale ', num2str(scale)]);
+        % create sample image of the freq scale, for inspection
+        sig_b = w0(scale)*eta_b
+        lg = loggabor_3d(size(w{J+1}{1}{1}{1}), w0(scale),  -1, -1, sig_b, sig_ang);
+        sz = size(lg);
+        rings{scale} = lg(  :,:,ceil( (sz(3)+1) /2)  ); % center slice in odd, half plus one in even
+        for theta = 1:num_theta
+            %disp(['theta ',num2str(theta)])
+            for phi = 1:num_phi
+                %disp(['phi ',num2str(phi)])
+                lg = loggabor_3d(size(w{J+1}{1}{1}{1}), w0(scale),  theta*2*pi/num_theta, phi*pi/num_phi, sig_b, sig_ang);
+                w_filt = filter_and_scale(w, lg, J);
+                U_filt = icplxdual3D_u(w_filt, J, Fsf, sf);
+                % TEST EB
+                %lg = loggabor_3d(size(U_den), w0(scale),  theta*2*pi/num_theta, phi*pi/num_phi, sig_r, sig_ang);
+                %U_filt = ifftn(ifftshift(fftshift(fftn(U_den)).*lg));
+                amp = abs(U_filt);
+                sum_amp = sum_amp + amp;
+                weights = amp.^W;
+                sum_weights = sum_weights + weights;
+                absK = phase_gradient(U_filt, spacing);
+                weighted_k = weighted_k + absK.*weights./freqvec(v);
             end
         end
- 
-        % calculate the frequency resolved c, a, and amplitude
-        fKreal = fNominatorC ./ fDenominator;%[rad/m] real part of k for selected frequency
-        fC(:,:,iSlice,iFrequency) = (2*pi*currentFrequency) ./ fKreal;%[m/s] shear wave speed
-        fKimag = fNominatorLambda ./ fDenominator;%[1/m] imag part of k for selected frequency
-        fLambda(:,:,iSlice,iFrequency) = 1 ./ fKimag;%[m] penetration depth
-        fAmplitude(:,:,iSlice,iFrequency) = fNominatorAmplitude ./ fDenominator;%
-
-        % calculate the standard nominator and denominnator
-        nominatorC = nominatorC + fNominatorC / (2*pi*currentFrequency);
-        nominatorLambda = nominatorLambda + fNominatorLambda;
-        nominatorAmplitude = nominatorAmplitude + fNominatorAmplitude;
-        denominator = denominator + fDenominator;
-        
-    end  % loop over frequencies
-    
-    % calculate the standard c, a, and amplitude
-    inverseC = nominatorC ./ denominator;%[s/m] inverse shear wave speed
-    standardC(:,:,iSlice) = 1 ./ inverseC;%[m/s] shear wave speed
-    residueInverseC = repmat(inverseC, [1 1 nTheta nComponent nFrequency]) - inverseCTotal;%[s/m] residue of inverse shear wave speed
-    inverseCStd = sqrt( sum(sum(sum( residueInverseC.^2 .* weightTotal ,5),4),3) ./ denominator );%[s/m] standard devitation of inverse shear wave speed
-    stdC(:,:,iSlice) = inverseCStd ./ ( inverseC.^2 );%[m/s] standard devitation of shear wave speed
-    inverseLambda = nominatorLambda ./ denominator;%[1/m] inverse penetration depth
-    standardLambda(:,:,iSlice) = 1 ./ inverseLambda;%[m] penetration depth
-    standardAmplitude(:,:,iSlice) = nominatorAmplitude ./ denominator;% amplitude
-    
-end  % loop over slices
-
-% calculate the output values
-c.standard = standardC;%[m/s]
-c.alternative = 1 ./ mean( 1./fC ,4);%[m/s]
-c.frequencyResolved = fC;%[m/s]
-c.standardStd = stdC;%[m/s]
-
-Lambda.standard = standardLambda;%[m]
-Lambda.alternative = 1 ./ mean( 1./fLambda ,4);%[m]
-Lambda.frequencyResolved = fLambda;%[m]
-
-amplitude.standard = standardAmplitude;
-amplitude.alternative = mean( fAmplitude ,4);
-amplitude.frequencyResolved = fAmplitude;
-    
+    end
+    toc
 end
+
+c = sum_weights ./ weighted_k;
+
+end
+
+function w = denoise_wavelet_coefficients(w, sigma, J)
+    % denoise complex wavelet coefficients using nonnegative garotte
+    for j = 1:J
+        for n = 1:2
+            for p = 1:2
+                for q = 1:7
+                    w_r = w{j}{1}{n}{p}{q};
+                    w_i = w{j}{2}{n}{p}{q};
+                    w_c = w_r + 1i*w_i;
+                    w_c = nng(w_c, sigma);
+                    w{j}{1}{n}{p}{q} = real(w_c);
+                    w{j}{2}{n}{p}{q} = imag(w_c);
+                end
+            end
+        end
+    end
+end
+
+function w_filt = filter_and_scale(w, lg, J)
+    % filter scaling coefficients
+    w_filt = w;
+    for m = 1:2
+        for n = 1:2
+            for p = 1:2
+                convn = fftshift(fftn(w{J+1}{m}{n}{p})).*lg;
+                w_filt{J+1}{m}{n}{p} = ifftn(ifftshift(convn));
+            end
+        end
+    end
+    % scale wavelet coefficients
+    for m = 1:2
+        for n = 1:2
+            for p = 1:2
+                w_lo_orig = w{J+1}{m}{n}{p};
+                w_lo_filt = w_filt{J+1}{m}{n}{p};
+                ratio = range(abs(w_lo_filt(:))) ./ range(abs(w_lo_orig(:)));
+                for q = 1:7
+                    for j = 1:J
+                        w_filt{j}{m}{n}{p}{q} = w_filt{j}{m}{n}{p}{q} .* ratio;
+                        w_filt{j}{m}{n}{p}{q}(isnan(w_filt{j}{m}{n}{p}{q})) = 0;
+                    end
+                end
+            end
+        end
+    end
+end
+
+function absK = phase_gradient(u, spacing)
+    dx = angle( conj(u(1:end-1,:,:)) .* u(2:end,:,:) ) / spacing(1);
+    dy = angle( conj(u(:,1:end-1,:)) .* u(:,2:end,:) ) / spacing(2);
+    dz = angle( conj(u(:,:,1:end-1)) .* u(:,:,2:end) ) / spacing(3);
+    G1 = cat( 1, dx(1,:,:), (dx(1:end-1,:,:)+dx(2:end,:,:)) / 2, dx(end,:,:) );
+    G2 = cat( 2, dy(:,1,:), (dy(:,1:end-1,:)+dy(:,2:end,:)) / 2, dy(:,end,:) );
+    G3 = cat( 3, dz(:,:,1), (dz(:,:,1:end-1)+dz(:,:,2:end)) / 2, dz(:,:,end) );
+    absK = sqrt( abs(G1).^2 + abs(G2).^2 + abs(G3).^2);%[rad/m] real part of the wave vector k
+end
+  
+

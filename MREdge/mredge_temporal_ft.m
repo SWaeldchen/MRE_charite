@@ -1,11 +1,10 @@
-%% function mredge_temporal_ft(info, prefs);
-%
+function mredge_temporal_ft(info, prefs)
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
 % Private usage only. Distribution only by permission of Elastography working
 % group.
 %
-%
+%,
 % USAGE:
 %
 %   Temporally Fourier-transforms the complex wave field.
@@ -19,45 +18,19 @@
 %
 %   none
 
-function mredge_temporal_ft(info, prefs)
-
-	[PHASE_DIR, FT_DIR, SNR_DIR] =set_dirs(info, prefs);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    FSL_NIFTI_EXTENSION = '.nii.gz';
-
-    for f = info.driving_frequencies
-        for c = 1:3
-            time_series_path = fullfile(PHASE_DIR, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-            % create nifti of first volume, to populate with FT data
-            time_series_first_path = fullfile(PHASE_DIR, num2str(f), num2str(c), mredge_filename(f, c, FSL_NIFTI_EXTENSION, '_FT'));
-            fslroi_command = ['fsl5.0-fslroi ', time_series_path, ' ', time_series_first_path, ' 0 1'];
-            system(fslroi_command);
-            time_series_vol = load_untouch_nii_eb(time_series_path);
-            % now load the whole time series
-            ft_vol = load_untouch_nii_eb(time_series_first_path);
-            full_img = time_series_vol.img;
-            % call functionality here
-            full_img_ft = fft(align_phase(double(full_img)), [],  4);
-            ft_vol.img = full_img_ft(:,:,:,2);
-            % make nifti adjustments
-            ft_vol.hdr.dime.datatype = 32; % change to complex data type
-            ft_dir = fullfile(FT_DIR, num2str(f), num2str(c));
-            if ~exist(ft_dir, 'dir')
-                mkdir(ft_dir);
-            end
-            ft_path = fullfile(ft_dir, mredge_filename(f, c, NIFTI_EXTENSION));
-            save_untouch_nii(ft_vol, ft_path);
-            % delete template volume
-            delete(time_series_first_path);
-        end
-    end
-
-end
-
-function [PHASE_DIR, FT_DIR, SNR_DIR] = set_dirs(info, prefs)
-      PHASE_DIR = fullfile(info.path, 'Phase');
-      FT_DIR = mredge_analysis_path(info, prefs, 'FT');
-      SNR_DIR = mredge_analysis_path(info, prefs, 'SNR');
+for subdir = info.ds.subdirs_comps
+    time_series_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+    time_series_vol = load_untouch_nii_eb(time_series_path);
+    % make dummy complex 3d volume
+    ft_vol = time_series_vol;
+    ft_vol.hdr.dime.datatype = 32;
+    ft_vol.hdr.dime.dim(1) = 3;
+    ft_vol.hdr.dime.dim(5) = 1;
+    % call functionality here
+    phase_ft = fft(double(time_series_vol.img), [],  4);
+    ft_vol.img = phase_ft(:,:,:,2);
+    save_path = fullfile(mredge_analysis_path(info, prefs, 'FT'), cell2str(subdir));
+    save_untouch_nii_eb(ft_vol, save_path);
 end
 
 

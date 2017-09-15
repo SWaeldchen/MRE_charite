@@ -1,5 +1,5 @@
 cd(getenv('MRE'));
-cd sims/Symmetric_boundary_conditions/
+cd projects/FEM-hollis/sims/Symmetric_boundary_conditions/
 cd 50Hz/1_00Pas
 load('x-direction.mat');
 f50_x = cat(4, path_1, path_2, path_3, path_4, path_5); 

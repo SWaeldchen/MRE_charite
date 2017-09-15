@@ -1,4 +1,4 @@
-%% function mredge_spm_3d4d(cell_array, name_4d)
+%% function mredge_spm_3d4d(path_arrary, path_4d)
 %
 % Part of the MREdge software package
 % Created 2016 at Charite Medical University Berlin
@@ -7,51 +7,32 @@
 %
 % USAGE:
 %
-% Call to spm to convert 3D to 4D nii file. 
+% Convert 3D to 4D nii file. 
 %
 % INPUTS:
 %
-% cell_array - cell array of 3d nii file names
-% path - can be preset filename, or subdir
-% series - if subdir, this is the driving series
-% component - if subdir, this is the motion component
+% path_array: array of paths of 3d objects
+% path_4d: path for saving 4d object
 %
 % OUTPUTS:
 %
 % none
 
-function mredge_3d_to_4d(cell_array, subdir, series, component)
+function mredge_3d_to_4d(path_array, path_4d)
   
-  method = 'fsl';
-  NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-
-  if nargin == 4
-     name_4d = fullfile(subdir, num2str(series), num2str(component), mredge_filename(series, component, NIFTI_EXTENSION));
-  else
-     name_4d = subdir;
-  end
+  vol_4d = [];
   
-  if strcmp(method, 'spm') == 1
-    job{1}.spm.util.cat.vols = cell_array;
-    job{1}.spm.util.cat.name = name_4d;
-    job{1}.spm.util.cat.dtype = 4;
-    spm_jobman('initcfg');
-    spm_jobman('run',job);
-    gzip(name_4d);
-    delete(name_4d);
-  end
-
-  if strcmp(method, 'fsl') == 1
-    file_list = ' ';
-    for n = 1:numel(cell_array)
-      file_list = [file_list, cell_array{n}, ' ']; %#ok<AGROW>
-    end
-	merge_command = ['fsl5.0-fslmerge -t ', name_4d, file_list];
-    system(merge_command);
-    for n = 1:numel(cell_array)
-      zip_path = [cell_array{n}, '.gz'];
-      if exist(zip_path, 'file')
-        delete(zip_path);
+  for n = 1:numel(path_array)
+      vol = load_untouch_nii(path_array{n});
+      if n == 1
+          vol_4d = vol;
+      else
+          vol_4d.img = cat(4, vol_4d.img, vol.img);
       end
-    end
- end
+  end
+  
+  im_sz = size(vol_4d.img);
+  vol_4d.hdr.dime.dim(5) = im_sz(4);
+  vol_4d.hdr.dime.dim(1) = 4;
+  save_untouch_nii(vol_4d, path_4d);
+      

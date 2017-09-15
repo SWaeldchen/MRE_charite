@@ -1,4 +1,4 @@
-%% function info = mredge_info(varargin);
+function info = mredge_info(varargin)
 %%
 %
 % Part of the MREdge software package
@@ -57,9 +57,9 @@
 %	.all_freqs_one_series: processes data differently if all frequencies are
 %	captured in one series number. set to 1 if true. Default: 0
 %	
-%
+%   .dir_struct: contains precomputed directory information to make
+%       iterating through folders and frequencies more efficient
 %	
-function info = mredge_info(varargin)
 
 	info = initialize_info;
 	has_phase = 0;
@@ -99,16 +99,18 @@ function info = mredge_info(varargin)
 			info.time_steps = varargin{n+1};
         elseif strcmp(arg_lower, 'all_freqs_one_series') == 1
             info.all_freqs_one_series = varargin{n+1};
+        elseif strcmp(arg_lower, 'fd_import') == 1
+            info.fd_import = varargin{n+1};
 		else
-			display(['MREdge ERROR: Invalid field: ', arg_lower]);
-			display('Valid options are: phase, magnitude, t1, t2, localizer, fieldmap, dti, file_extension, driving_frequencies, voxel_spacing, time_steps, all_freqs_one_series, or other.');
+			disp(['MREdge ERROR: Invalid field: ', arg_lower]);
+			disp('Valid options are: phase, magnitude, t1, t2, localizer, fieldmap, dti, file_extension, driving_frequencies, voxel_spacing, time_steps, all_freqs_one_series, or other.');
 			return; 
 		end
 	end
     if has_phase == 0
-        display('MREdge WARNING: Acquisition must have at least one phase series to be processed');
-        return;
+        disp('MREdge WARNING: Acquisition must have at least one phase series to be processed');
     end
+    info.ds = mredge_dir_struct(info);
 end
 
 function info = initialize_info
@@ -127,4 +129,5 @@ function info = initialize_info
 	info.voxel_spacing = [.002 .002 .002];
     info.time_steps = 8;
     info.all_freqs_one_series = 0;
+    info.fd_import = 0;
 end

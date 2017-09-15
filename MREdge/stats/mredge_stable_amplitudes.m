@@ -25,7 +25,7 @@ function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info,
         invert = 0;
     end
 	AMP_SUB = set_dirs(info, prefs);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     df = info.driving_frequencies;
     nf = numel(df);
     stable_filenames = cell(nf-2, 1);
@@ -35,7 +35,7 @@ function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info,
         stable_group = [freqs_sorted(n), freqs_sorted(n+1), freqs_sorted(n+2)];
         stable_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
 		create_stable_amplitude(stable_group, stable_group_indices, AMP_SUB);
-        stable_filenames{n} = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), NIFTI_EXTENSION];
+        stable_filenames{n} = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), NIF_EXT];
         stable_frequencies(n) = mean(stable_group);
     end
 end
@@ -45,16 +45,16 @@ function AMP_SUB = set_dirs(info, prefs)
 end
 
 function create_stable_amplitude(stable_group, stable_group_indices, AMP_SUB)
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-	first_amp_path = fullfile(AMP_SUB, num2str(stable_group(1)), [num2str(stable_group(1)), NIFTI_EXTENSION]);
+    NIF_EXT = getenv('NIFTI_EXTENSION');
+	first_amp_path = fullfile(AMP_SUB, num2str(stable_group(1)), [num2str(stable_group(1)), NIF_EXT]);
 	amp_sum_vol = load_untouch_nii_eb(first_amp_path);
 	for n = 2:numel(stable_group)
-		amp_path = fullfile(AMP_SUB, num2str(stable_group(n)), [num2str(stable_group(n)), NIFTI_EXTENSION]);
+		amp_path = fullfile(AMP_SUB, num2str(stable_group(n)), [num2str(stable_group(n)), NIF_EXT]);
 		%amp_path = mredge_unzip_if_zip(amp_path);
 		amp_vol = load_untouch_nii_eb(amp_path);
 		amp_sum_vol.img = amp_sum_vol.img + amp_vol.img;
 	end
-	stable_filename = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), NIFTI_EXTENSION];
+	stable_filename = [num2str(stable_group(1)),'_',num2str(stable_group(2)),'_',num2str(stable_group(3)), NIF_EXT];
 	save_untouch_nii(amp_sum_vol, fullfile(AMP_SUB, stable_filename));
 end
 	

@@ -1,5 +1,4 @@
-%% function mredge_organize_acquisition(info, prefs)
-
+function mredge_organize_acquisition(info)
 %
 % Part of the MREdge software package
 % Created 2016 at Charite Medical University Berlin
@@ -8,8 +7,7 @@
 %
 % USAGE:
 %
-% Organizes DICOM slices into folders, and for MRE acquisitions, 4D nifti files,
-% guided by acquisition info object.
+% Processes NIfTI files into appropriate folders
 %
 % INPUTS:
 %
@@ -19,115 +17,28 @@
 %
 % none
 
-%% collect series numbers
-
-function mredge_organize_acquisition(info, prefs)
-
-called_dir = pwd;
-
-
-disp('Organizing Acquisition Folder...');
-NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-nifti_convert_command = ['dcm2niix -f %s -z n ',info.path];
-evalc('system(nifti_convert_command);');
-
 %% process each series
+NIF_EXT = getenv('NIFTI_EXTENSION');
 
-if ~isempty(info.phase)
-	PHASE_SUB = fullfile(info.path,'Phase');
-	if ~exist(PHASE_SUB, 'dir')
-		mkdir(PHASE_SUB);
-    end
-    if info.all_freqs_one_series == 1
-		mredge_break_into_frequencies(info.phase(1), PHASE_SUB, info);
-	else
-		disp('Currently disabled for multiple series -- contact developer to enable.');
-	    %for n = info.phase
-	    %	 mredge_rename_by_frequency(info.phase, PHASE_SUB, info.driving_frequencies);
-	    %end
-    end
-    mredge_phase2double(info);
-end
-
-if ~isempty(info.magnitude)
-    MAG_SUB = fullfile(info.path,'Magnitude');
-	if ~exist(MAG_SUB, 'dir')
-		mkdir(MAG_SUB);
-	end
-	if info.all_freqs_one_series == 1
-		mredge_break_into_frequencies(info.magnitude(1), MAG_SUB, info);
-	else
-		disp('Currently disabled for multiple series -- contact developers to enable.');
-    end
-    mredge_mag2double(info);
-    mredge_average_magnitude(info, prefs);
-end
-
-if ~isempty(info.t1)
-    T1_SUB = fullfile(info.path, 'T1');
-    if ~exist(T1_SUB, 'dir')
-		mkdir(T1_SUB);
-    end
-    for n = info.t1
-      movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), T1_SUB);
+for d = 1:numel(info.ds.logical)
+    if info.ds.logical(d) 
+        dirpath = fullfile(info.ds.list{d});
+        if ~exist(dirpath, 'dir')
+            mkdir(dirpath);
+        end
+        series_num = info.ds.series_nums{d};
+        movefile(fullfile(info.path, [num2str(series_num), NIF_EXT]), dirpath);
     end
 end
-
-if ~isempty(info.t2)
-    T2_SUB = fullfile(info.path, 'T2');
-    if ~exist(T2_SUB, 'dir')
-		mkdir(T2_SUB);
-    end
-    for n = info.t2
-       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), T2_SUB);
-    end
+    
+if info.all_freqs_one_series == 1
+    mredge_break_into_frequencies(info.phase(1), info.ds.list(info.ds.enum.phase), info);
+    mredge_break_into_frequencies(info.magnitude(1), info.ds.list(info.ds.enum.magnitude), info);
+else
+    mredge_rename_by_frequency(info.ds.list(info.ds.enum.phase), info.phase, info);
+    mredge_rename_by_frequency(info.ds.list(info.ds.enum.magnitude), info.magnitude, info);
 end
 
-if ~isempty(info.localizer)
-    LOCALIZER_SUB = fullfile(info.path, 'Localizer');
-    if ~exist(LOCALIZER_SUB, 'dir')
-		mkdir(LOCALIZER_SUB);
-    end
-    for n = info.localizer
-       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), LOCALIZER_SUB);
-    end
-end
-
-if ~isempty(info.fieldmap)
-    FIELDMAP_SUB = fullfile(info.path, 'Fieldmap');
-    if ~exist(FIELDMAP_SUB, 'dir')
-		mkdir(FIELDMAP_SUB);
-    end
-    for n = info.fieldmap
-       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), FIELDMAP_SUB, 'f');
-    end
-end
-
-if ~isempty(info.dti)
-    DTI_SUB = fullfile(info.path, 'DTI');
-    if ~exist(DTI_SUB, 'dir')
-		mkdir(DTI_SUB);
-    end
-    for n = info.dti
-       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), DTI_SUB);
-    end
-end
-
-if ~isempty(info.other)
-    OTHER_SUB = fullfile(info.path, 'Other');
-    if ~exist(OTHER_SUB, 'dir')
-		mkdir(OTHER_SUB);
-    end
-    for n = info.other
-       movefile(fullfile(info.path, [num2str(n),NIFTI_EXTENSION]), OTHER_SUB);
-    end
-end
-
-STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
-if ~exist(STATS_SUB, 'dir')
-    mkdir(STATS_SUB);
-end
-
-cd(called_dir)
+mredge_phase2double(info);
+mredge_mag2double(info);
 delete(fullfile(info.path, '*.nii'));
-

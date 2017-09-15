@@ -1,4 +1,4 @@
-%% function mredge_load_mask(info,prefs);
+function mask = mredge_load_mask(info, prefs)
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -19,18 +19,6 @@
 %
 % none
 %	
-function mask = mredge_load_mask(info, prefs)
 
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    [AVG_SUB] = set_dirs(info,prefs);
-    mask_vol = load_untouch_nii_eb(fullfile(AVG_SUB, ['Magnitude_Mask', NIFTI_EXTENSION]));
-	mask = mask_vol.img;
-
-end
-
-function [AVG_SUB] = set_dirs(info,prefs)
-
-    MAG_SUB = fullfile(info.path, 'Magnitude');
-	AVG_SUB = mredge_analysis_path(info, prefs, 'Magnitude');
-            
-end
+mask_vol = load_untouch_nii_eb(fullfile(mredge_analysis_path(info, prefs, 'Magnitude'), 'Magnitude_Mask.nii'));
+mask = mask_vol.img;

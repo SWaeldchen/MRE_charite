@@ -45,7 +45,7 @@ function cortex_stable(info, prefs, param)
 	display(['Cortical Medians, Stable Inversions ',param]);
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     mask = double(mredge_load_mask(info,prefs));
     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 1);
     fileID = fopen(fullfile(STATS_SUB, [ 'cortex_stable_',param,'.csv']), 'w');
@@ -72,12 +72,12 @@ function cortex_stable(info, prefs, param)
 end 
     
 function cortex_stable_springpot(info, prefs)
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
 
 	disp(['Cortical Medians, Springpot']);
-    MU_FILENAME = ['mu_weighted', NIFTI_EXTENSION];
-    ALPHA_FILENAME = ['alpha_weighted',NIFTI_EXTENSION];
-    RSS_FILENAME = ['rss_weighted',NIFTI_EXTENSION];
+    MU_FILENAME = ['mu_weighted', NIF_EXT];
+    ALPHA_FILENAME = ['alpha_weighted',NIF_EXT];
+    RSS_FILENAME = ['rss_weighted',NIF_EXT];
     MU_MIN = 200;
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs);
@@ -135,7 +135,7 @@ function cortex_stable_springpot_weighted(info, prefs)
     MU_MIN = 200;
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);

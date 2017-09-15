@@ -27,7 +27,7 @@ function mredge_springpot(info, prefs)
     if ~exist(SPRINGPOT_SUB, 'dir')
         mkdir(SPRINGPOT_SUB);
     end
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
     BRAIN_ETA = 10;
     df = info.driving_frequencies;
     nf = numel(df);
@@ -36,13 +36,13 @@ function mredge_springpot(info, prefs)
     phi_images = cell(numel(df), 1);
     for f_num = 1:nf
         f = df(f_num);
-        absg_path = fullfile(ABSG_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+        absg_path = fullfile(ABSG_SUB, num2str(f), [num2str(f), NIF_EXT]);
         absg_vol = load_untouch_nii_eb(absg_path);
         absg_images{f_num} = absg_vol.img; 
     end
     for f_num = 1:nf
         f = df(f_num);
-        phi_path = fullfile(PHI_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+        phi_path = fullfile(PHI_SUB, num2str(f), [num2str(f), NIF_EXT]);
         phi_vol = load_untouch_nii_eb(phi_path);
         phi_images{f_num} = phi_vol.img; 
     end

@@ -1,4 +1,4 @@
-%% function mredge_filepath(DIR, f, c)
+%% function mredge_mkdir(dir_path)
 %
 % Part of the MREdge software package
 % Created 2016 at Charite Medical University Berlin
@@ -7,20 +7,17 @@
 %
 % USAGE:
 %
-% Makes a subdirectory for the frequency and component
+% Checks if directory exists, then makes it
 %
 % INPUTS:
 %
-% DIR - directory path
-% f - frequency in Hz
-% c - directional component (1, 2, or 3)
-%
+% dir_path - directory path
+% 
 % OUTPUTS:
 %
-% text string containing the full path
+% none
 
-function dir_path = mredge_mkdir(DIR, f, c)
-    dir_path = mredge_dirpath(DIR, f, c);
+function dir_path = mredge_mkdir(dir_path)
     if ~exist(dir_path, 'dir')
         mkdir(dir_path);
     end

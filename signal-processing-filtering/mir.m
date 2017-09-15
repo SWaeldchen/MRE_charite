@@ -1,10 +1,6 @@
-function x_mir = mir(x)
+function x_mir = mir(x, n_slcs)
 
-nd = ndims(x);
+x_resh = resh(x, 4);
+z_indices = [(n_slcs+1):-1:2, 1:1:size(x_resh,3), size(x_resh,3):-1:n_slcs];
 
-x_flip = shiftdim(x, 2);
-x_flip = flipud(x_flip);
-x_flip = x_flip(1:end-1,:,:,:,:,:,:,:,:,:,:); % kludge for nd, obviously
-x_flip = shiftdim(x_flip, nd-2);
-
-x_mir = cat(3, x_flip, x, x_flip); 
+x_mir = x_resh(:,:,z_indices,:);

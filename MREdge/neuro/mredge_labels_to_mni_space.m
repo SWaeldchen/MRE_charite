@@ -24,14 +24,14 @@
 function mredge_label_to_mni_space(info, prefs, param)
 
     [PARAM_SUB] = set_dirs(info, prefs, param);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
     tpm_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
     
-    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB,['wALL', NIFTI_EXTENSION]));
+    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB,['wALL', NIF_EXT]));
     label_to_mni_space(tpm_path, all_file)
 	
 	%for f = info.driving_frequencies
-	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['w', num2str(f), NIFTI_EXTENSION]));
+	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), ['w', num2str(f), NIF_EXT]));
     %    if exist(freq_file, 'file')
     %        label_to_mni_space(tpm_path, freq_file);
     %    end

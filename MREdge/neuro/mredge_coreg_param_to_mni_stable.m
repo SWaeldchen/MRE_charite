@@ -26,7 +26,7 @@ function mredge_coreg_param_to_mni_stable(info_mag, info_an, prefs, param)
 
 	display('Coreg to MNI');
     [MAG_SUB, PARAM_SUB] = set_dirs(info_mag, info_an, prefs, param);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     
     yfile_zip = fullfile(MAG_SUB, 'y_Avg_Magnitude.nii.gz');
     yfile_unzip = yfile_zip(1:end-3);

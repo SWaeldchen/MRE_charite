@@ -25,7 +25,7 @@
 function mredge_mni_to_label_space_springpot(info, prefs)
 
     [SPRINGPOT_SUB] = set_dirs(info, prefs);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
     tpm_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
     
     springpot_files = {'mu', 'mu_weighted', 'alpha', 'alpha_weighted', 'rss', 'rss_weighted'};

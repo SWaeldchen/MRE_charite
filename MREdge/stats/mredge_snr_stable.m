@@ -23,13 +23,13 @@
 function mredge_snr_stable(info, prefs)
 
 	disp('Displacement SNR');
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     [AMP_SUB, STATS_SUB] = set_dirs(info, prefs);
     mask = mredge_load_mask(info, prefs);
     % ALL case
     filepath = fullfile(STATS_SUB, 'displacement_snr_single.csv');
     fID = fopen(filepath, 'w');		
-    amp_file = fullfile(AMP_SUB, ['ALL', NIFTI_EXTENSION]);
+    amp_file = fullfile(AMP_SUB, ['ALL', NIF_EXT]);
     amp_vol = load_untouch_nii(amp_file);
     laplacian_noise(amp_vol.img, filepath, mask);
     filepath = fullfile(STATS_SUB, 'displacement_snr_stable.csv');

@@ -21,8 +21,8 @@
 
 function mredge_timeseries_to_4d(subdir, series, component)
 
-NIFTI_EXTENSION = '*.nii';
-time_series_list = dir(fullfile(subdir, num2str(series), num2str(component), NIFTI_EXTENSION));
+NIF_EXT = '*.nii';
+time_series_list = dir(fullfile(subdir, num2str(series), num2str(component), NIF_EXT));
 num_time_series = numel(time_series_list);
 cell_array = cell(num_time_series, 1);
 for t = 1:num_time_series

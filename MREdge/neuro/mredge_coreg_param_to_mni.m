@@ -25,15 +25,15 @@
 function mredge_coreg_param_to_mni(info, prefs, param)
 
     [MAG_SUB, PARAM_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     
-    y_file = mredge_unzip_if_zip(fullfile(MAG_SUB, ['y_Avg_Magnitude', NIFTI_EXTENSION]));
-    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['ALL', NIFTI_EXTENSION]));
+    y_file = mredge_unzip_if_zip(fullfile(MAG_SUB, ['y_Avg_Magnitude', NIF_EXT]));
+    all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['ALL', NIF_EXT]));
 
 	coreg_param_to_mni(y_file, all_file, info.voxel_spacing*1000); % convert to millimeters
 
     %for f = info.driving_frequencies
-	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]));
+	%	freq_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]));
     %    if exist(freq_file, 'file')
     %        coreg_param_to_mni(y_file, freq_file, info.voxel_spacing*1000);
     %    end

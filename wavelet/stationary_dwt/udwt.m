@@ -37,6 +37,12 @@ h1 = h1/R;
 N0 = length(h0);
 N1 = length(h1);
 
+isrow = 0;
+if size(x,1) == 1
+    x = permute(x, [2 1]);
+    isrow = 1;
+end
+
 w = cell(1,J);
 for j = 1:J
 

@@ -22,7 +22,7 @@
 %	
 function mredge_average_magnitude(info, prefs)
     [AVG_SUB, MAG_SUB] = set_dirs(info, prefs);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     if ~exist(AVG_SUB, 'dir')
         mkdir(AVG_SUB);
     end
@@ -31,15 +31,14 @@ function mredge_average_magnitude(info, prefs)
 
     for f = info.driving_frequencies
         for c = 1:3
-            mag_path = fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+            mag_path = fullfile(MAG_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
             mag_vol = load_untouch_nii_eb(mag_path);
             if isempty(avg_vol) % use first volume of first image as placeholder
-                first_path = fullfile(MAG_SUB, num2str(f), num2str(c), 'first.nii.gz');
-                fslroi_command = ['fsl5.0-fslroi ', mag_path, ' ', first_path, ' ', ' 0 1'];
-                system(fslroi_command);
-                avg_vol = load_untouch_nii_eb(first_path);
+                avg_vol = load_untouch_nii_eb(mag_path);
+                avg_vol.img = avg_vol.img(:,:,:,1);
                 avg_vol.img = zeros(size(avg_vol.img));
-                delete(first_path);
+                avg_vol.hdr.dime.dim(1) = 3;
+                avg_vol.hdr.dime.dim(5) = 1;
             else
                 avg_vol.img = avg_vol.img + sum(mag_vol.img,4);
             end
@@ -47,18 +46,18 @@ function mredge_average_magnitude(info, prefs)
     end
     
     avg_vol.img = avg_vol.img ./ ( numel(info.driving_frequencies) * 3 * info.time_steps);
-    avg_path = fullfile(AVG_SUB, 'Avg_Magnitude', NIFTI_EXTENSION);
-    save_untouch_nii(avg_vol, avg_path);
+    avg_path = fullfile(AVG_SUB, 'Avg_Magnitude', NIF_EXT);
+    save_untouch_nii_eb(avg_vol, avg_path);
     avg_vol.img(avg_vol.img <= prefs.anat_mask_thresh) = 0;
     avg_vol.img(avg_vol.img > prefs.anat_mask_thresh) = 1;
     avg_vol.img = double(avg_vol.img);
-	mask_path = fullfile(AVG_SUB, 'Magnitude_Mask', NIFTI_EXTENSION);
-	save_untouch_nii(avg_vol, mask_path);
+	mask_path = fullfile(AVG_SUB, 'Magnitude_Mask', NIF_EXT);
+	save_untouch_nii_eb(avg_vol, mask_path);
 end
 
 function [AVG_SUB, MAG_SUB] = set_dirs(info, prefs)
 
-    MAG_SUB = fullfile(info.path, 'Magnitude');
+    MAG_SUB = fullfile(info.path, 'magnitude');
     AVG_SUB = mredge_analysis_path(info,prefs, 'Magnitude');
             
 end

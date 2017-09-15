@@ -1,0 +1,71 @@
+#include "WaveletGuidedLaplacian.h"
+#include <cstddef>
+#include <stdio.h>
+
+double* WaveletGuidedLaplacian::computeLaplacian(double* image, double* mask, size_t* dims, double* spacing) {
+    const size_t h = dims[0];
+    const size_t w = dims[1];
+    const size_t d = dims[2];
+    double* laplacian = new double[h*w*d];
+    int index;
+    for (int k = 1; k < d-1; k++) {
+        for (int j = 1; j < w-1; j++) {
+            for (int i = 1; i < h-1; i++) {
+               index = i + h*j + h*w*k;
+               double del2x;
+               double del2y;
+               double del2z;
+               if (mask[index] == 0) {
+                   if (mask[index-1] == 0) {
+                       if (mask[index+1] == 0) {
+                           del2x = image[index-1] - 2*image[index] + image[index+1];
+                       } else if (mask[index-2] == 0) {
+                           del2x = image[index] - 2*image[index-1] + image[index-2];
+                       } else {
+                           del2x = 0;
+                       }
+                   } else if (mask[index+1] == 0 && mask[index+2] == 0) {
+                       del2x = image[index] - 2*image[index+1] + image[index+2];
+                   } else {
+                       del2x = 0;
+                   }
+                   if (mask[index-h] == 0) {
+                       if (mask[index+h] == 0) {
+                           del2y = image[index-h] - 2*image[index] + image[index+h];
+                       } else if (mask[index-2] == 0) {
+                           del2y = image[index] - 2*image[index-h] + image[index-2*h];
+                       } else {
+                           del2y = 0;
+                       }
+                   } else if (mask[index+h] == 0 && mask[index+2*h] == 0) {
+                       del2y = image[index] - 2*image[index+h] + image[index+2*h];
+                   } else {
+                       del2y = 0;
+                   }
+                   if (mask[index-h*w] == 0) {
+                       if (mask[index+h*w] == 0) {
+                           del2z = image[index-h*w] - 2*image[index] + image[index+h*w];
+                       } else if (mask[index-2] == 0) {
+                           del2z = image[index] - 2*image[index-h*w] + image[index-2*h*w];
+                       } else {
+                           del2z = 0;
+                       }
+                   } else if (mask[index+h*w] == 0 && mask[index+2*h*w] == 0) {
+                       del2z = image[index] - 2*image[index+h*w] + image[index+2*h*w];
+                   } else {
+                       del2z = 0;
+                   }
+               } else {
+                   del2x = 0;
+                   del2y = 0;
+                   del2z = 0;
+               }
+               laplacian[index] = del2x/(spacing[0]*spacing[0]) + del2y/(spacing[1]*spacing[1]) + del2z/(spacing[2]*spacing[2]);
+               //laplacian[index] = image[index]; 
+            }
+        }
+    }
+    //printf("Returning \n");
+    return laplacian;
+    
+}

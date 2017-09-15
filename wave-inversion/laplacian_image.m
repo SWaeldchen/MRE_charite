@@ -12,7 +12,7 @@ if nargin < 5
     end
 end
 
-if unique(spacing) > 1 && iso == 1
+if unique(spacing) > 1 & iso == 1
    disp('Laplacian image ERROR: with isotropic spacing, laplacian must be separable not isotropic');
    return;
 end

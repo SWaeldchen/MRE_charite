@@ -45,7 +45,7 @@ else
     special_freq_set = 1;
 end
 [FT_DIRS, PARAM_SUB] =set_dirs(info, prefs, param);
-NIFTI_EXTENSION = '.nii.gz';
+NIF_EXT = '.nii.gz';
 param_num_mdev = [];
 param_denom_mdev = [];
 for f_ind = freq_indices
@@ -56,7 +56,7 @@ for f_ind = freq_indices
         param_num_comp = [];
         param_denom_comp = [];
         for d = 1:numel(FT_DIRS);
-            wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+            wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
             wavefield_vol = load_untouch_nii(wavefield_path);
             wavefield_img = wavefield_vol.img;
             [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] = get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs);
@@ -69,7 +69,7 @@ for f_ind = freq_indices
             if ~exist(param_comp_dir, 'dir')
                 mkdir(param_comp_dir);
             end
-            param_comp_path = fullfile(param_comp_dir, mredge_filename(f, c, NIFTI_EXTENSION));
+            param_comp_path = fullfile(param_comp_dir, mredge_filename(f, c, NIF_EXT));
             save_untouch_nii(param_comp, param_comp_path);
         end
     end
@@ -83,7 +83,7 @@ for f_ind = freq_indices
             display('MREdge ERROR: Frequency folder not found');
             return
         end
-        param_freq_path = fullfile(param_freq_dir, [num2str(f), NIFTI_EXTENSION]);
+        param_freq_path = fullfile(param_freq_dir, [num2str(f), NIF_EXT]);
         save_untouch_nii(param_freq, param_freq_path);
     end
 end

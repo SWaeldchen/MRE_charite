@@ -43,7 +43,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
         special_freq_set = 1;
     end
 	[FT_DIRS, PARAM_SUB] =set_dirs(info, prefs, param);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
     param_num_all = [];
     param_denom_all = [];
     for f_ind = freq_indices
@@ -52,7 +52,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
         param_denom_freq = [];
         for c = 1:3
             for d = 1:numel(FT_DIRS)
-                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
                 wavefield_img = wavefield_vol.img;
                 if isempty(param_num_all)
@@ -71,7 +71,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
                 if ~exist(param_comp_dir, 'dir')
                     mkdir(param_comp_dir);
                 end
-                param_comp_path = fullfile(param_comp_dir, mredge_filename(f, c, NIFTI_EXTENSION));
+                param_comp_path = fullfile(param_comp_dir, mredge_filename(f, c, NIF_EXT));
                 save_untouch_nii(param_comp, param_comp_path);
             end
         end
@@ -85,7 +85,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
                disp('MREdge ERROR: Frequency folder not found');
                return
             end
-            param_freq_path = fullfile(param_freq_dir, [num2str(f), NIFTI_EXTENSION]);
+            param_freq_path = fullfile(param_freq_dir, [num2str(f), NIF_EXT]);
             save_untouch_nii(param_freq, param_freq_path);
         end
     end
@@ -99,7 +99,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
        return
     end
     if special_freq_set == 0
-        param_all_path = fullfile(param_all_dir, ['ALL', NIFTI_EXTENSION]);
+        param_all_path = fullfile(param_all_dir, ['ALL', NIF_EXT]);
     else % make file path unique to particular frequency combination
         filename = '';
         curr_freqs = frequencies(freq_indices);
@@ -110,7 +110,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
                 filename = [filename, '_']; %#ok<AGROW>
             end
         end
-        param_all_path = fullfile(param_all_dir, [filename, NIFTI_EXTENSION]);
+        param_all_path = fullfile(param_all_dir, [filename, NIF_EXT]);
     end
    save_untouch_nii(param_all, param_all_path);
 

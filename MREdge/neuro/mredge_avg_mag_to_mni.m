@@ -26,9 +26,9 @@ function mredge_avg_mag_to_mni(info, prefs)
     TPM_dir = fullfile(spm('Dir'),'tpm');
     spm('defaults','fmri');
     spm_jobman('initcfg');
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     [AVG_MAG_SUB, STATS_DIR] = set_dirs(info, prefs);
-    avg_mag_path = fullfile(AVG_MAG_SUB, ['Avg_Magnitude', NIFTI_EXTENSION]);
+    avg_mag_path = fullfile(AVG_MAG_SUB, ['Avg_Magnitude', NIF_EXT]);
     % align
     matlabbatch{1}.spm.spatial.preproc.channel.vols = {avg_mag_path};
     matlabbatch{1}.spm.spatial.preproc.channel.biasreg = 0.001;
@@ -87,11 +87,11 @@ function [AVG_MAG_SUB, STATS_DIR] = set_dirs(info, prefs)
 end
 
 function calc_segmented_voxels(AVG_MAG_SUB, seg_filepath)
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
     fileID = fopen(seg_filepath, 'a');
     pcts = zeros(5,1);
     for n = 1:5
-        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 'Avg_Magnitude', NIFTI_EXTENSION]);
+        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 'Avg_Magnitude', NIF_EXT]);
         seg_vol = load_untouch_nii_eb(file_path);
         seg_img = seg_vol.img;
         num_vox = numel(seg_img);

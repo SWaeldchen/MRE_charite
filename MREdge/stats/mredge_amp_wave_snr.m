@@ -26,7 +26,7 @@ function mredge_amp_wave_snr(info, prefs)
     if ~exist(SNR_SUB, 'dir')
         mkdir(SNR_SUB)
     end
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     AMPLITUDE_THRESHOLD = 2;
 	amp_vox_filepath = fullfile(STATS_SUB, 'pct_amp_vox.csv');
     w2n_filepath = fullfile(STATS_SUB, 'w2n.csv');
@@ -44,12 +44,12 @@ function mredge_amp_wave_snr(info, prefs)
             if ~exist(snr_dir, 'dir')
                 mkdir(snr_dir);
             end
-            snr_path = fullfile(SNR_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+            snr_path = fullfile(SNR_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
             snr_path = mredge_unzip_if_zip(snr_path);
             snr_vol = load_untouch_nii_eb(snr_path);
 			snr_img = snr_vol.img;
 
-			amp_path = fullfile(AMP_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+			amp_path = fullfile(AMP_SUB, num2str(f), [num2str(f), NIF_EXT]);
             amp_vol = load_untouch_nii_eb(amp_path);
 			amp_img = double(amp_vol.img);
 

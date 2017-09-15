@@ -19,51 +19,24 @@
 %
 % none
 
-function mredge_pm2ri(info, frequency, component)
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    acq_path = info.path;
-    PHASE_SUB = fullfile(acq_path, 'Phase');
-    MAG_SUB = fullfile(acq_path, 'Magnitude');
-    REAL_SUB = fullfile(acq_path, 'Real');
-    IMAG_SUB = fullfile(acq_path, 'Imaginary');
-    path_middle = [num2str(frequency), '/', num2str(component)];
-    path_filename = mredge_filename(frequency, component, NIFTI_EXTENSION);
-    
-    % load phase and mag
-    path_p = fullfile(PHASE_SUB, path_middle, path_filename);
-    path_m = fullfile(MAG_SUB, path_middle, path_filename);
-    
-    p = load_untouch_nii_eb(path_p);
-    m = load_untouch_nii_eb(path_m);
-    
-    %p = mredge_load_with_spm(path_p);
-    %m = mredge_load_with_spm(path_m);
-    
-    % create placeholder re and im
-    re = p;
-    im = m;
-    
-    p_img = double(p.img);
-    m_img = double(m.img);
-
-    % calculate
-    cplx = m_img .* exp(1i.*p_img*2*pi/(4096));
-    re.img = real(cplx);
-    im.img = imag(cplx);
-    re.hdr.dime.datatype = 64;
-    im.hdr.dime.datatype = 64;
-   
-   % write re and im
-    dir_re = fullfile(REAL_SUB, path_middle);
-    dir_im = fullfile(IMAG_SUB, path_middle);
-    if ~exist(dir_re, 'dir')
-      mkdir(dir_re);
+function mredge_pm2ri(info)
+    for subdir = info.ds.subdirs_comps
+        % load p and m
+        p = load_untouch_nii_eb(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+        m = load_untouch_nii_eb(fullfile(info.ds.list(indo.ds.enum.magnitude), subdir));
+        % create placeholder re and im
+        re = p;
+        im = m;
+        p_img = double(p.img);
+        m_img = double(m.img);
+        % calculate
+        cplx = m_img .* exp(1i.*p_img*2*pi/(4096));
+        re.img = real(cplx);
+        im.img = imag(cplx);
+        re.hdr.dime.datatype = 64;
+        im.hdr.dime.datatype = 64;
+        % write re and im
+        save_untouch_nii(re, mredge_mkdir(fullfile(info.ds.list(info.ds.enum.real), subdir)));
+        save_untouch_nii(im, mredge_mkdir(fullfile(info.ds.list(info.ds.enum.imaginary), subdir)));
     end
-    if ~exist(dir_im, 'dir')
-      mkdir(dir_im);
-    end
-    path_re = fullfile(dir_re, path_filename);
-    path_im = fullfile(dir_im, path_filename);
-    save_untouch_nii(re, path_re);
-    save_untouch_nii(im, path_im);
 end

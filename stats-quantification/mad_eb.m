@@ -22,7 +22,7 @@ function y = mad_eb(x,flag,dim)
 
 
 if nargin < 2 || isempty(flag)
-    flag = 0;
+    flag = 1;
 end
 if nargin < 3 || isempty(dim)
     % The output size for [] is a special case, handle it here.
@@ -39,6 +39,7 @@ tile(dim) = size(x,dim);
 
 if flag
     % Compute the median of the absolute deviations from the median.
+    x_nonan = x(~isnan(x));
     y = nanmedian(abs(x - repmat(nanmedian(x,dim), tile)),dim);
 else
     % Compute the mean of the absolute deviations from the mean.

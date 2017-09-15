@@ -26,6 +26,6 @@ function mredge_motion_correction(info, prefs)
     elseif strcmp(prefs.moco_method,'spm') == 1
         mredge_motion_correction_spm(info, prefs);
     else
-        display('MREdge ERROR: Invalid motion correction method.');
+        disp('MREdge ERROR: Invalid motion correction method.');
     end
 end

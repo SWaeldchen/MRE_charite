@@ -1,4 +1,4 @@
-%% function file_list = mredge_split_4d(subdir, series, component)
+function path_list = mredge_split_4d(path_4d)
 %
 % Part of the MREdge software package
 % Created 2016 at Charite Medical University Berlin
@@ -7,27 +7,26 @@
 %
 % USAGE:
 %
-% Uses FSL split to split a 4D .nii.gz file into a file list. Default
-% format is 'vol0000.nii.gz', 'vol0001.nii.gz', etc.%
+% Splits a 4D NIfTI into 3D images and passes the list of the 
+% 3d image paths. For FSL and SPM applications.
 %
 % INPUTS:
 %
-% subdir - acquisition subdirectory (e.g. 'Phase')
-% series - driving frequency
-% component - component of motion
+% path_4d - path to the 4D NIfTI
 %
 % OUTPUTS:
 %
-% file_list - cell of paths to split files
+% file_list - cell of paths to 3d files
 
-function file_list = mredge_split_4d(subdir, series, component, info)
-	FSL_SPLIT_PREFIX = 'vol000';
-    name_4d = mredge_filename(series, component, '.nii.gz');
-    path_4d = fullfile(subdir, num2str(series), num2str(component), name_4d);
-    comp_dir = fullfile(subdir,num2str(series), num2str(component));
-    system(['fsl5.0-fslsplit ',path_4d,' ', comp_dir,'/vol']);
-    file_list = cell(info.time_steps, 1);
-    for t = 1:info.time_steps
-      file_list{t} = [comp_dir, '/', FSL_SPLIT_PREFIX, num2str(t-1), '.nii.gz'];
-    end
+path_base = mredge_remove_nifti_extension(path_4d);
+vol_4d = load_untouch_nii_eb(path_4d);
+path_list = cell(vol_4d.hdr.dime.dim(5),1);
+for n = 1:size(vol_4d.img, 4)
+    vol_3d = vol_4d;
+    vol_3d.img = vol_4d.img(:,:,:,n);
+    vol_3d.hdr.dime.dim(5) = 1;
+    vol_3d.hdr.dime.dim(1) = 3;
+    filename_end = sprintf("%02d", n);
+    path_list{n} = [path_base, filename_end, NIF_EXT];
+    save_untouch_nii(vol_3d, path_list{n});
 end

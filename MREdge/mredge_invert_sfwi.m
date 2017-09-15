@@ -32,14 +32,14 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
         SPECIAL_FREQ_SET = 1;
     end
 	[FT_DIRS, SFWI_SUB, HELM_SUB] =set_dirs(info, prefs);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
 	U = [];
     for f_ind = freq_indices
         f = info.driving_frequencies(f_ind);
         U_f = [];
         for c = 1:3
             for d = 1:numel(FT_DIRS)
-                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
                 wavefield_img = wavefield_vol.img;
                 U_f = cat(4, U_f, wavefield_img);
@@ -64,7 +64,7 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
 			mkdir(param_dir);
 		end
     	if SPECIAL_FREQ_SET == 0
-        	param_path = fullfile(set{2}, ['ALL', NIFTI_EXTENSION]);
+        	param_path = fullfile(set{2}, ['ALL', NIF_EXT]);
     	else % make file path unique to particular frequency combination
         	filename = '';
         	nfreqs = numel(freq_indices);
@@ -74,7 +74,7 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
 		            filename = [filename, '_']; %#ok<AGROW>
 		        end
 		    end
-        	param_path = fullfile(param_dir, [filename, NIFTI_EXTENSION]);
+        	param_path = fullfile(param_dir, [filename, NIF_EXT]);
     	end
    		save_untouch_nii(param_vol, param_path);
 	end

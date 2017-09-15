@@ -50,6 +50,7 @@ end
 for k = 0:N0-1
     lo(M*k+(1:L),:) = lo(M*k+(1:L),:) + h0(k+1)*x;
 end
+
 if d == 2
    lo = lo';
    hi = hi';

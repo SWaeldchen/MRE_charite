@@ -28,7 +28,7 @@ function mredge_springpot_stable(info, prefs)
     if ~exist(SPRINGPOT_SUB, 'dir')
         mkdir(SPRINGPOT_SUB);
     end
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
     BRAIN_ETA = 10;
 
     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 1);

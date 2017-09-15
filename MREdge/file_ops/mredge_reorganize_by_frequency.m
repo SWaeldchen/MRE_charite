@@ -24,7 +24,7 @@
 %% collect series numbers
 
 function mredge_reorganize_by_frequency(series_number, subdir, driving_frequencies)
-  NIFTI_EXTENSION = '.nii.gz';
+  NIF_EXT = '.nii.gz';
   for f = 1:numel(driving_frequencies)
       index = (f-1)*3;
       for c = 1:3
@@ -33,7 +33,7 @@ function mredge_reorganize_by_frequency(series_number, subdir, driving_frequenci
           if ~exist(frequency_path, 'dir')
               mkdir(frequency_path);
           end
-          movefile(fullfile(series_path, mredge_filename(series_number,  num2str(index+c), NIFTI_EXTENSION)), fullfile(frequency_path, mredge_filename(driving_frequencies(f),  c, NIFTI_EXTENSION)));
+          movefile(fullfile(series_path, mredge_filename(series_number,  num2str(index+c), NIF_EXT)), fullfile(frequency_path, mredge_filename(driving_frequencies(f),  c, NIFTI_EXTENSION)));
       end
   end
   series_path = fullfile(subdir, num2str(series_number));

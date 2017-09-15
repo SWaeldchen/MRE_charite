@@ -1,4 +1,4 @@
-%% function mredge_curl(info, prefs);
+function mredge_remove_divergence(info, prefs)
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -8,7 +8,7 @@
 %
 % USAGE:
 %
-%   Helmholt-Hodge decomposition of the vector fields, retaining curl
+%   Helmholtz-Hodge decomposition of the vector fields, retaining curl
 %   component
 %
 % INPUTS:
@@ -20,21 +20,19 @@
 %
 %   none
 
-function mredge_remove_divergence(info, prefs)
-
 	[FT_DIR, RESID_DIR] =set_dirs(info, prefs);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+	NIF_EXT = getenv('NIFTI_EXTENSION');
     if ~exist(RESID_DIR, 'dir')
         mkdir(RESID_DIR);
     end
+    disp('Divergence Removal');
     for f = info.driving_frequencies
-        disp([num2str(f), ' Hz']);
         % make use of component order in prefs
         order_vec = get_order_vec(prefs);
         wavefield_vol = cell(3,1);
         components = cell(3,1);
         for c = 1:3
-            wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), mredge_filename(f, order_vec(c), NIFTI_EXTENSION));
+            wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), mredge_filename(f, order_vec(c), NIF_EXT));
             wavefield_vol{c} = load_untouch_nii_eb(wavefield_path);
             components{order_vec(c)} = wavefield_vol{c}.img;
         end
@@ -49,14 +47,14 @@ function mredge_remove_divergence(info, prefs)
             end
         end
         for c = 1:3
-            wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), mredge_filename(f, order_vec(c), NIFTI_EXTENSION));
+            wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), mredge_filename(f, order_vec(c), NIF_EXT));
             wavefield_vol{c}.img = components{order_vec(c)};
             save_untouch_nii(wavefield_vol{c}, wavefield_path);
             resid_dir = fullfile(RESID_DIR, num2str(f), num2str(c));
             if ~exist(resid_dir, 'dir')
                 mkdir(resid_dir);
             end
-            resid_path = fullfile(resid_dir, mredge_filename(f, c, NIFTI_EXTENSION));
+            resid_path = fullfile(resid_dir, mredge_filename(f, c, NIF_EXT));
             resid_vol{c}.img = resid_vol{c}.img - wavefield_vol{c}.img;
             save_untouch_nii(resid_vol{c}, resid_path);
         end

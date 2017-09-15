@@ -38,5 +38,9 @@ elseif strcmpi(prefs.inversion_strategy, 'SFWI')
 	mredge_invert_sfwi(info, prefs);
 end
 
+if prefs.sliding_windows
+    mredge_invert_sliding(info, prefs, 1);
+end
+
 
 

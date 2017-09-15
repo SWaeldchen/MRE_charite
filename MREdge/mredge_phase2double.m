@@ -1,4 +1,4 @@
-%% function mredge_phase2double(info);
+function mredge_phase2double(info)
 %
 % Part of the MREdge software package
 % Created 2016 by Eric Barnhill for Charite Medical University Berlin
@@ -19,26 +19,10 @@
 %
 %   none
 
-function mredge_phase2double(info)
-
-	[PHASE_SUB] =set_dirs(info);
-	NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-
-    for f = info.driving_frequencies
-        for c = 1:3
-            phase_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
-            phase_vol = load_untouch_nii_eb(phase_path);
-            phase_vol.img = double(phase_vol.img);
-            phase_vol.hdr.dime.datatype = 64;
-            save_untouch_nii(phase_vol, phase_path);
-        end
-    end
-
-
+for subdir = info.ds.subdirs_comps
+    phase_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+    phase_vol = load_untouch_nii_eb(phase_path);
+    phase_vol.img = double(phase_vol.img);
+    phase_vol.hdr.dime.datatype = 64;
+    save_untouch_nii(phase_vol, phase_path);
 end
-
-function [PHASE_SUB] = set_dirs(info)
-    PHASE_SUB = fullfile(info.path, 'Phase');
-end
-
-

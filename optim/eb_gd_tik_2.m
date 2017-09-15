@@ -4,15 +4,15 @@ x_rec = x;
 e = zeros(niter, 1);
 for n = 1:niter
     e(n) = eval_f(x_rec, x, lambda);
-    diff = step_size*grad_f(x_rec, x, lambda);
-    y = y - tau*diff;
+    diff = tau*grad_f(x_rec, x, lambda);
+    x_rec = x_rec - tau*diff;
 end
 
 
 figure(1);
 plot(e); axis tight;
 figure();
-imshow(y, []);
+imshow(x_rec, []);
 
 end
 

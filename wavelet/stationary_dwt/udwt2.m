@@ -1,6 +1,4 @@
-function w = udwt2(x, J, h0, h1);
-
-function w = udwt(x, J, h0, h1)
+function w = udwt2(x, J, h0, h1)
 
 % Undecimated Discrete Wavelet Transform 2D
 %

@@ -1,4 +1,4 @@
-function [mag, phi] = helmholtz_inversion(U_denoise, freqvec, spacing, ndims, ord, iso)
+function [mag, phi_old] = helmholtz_inversion(U_denoise, freqvec, spacing, ndims, ord, iso)
 
 U = U_denoise;
 if nargin < 6
@@ -14,7 +14,5 @@ end
 
 [magNum, magDenom, phiNum, phiDenom] = invert(U, freqvec, spacing, ndims, ord, iso);
 mag = magNum ./ magDenom;
-phi = acos(-phiNum ./ phiDenom);
-
-mag(isnan(mag)) = 0;
-phi(isnan(phi)) = 0;
+phi_old = acos(-phiNum ./ phiDenom);
+%phi_new = angle(-phiNew);

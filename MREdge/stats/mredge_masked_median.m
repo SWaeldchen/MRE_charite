@@ -22,7 +22,7 @@
 
 function mredge_masked_median(info, prefs)
 
-    if strcmp(prefs.inversion_strategy, 'MDEV') == 1
+    if strcmpi(prefs.inversion_strategy, 'MDEV') == 1
         if prefs.outputs.absg == 1
             masked(info, prefs, 'Abs_G');
         end
@@ -41,7 +41,7 @@ function mredge_masked_median(info, prefs)
         if prefs.outputs.amplitude == 1
             masked(info, prefs, 'Amp');
         end
-    elseif strcmp(prefs.inversion_strategy, 'SFWI') == 1
+    elseif strcmpi(prefs.inversion_strategy, 'SFWI') == 1
         masked(info, prefs, 'SFWI');
         %masked(info, prefs, 'HELM');
     end
@@ -52,22 +52,22 @@ function masked(info, prefs, param)
 	display(['Masked Median: ',param]);
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    param_path = fullfile(PARAM_SUB, ['ALL', NIFTI_EXTENSION]);
+    NIF_EXT = getenv('NIFTI_EXTENSION');
+    param_path = fullfile(PARAM_SUB, ['ALL', NIF_EXT]);
     param_path = mredge_unzip_if_zip(param_path);
     param_vol = load_untouch_nii_eb(param_path);
     param_img = param_vol.img;
 	mask = double(mredge_load_mask(info,prefs));
 	masked = double(mask).*double(param_img);
 	masked(masked == 0) = nan;
-    param_masked = median(masked(~isnan(masked)));
+    param_masked = median(masked(masked>prefs.abs_g_noise_thresh));
     fileID = fopen(fullfile(STATS_SUB, [ 'masked_',param,'.csv']), 'w');
     fprintf(fileID, 'F, Masked Median \n');
     fprintf(fileID, 'ALL, %1.4f \n', param_masked);
 	save(fullfile(PARAM_SUB, 'ALL_masked_image.mat'), 'masked');
     for f = info.driving_frequencies
 		%disp([num2str(f), 'Hz']);
-        param_path = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]));
+        param_path = mredge_unzip_if_zip(fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]));
         if exist(param_path, 'file')
             param_vol = load_untouch_nii_eb(param_path);
             param_img = param_vol.img;
@@ -79,10 +79,12 @@ function masked(info, prefs, param)
         end
     end
     fclose('all');
-    masked_stable(info, prefs, param);
+    if prefs.sliding_windows
+        masked_sliding(info, prefs, param);
+    end
 end 
 
-function masked_stable(info, prefs, param)
+function masked_sliding(info, prefs, param)
 
 	display(['Masked Medians, Stable Inversions ',param]);
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
@@ -113,6 +115,9 @@ function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)
 
     PARAM_SUB = mredge_analysis_path(info, prefs, param);
     STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    if ~exist(STATS_SUB, 'dir')
+            mkdir(STATS_SUB);
+    end
 end
 
 function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)

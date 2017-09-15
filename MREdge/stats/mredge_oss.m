@@ -42,7 +42,7 @@ function mredge_oss(info, prefs)
         mkdir(OSS_SUB)
     end
 	RGA_DIFFERENCES_FILE_PATH = '/home/ericbarnhill/barnhill-eclipse-workspace/PhaseTools/differences.dat';
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
 	mredge_average_magnitude(info, prefs);
     oss_snr_file_path = fullfile(STATS_SUB, 'oss_snr.csv');
     oss_snr_ID = fopen(oss_snr_file_path, 'w');
@@ -57,7 +57,7 @@ function mredge_oss(info, prefs)
 		for c = 1:3
 			tic
 			display([num2str(f), ' ', num2str(c)]);
-			vol_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+			vol_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
 			vol = load_untouch_nii_eb(vol_path);
 			rg4d = com.ericbarnhill.phaseTools.RG4D;
 			rg4d.setDifferencesFilePath(RGA_DIFFERENCES_FILE_PATH);

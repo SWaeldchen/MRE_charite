@@ -1,0 +1,24 @@
+function lg = loggabor_eb(dims, w0, t0, sig_r, sig_t)
+if nargin < 4
+    sig_t = 0.5;
+    if nargin < 3
+        sig_r = 0.5;
+        if nargin < 2
+            t0 = -1;
+        end
+    end
+end
+
+I = dims(1);
+J = dims(2);
+[ux, uy] = meshgrid(([1:J]-(fix(J/2)+1))/(J-mod(J,2)), ...
+    ([1:I]-(fix(I/2)+1))/(I-mod(I,2)));
+r = sqrt(ux.^2 + uy.^2);
+lg = exp( -(log(r/w0).^2) ./ (2*log(sig_r)^2) );
+
+if t0 >= 0
+    t = atan2(uy, ux);
+    dt = exp( - ( (1 + exp(1i*t) ./ exp(1i*t0))/2).^2 ./ (2*sig_t^2)) ;
+    lg = lg .* dt;
+end
+    

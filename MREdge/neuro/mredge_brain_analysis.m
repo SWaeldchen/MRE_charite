@@ -26,28 +26,31 @@ function mredge_brain_analysis(info, prefs)
     t = tic;
 	mredge_avg_mag_to_mni(info, prefs);
 
-    if strcmp(prefs.inversion_strategy, 'MDEV') == 1
-        if prefs.outputs.absg == 1
+    if strcmpi(prefs.inversion_strategy, 'MDEV')
+        if prefs.outputs.absg
             brain_analysis(info, prefs, 'Abs_G');
         end
-        if prefs.outputs.phi == 1
+        if prefs.outputs.phi
             brain_analysis(info, prefs, 'Phi');
         end
-        if prefs.outputs.springpot == 1
+        if prefs.outputs.springpot
             brain_analysis_springpot(info, prefs);
         end
-        if prefs.outputs.c == 1
+        if prefs.outputs.c
             brain_analysis(info, prefs, 'C');
         end
-        if prefs.outputs.a == 1
+        if prefs.outputs.a
             brain_analysis(info, prefs, 'A');
         end
-        if prefs.outputs.amplitude == 1
+        if prefs.outputs.amplitude
             brain_analysis(info, prefs, 'Amp');
         end
-    elseif strcmp(prefs.inversion_strategy, 'SFWI') == 1
+    elseif strcmpi(prefs.inversion_strategy, 'SFWI')
         brain_analysis(info, prefs, 'SFWI');
         %brain_analysis(info, prefs, 'HELM');
+    end
+    if prefs.sliding_windows
+        mredge_brain_analysis_sliding(info, prefs);
     end
     disp(['Brain analysis time: ', num2str(toc(t))]);
     

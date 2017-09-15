@@ -22,14 +22,13 @@
 % none
 %	
 function mredge_distortion_correction(info, prefs)
-    if strcmp(prefs.dico_method,'ft') == 1
+    if strcmpi(prefs.dico_method,'ft')
         mredge_split_ft(info, prefs);
         mredge_distortion_correction_ft(info, prefs);
         mredge_combine_ft(info, prefs);
-    elseif strcmp(prefs.dico_method,'raw') == 1
+    elseif strcmpi(prefs.dico_method,'raw')
         mredge_distortion_correction_raw(info,prefs);
     else
         disp('MREdge ERROR: Invalid distortion correction method.');
     end
-    cd(info.path);
 end

@@ -20,6 +20,6 @@
 % text string containing the full path
 
 function path = mredge_filepath(DIR, f, c)
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
-    path = fullfile(DIR, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+    NIF_EXT = getenv('NIFTI_EXTENSION');
+    path = fullfile(DIR, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
 end

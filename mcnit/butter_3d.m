@@ -26,7 +26,7 @@ function [y, filt] = butter_3d(ord, cut, x, hi)
 if nargin < 4
 	hi = 0;
 end
-if nargin < 3 || cut <= 0 || cut > 1 || ndims(x) < 3
+if nargin < 3 || cut < 0 || cut > 1 || ndims(x) < 3
 	disp('MCNIT error: butter_3d must have 3+d data, cutoff between 0 and 1, and parameters for order and cutoff');
 end
 

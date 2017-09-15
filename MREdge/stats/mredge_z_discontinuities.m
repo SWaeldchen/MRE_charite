@@ -22,7 +22,7 @@
 function mredge_z_discontinuities(info, prefs)
 
 	[FT_DIRS, STATS_SUB] =set_dirs(info, prefs);
-	NIFTI_EXTENSION = '.nii.gz';
+	NIF_EXT = '.nii.gz';
 	stats_filepath = fullfile(STATS_SUB, 'z_discontinuities.csv')
 	if exist(stats_filepath, 'file')
 		delete(stats_filepath);
@@ -32,13 +32,13 @@ function mredge_z_discontinuities(info, prefs)
             display([num2str(f), ' Hz']);
             for c = 1:3
                 display(num2str(c));
-                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+                wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
 				wavefield_img = wavefield_vol.img;
                 z_noise = z_noise_est(real(wavefield_img));
                 fileID = fopen(stats_filepath, 'a');
                 fprintf(fileID, '%d, %d, %1.3f \n', f, c, z_noise);
-				ft_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIFTI_EXTENSION));
+				ft_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
 				save_untouch_nii(wavefield_vol, ft_path);
 			end
 		end

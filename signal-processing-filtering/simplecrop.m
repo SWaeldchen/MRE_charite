@@ -8,5 +8,7 @@ function v = simplecrop(w, cropdims)
 		v = w(1:cropdims(1), 1:cropdims(2), 1:cropdims(3));
     elseif ndims(w) == 4
     	v = w(1:cropdims(1), 1:cropdims(2), 1:cropdims(3), 1:cropdims(4));
-	end
+    elseif ndims(w) == 5
+       	v = w(1:cropdims(1), 1:cropdims(2), 1:cropdims(3), 1:cropdims(4), 1:cropdims(5));
+    end
 end

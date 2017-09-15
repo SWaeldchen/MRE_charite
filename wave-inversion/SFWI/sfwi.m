@@ -41,6 +41,7 @@ K1_sfwi = [];
 
 % create FD gradient functions
 kern = [1 -1];
+% to AM - lately I am finding better results with [0.5 0 -0.5]
 x_grad_kern = kern  / spacing(1);
 y_grad_kern = kern'  / spacing(2);
 z_grad_kern = zeros(1,1,numel(kern)); z_grad_kern(:) = kern  / spacing(3);

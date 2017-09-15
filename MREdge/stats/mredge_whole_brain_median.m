@@ -47,9 +47,9 @@ function whole_brain(info, prefs, param)
 	display(['Calculating Whole Brain Medians ',param]);
 
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
-    NIFTI_EXTENSION = getenv('NIFTI_EXTENSION');
+    NIF_EXT = getenv('NIFTI_EXTENSION');
 	% evaluate all frequencies first
-    param_path_zip = fullfile(PARAM_SUB, 'ALL', NIFTI_EXTENSION);
+    param_path_zip = fullfile(PARAM_SUB, 'ALL', NIF_EXT);
     param_path_unzip = param_path_zip(1:end-3);
     if exist(param_path_zip, 'file')
         gunzip(param_path_zip);
@@ -67,7 +67,7 @@ function whole_brain(info, prefs, param)
 	% rotate through individual frequencies
     for f = info.driving_frequencies
 		display([num2str(f), 'Hz']);
-        param_path_zip = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIFTI_EXTENSION]);
+        param_path_zip = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]);
          param_path_unzip = param_path_zip(1:end-3);
         if exist(param_path_zip, 'file')
             gunzip(param_path_zip);
@@ -93,7 +93,7 @@ function whole_brain_springpot(info, prefs)
     MU_MIN = 200;
 
     [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs);
-    NIFTI_EXTENSION = '.nii.gz';
+    NIF_EXT = '.nii.gz';
     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);
