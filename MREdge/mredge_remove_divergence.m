@@ -25,7 +25,6 @@ function mredge_remove_divergence(info, prefs)
     if ~exist(RESID_DIR, 'dir')
         mkdir(RESID_DIR);
     end
-    disp('Divergence Removal');
     for f = info.driving_frequencies
         % make use of component order in prefs
         order_vec = get_order_vec(prefs);
