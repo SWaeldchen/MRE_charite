@@ -28,8 +28,10 @@ function mredge_denoise(info, prefs)
       resid_vol = wavefield_vol;
       if strcmpi(prefs.denoise_strategy, 'z-xy') == 1
           wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_level, 1, mask);
-      elseif strcmpi(prefs.denoise_strategy, '3d') == 1
+      elseif strcmpi(prefs.denoise_strategy, '3d_soft_visu') == 1
           wavefield_img = dtdenoise_3d_undec(wavefield_img, prefs.denoise_settings.full3d_level, mask);
+      elseif strcmpi(prefs.denoise_strategy, '3d_ogs') == 1
+          wavefield_img = dtdenoise_3d_mad_ogs_undec(wavefield_img, prefs.denoise_settings.full3d_level, mask);
       elseif strcmpi(prefs.denoise_strategy, '2d')
           wavefield_img = dtdenoise_2d_undec(wavefield_img,  prefs.denoise_settings.xy_level, mask);
           wavefield_img(isnan(wavefield_img)) = 0;

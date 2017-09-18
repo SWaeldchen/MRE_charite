@@ -1,7 +1,6 @@
-function data_6d = mredge_load_phase_as_6d (info, prefs)
+function data_6d = mredge_load_phase_as_6d (info)
 
 	PHASE_SUB = set_dirs(info);
-    num_freqs = numel(info.driving_frequencies);
     NIF_EXT = getenv('NIFTI_EXTENSION');
     data_6d = [];
     for f_num = 1:numel(info.driving_frequencies)
@@ -19,6 +18,6 @@ function data_6d = mredge_load_phase_as_6d (info, prefs)
 end
  
 function PHASE_SUB = set_dirs(info)
-    PHASE_SUB = fullfile(info.path, 'Phase');
+    PHASE_SUB = fullfile(info.path, 'phase');
 end
 

@@ -37,13 +37,13 @@ function u_den = cdwt_den(u, mask, J, thresh, Faf, af, Fsf, sf)
                     b = w{j}{2}{s1}{s2}{s3};
                     C = a + 1i*b;
                     if strcmpi(thresh, 'visu') 
-                        noise_est = visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
+                        noise_est = 0.15*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
                     else
                         %noise_est = bayesshrink_eb(real(C), simplepad(mask, [size(C,1), size(C,2), size(C,3)]));
                         noise_est = bayesshrink_eb(abs(C), ones(size(real(C))));
                     end
-                    %disp([num2str(visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]))), ' ', ...
-                    % num2str(bayesshrink_eb(real(C), simplepad(mask, [size(C,1), size(C,2), size(C,3)])))]);
+                    disp([num2str(0.15*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]))), ' ', ...
+                     num2str(bayesshrink_eb(real(C), simplepad(mask, [size(C,1), size(C,2), size(C,3)])))]);
                     C = soft(C, noise_est);
                     C(isnan(C)) = 0;
                     w{j}{1}{s1}{s2}{s3} = real(C);
