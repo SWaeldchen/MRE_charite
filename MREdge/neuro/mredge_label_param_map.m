@@ -76,6 +76,7 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         label_voxels = labels_img == label_num;
         param_label_voxels = param_img(label_voxels);
         param_values = param_label_voxels(~isnan(param_label_voxels));
+        param_values = param_values(param_values < 2046  | param_values > 2050); % nifti converts nan to 2048
         param_values = param_values(param_values > noise_thresh);
         stats(n).label = labels{n}; %#ok<*AGROW>
         stats(n).num_voxels = numel(param_values);

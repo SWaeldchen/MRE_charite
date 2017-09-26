@@ -27,6 +27,7 @@ mredge_clean_acquisition_folder(info);
 mredge_dicom_to_nifti(info);
 mredge_organize_acquisition(info);
 mredge_average_magnitude(info, prefs);
+save(fullfile(info.path, 'infoprefs.mat'), 'info', 'prefs');
 
 % OSS SNR ROUTINES
 
@@ -45,6 +46,10 @@ else
         disp('Motion correction');
         mredge_motion_correction(info, prefs);
     end
+    if prefs.denoise_raw
+        disp('Raw data denoise');
+        mredge_denoise_raw(info, prefs);
+    end
     if ~strcmp(prefs.phase_unwrap, 'none')
         disp('Phase Unwrapping')
         mredge_phase_unwrap(info, prefs);
@@ -57,13 +62,17 @@ else
         disp('IPD Removal');
         mredge_remove_ipds(info, prefs);
     end
-    if ~strcmpi(prefs.denoise_strategy, 'none')
+    if ~prefs.denoise_raw && ~strcmpi(prefs.denoise_strategy, 'none')
         disp('Denoising');
         mredge_denoise(info, prefs);
     end
     if ~strcmpi(prefs.curl_strategy, 'none')
-        disp('Divergence Removal');
+        disp('Hodge Decomposition');
         mredge_remove_divergence(info, prefs);
+    end
+    if prefs.highpass || prefs.lowpass
+        disp('Bandpass');
+        mredge_bandpass(info, prefs);
     end
     if ~strcmp(prefs.inversion_strategy, 'none')
         disp('Wave Inversion');

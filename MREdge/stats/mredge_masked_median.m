@@ -60,10 +60,13 @@ function masked(info, prefs, param)
 	mask = double(mredge_load_mask(info,prefs));
 	masked = double(mask).*double(param_img);
 	masked(masked == 0) = nan;
-    param_masked = median(masked(masked>prefs.abs_g_noise_thresh));
+    masked_nonan = masked(~isnan(masked));
+    THRESH = 300;
+    param_median = median(masked_nonan(masked_nonan > THRESH));
+    param_var = std(masked_nonan(masked_nonan > THRESH)) / param_median;
     fileID = fopen(fullfile(STATS_SUB, [ 'masked_',param,'.csv']), 'w');
-    fprintf(fileID, 'F, Masked Median \n');
-    fprintf(fileID, 'ALL, %1.4f \n', param_masked);
+    fprintf(fileID, 'F, Median, Variance \n');
+    fprintf(fileID, 'ALL, %1.4f, %1.4f \n', param_median, param_var);
 	save(fullfile(PARAM_SUB, 'ALL_masked_image.mat'), 'masked');
     for f = info.driving_frequencies
 		%disp([num2str(f), 'Hz']);
@@ -73,9 +76,9 @@ function masked(info, prefs, param)
             param_img = param_vol.img;
             masked = double(mask).*double(param_img);
             masked(masked == 0) = nan;
-            param_masked = median(masked(~isnan(masked)));
+            param_median = median(masked(~isnan(masked)));
             fileID = fopen(fullfile(STATS_SUB, [ 'masked_',param,'.csv']), 'a');
-            fprintf(fileID, '%d, %1.4f\n', f, param_masked);
+            fprintf(fileID, '%d, %1.4f\n', f, param_median);
         end
     end
     fclose('all');
