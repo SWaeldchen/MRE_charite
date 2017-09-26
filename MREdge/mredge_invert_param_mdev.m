@@ -44,29 +44,29 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
     end
 	[FT_DIRS, PARAM_SUB] =set_dirs(info, prefs, param);
 	NIF_EXT = getenv('NIFTI_EXTENSION');
-    param_num_all = [];
-    param_denom_all = [];
+    if numel(unique(info.voxel_spacing)) == 1
+        ndims = 4;
+        iso = 1;
+    else
+        ndims = 2;
+        iso = 0;
+    end
+    all_u = [];
     for f_ind = freq_indices
         f = info.driving_frequencies(f_ind);
-        param_num_freq = [];
-        param_denom_freq = [];
+        freq_u = [];
         for c = 1:3
             for d = 1:numel(FT_DIRS)
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
                 wavefield_img = wavefield_vol.img;
-                if isempty(param_num_all)
-                    [param_num_all, param_denom_all] = make_placeholders(wavefield_img);
-                end
-                if isempty(param_num_freq)
-                    [param_num_freq, param_denom_freq] = make_placeholders(wavefield_img);
-                end
-                [param_num_all, param_denom_all, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] = get_param(param, param_num_all, param_denom_all, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs);
+                freq_u = cat(4, freq_u, wavefield_img);
             end
             % outputs for component
             if special_freq_set == 0
+                absg = helmholtz_inversion(wavefield_img, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, ndims, iso);
                 param_comp = wavefield_vol;
-                param_comp.img = divide(param, param_num_comp, param_denom_comp);
+                param_comp.img = absg;
                 param_comp_dir = fullfile(PARAM_SUB, num2str(f), num2str(c));
                 if ~exist(param_comp_dir, 'dir')
                     mkdir(param_comp_dir);
@@ -75,10 +75,12 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
                 save_untouch_nii(param_comp, param_comp_path);
             end
         end
+        all_u = cat(5, all_u, freq_u);
         % outputs for frequency
         if special_freq_set == 0
+            absg = helmholtz_inversion(freq_u, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
             param_freq = wavefield_vol;
-            param_freq.img = divide(param, param_num_freq, param_denom_freq);
+            param_freq.img = absg;
             param_freq.hdr.dime.datatype = 64;
             param_freq_dir = fullfile(PARAM_SUB, num2str(f));
             if ~exist(param_freq_dir, 'dir')
@@ -90,8 +92,16 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
         end
     end
     % all output
+    if prefs.inversion_settings.bootstrap
+        [x0, x1] = bootstrap_helmholtz(double(all_u), info.driving_frequencies, info.voxel_spacing);
+        mean_freq = mean(info.driving_frequencies);
+        absg = x0 + x1*mean_freq;
+    else
+        absg = helmholtz_inversion(all_u, info.driving_frequencies, info.voxel_spacing, ...
+            prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+    end
     param_all = wavefield_vol;
-    param_all.img = divide(param, param_num_all, param_denom_all);
+    param_all.img = absg;
     param_all.hdr.dime.datatype = 64;
     param_all_dir = fullfile(PARAM_SUB);
     if ~exist(param_all_dir, 'dir')
@@ -116,50 +126,7 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
 
 end
 
-function [param_num_all, param_denom_all, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_all, param_denom_all, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs)
-    
-    OMEGA = 2*pi*f;
-    RHO = str2double(getenv('RHO'));
-    
-    if strcmp(param, 'Abs_G') == 1
-        laplacian = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims);
-        param_num_comp = RHO.*OMEGA.^2.*abs(wavefield_img);
-        param_denom_comp = abs(laplacian);
-        param_num_freq = param_num_freq + param_num_comp;
-        param_denom_freq = param_denom_freq + param_denom_comp;
-        param_num_all = param_num_all + param_num_comp;
-        param_denom_all = param_denom_all + param_denom_comp;
-    elseif strcmp(param, 'Phi') == 1
-        laplacian = mredge_compact_laplacian(wavefield_img, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims);
-        param_num_comp = real(wavefield_img).*real(laplacian) + imag(wavefield_img).*imag(laplacian);
-        param_denom_comp = abs(wavefield_img).*abs(laplacian);
-        param_num_freq = param_num_freq + param_num_comp;
-        param_denom_freq = param_denom_freq + param_denom_comp;
-        param_num_all = param_num_all + param_num_comp;
-        param_denom_all = param_denom_all + param_denom_comp;    
-    else
-        disp('MREdge ERROR: Inversion parameter not yet implemented.');
-    end
-
-end
-    
 function [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)
     FT_DIRS = mredge_get_ft_dirs(info, prefs);
     PARAM_SUB = mredge_analysis_path(info, prefs, param);
-end
-
-function res = divide(param, num, denom)
-    if strcmp(param, 'Abs_G') == 1
-        res = num ./ denom;
-    elseif strcmp(param, 'Phi') == 1
-        res = acos(-num./denom);
-    else
-        disp('MREdge ERROR: Parameter ', param,' not implemented.');
-    end
-end
-
-function [n, d] = make_placeholders(img)
-    sz = size(img);
-    n = zeros(sz);
-    d = zeros(sz);
 end

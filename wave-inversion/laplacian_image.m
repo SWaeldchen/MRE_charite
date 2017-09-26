@@ -53,7 +53,7 @@ function c= get_kernel(ndims, ord, iso)
                     switch iso
                         case 0
                             c{1} = [1 -2 1];
-                            c{2} = c{1};
+                            c{2} = c{1}';
                         case 1
                             c1 = 1/6; c2 = 2/3; c3 = -10/3;
                             c{1} = [c1 c2 c1; c2 c3 c2; c1 c2 c1];

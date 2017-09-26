@@ -11,7 +11,7 @@
 %
 %  - Jimmy Shen (jimmy@rotman-baycrest.on.ca)
 %
-function save_untouch_nii(nii, filename)
+function save_untouch_nii_eb(nii, filename)
    
    if ~exist('nii','var') | isempty(nii) | ~isfield(nii,'hdr') | ...
 	~isfield(nii,'img') | ~exist('filename','var') | isempty(filename)

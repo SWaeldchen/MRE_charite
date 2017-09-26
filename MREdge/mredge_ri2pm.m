@@ -22,17 +22,17 @@
 function mredge_ri2pm(info)
     for subdir = info.ds.subdirs_comps
         % load re and im
-        re = load_untouch_nii_eb(fullfile(info.ds.list(info.ds.enum.real), subdir));
-        im = load_untouch_nii_eb(fullfile(info.ds.list(info.ds.enum.imaginary), subdir));
+        re = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir)));
+        im = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir)));
         % create placeholder p and m
         p = re;
         m = im;
         % calculate
         cplx = re.img + 1i*im.img;
-        p.img = angle(cplx)/pi*str2double(getenv(PHASE_DIVISOR));
+        p.img = angle(cplx);
         m.img = abs(cplx);  
         % write p and m
-        save_untouch_nii(p, mredge_mkdir(fullfile(info.ds.list(info.ds.enum.phase), subdir)));
-        save_untouch_nii(m, mredge_mkdir(fullfile(info.ds.list(info.ds.enum.magnitude), subdir)));
+        save_untouch_nii_eb(p, cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir)));
+        save_untouch_nii_eb(m, cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir)));
     end
 end
