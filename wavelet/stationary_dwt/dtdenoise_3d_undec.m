@@ -36,7 +36,12 @@ function u_den = cdwt_den(u, mask, J, thresh, Faf, af, Fsf, sf)
                     a = w{j}{1}{s1}{s2}{s3};
                     b = w{j}{2}{s1}{s2}{s3};
                     C = a + 1i*b;
+<<<<<<< Updated upstream
                     noise_est = visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
+=======
+                    noise_est = 3*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
+                    %noise_est = 0.05;
+>>>>>>> Stashed changes
                     C = soft(C, noise_est);
                     C(isnan(C)) = 0;
                     w{j}{1}{s1}{s2}{s3} = real(C);
