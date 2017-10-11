@@ -20,7 +20,7 @@
 % none
 
 function mredge_ri2pm(info)
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         % load re and im
         re = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir)));
         im = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir)));

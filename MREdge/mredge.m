@@ -26,6 +26,7 @@ disp('Organizing files');
 mredge_clean_acquisition_folder(info);
 mredge_dicom_to_nifti(info);
 mredge_organize_acquisition(info);
+mredge_create_analysis_folder(info, prefs);
 mredge_average_magnitude(info, prefs);
 save(fullfile(info.path, 'infoprefs.mat'), 'info', 'prefs');
 
@@ -40,31 +41,52 @@ else
 
     if prefs.distortion_correction && strcmpi(prefs.dico_method, 'raw')
         disp('Distortion correction');
+        tic
         mredge_distortion_correction(info, prefs);
+        toc
     end
     if prefs.motion_correction
         disp('Motion correction');
+        tic
         mredge_motion_correction(info, prefs);
+        toc
     end
     if prefs.denoise_raw
         disp('Raw data denoise');
+        tic
         mredge_denoise_raw(info, prefs);
+        toc
     end
     if ~strcmp(prefs.phase_unwrap, 'none')
         disp('Phase Unwrapping')
+        tic
         mredge_phase_unwrap(info, prefs);
+        toc
     end
-    
+       
     mredge_temporal_ft(info, prefs);
     mredge_slice_align(info,prefs);
+    mredge_amplitudes(info, prefs);
 
     if prefs.remove_ipds
         disp('IPD Removal');
+        tic
         mredge_remove_ipds(info, prefs);
+        toc
     end
+    %{
+    if prefs.outputs.snr.oss
+        mredge_oss(info, prefs, 'pre');
+    end
+    if prefs.outputs.snr.laplacian
+        mredge_laplacian_snr(info, prefs, 'pre');
+    end
+    %}
     if ~prefs.denoise_raw && ~strcmpi(prefs.denoise_strategy, 'none')
         disp('Denoising');
+        tic
         mredge_denoise(info, prefs);
+        toc
     end
     if ~strcmpi(prefs.curl_strategy, 'none')
         disp('Hodge Decomposition');
@@ -72,13 +94,24 @@ else
     end
     if prefs.highpass || prefs.lowpass
         disp('Bandpass');
+        tic
         mredge_bandpass(info, prefs);
+        toc
     end
+    
+    if prefs.outputs.snr.oss
+        mredge_oss(info, prefs, 'post');
+    end
+    if prefs.outputs.snr.laplacian
+        mredge_laplacian_snr(info, prefs, 'post');
+    end
+    
     if ~strcmp(prefs.inversion_strategy, 'none')
         disp('Wave Inversion');
+        tic
         mredge_invert(info, prefs);
+        toc
     end
-    mredge_amplitudes(info, prefs);
     mredge_masked_median(info, prefs);
     if prefs.brain_analysis
         mredge_brain_analysis(info, prefs);

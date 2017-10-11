@@ -22,11 +22,12 @@
 function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt)
   sz = size(x0);
   
-  %b = mean(abs(y(:)))*b; % impact of the reg, like lambda
-  %a = mean(abs(y(:)))*a; % height of Huber function
+        %b = mean(abs(y(:)))*b; % impact of the reg, like lambda
+        %a = mean(abs(y(:)))*a; % height of Huber function
   
   if nargin < 8 || isempty(MxIt)
-    MxIt = Inf;
+    %MxIt = Inf;
+    MxIt = 1000;
     if nargin < 7 || isempty(tol)
       tol = 1e-15;
     end
@@ -67,7 +68,7 @@ function [x,it,dJ] = HQ_Multiplicative(x0,y,A,phi,a,b,tol,MxIt)
       end
       
       dJ = A2*x- z + b* G'*(s.*t); % grad J (x^{k-1} )
-      dJ = norm(dJ)/ (n *nz)
+      dJ = norm(dJ)/ (n *nz);
       H=spdiags(s, 0, n, n)*G; % H = diag(s)*G
       H=G'*H;
       H=A2+b*H;

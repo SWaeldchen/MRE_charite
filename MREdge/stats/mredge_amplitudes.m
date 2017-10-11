@@ -66,7 +66,7 @@ end
 function [FT_DIRS, AMP_SUB] = set_dirs(info, prefs)
 
     FT_DIRS = mredge_get_ft_dirs(info, prefs);
-    AMP_SUB = mredge_analysis_path(info, prefs, 'Amp');
+    AMP_SUB = mredge_analysis_path(info, prefs, 'amp');
     
 end
 

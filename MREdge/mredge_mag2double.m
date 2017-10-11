@@ -19,7 +19,7 @@ function mredge_mag2double(info)
 %
 %   none
 
-for subdir = info.ds.subdirs_comps
+for subdir = info.ds.subdirs_comps_files
     mag_path = cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir));
     mag_vol = load_untouch_nii_eb(mag_path);
     mag_vol.img = double(mag_vol.img);

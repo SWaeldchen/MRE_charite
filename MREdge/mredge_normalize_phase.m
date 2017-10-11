@@ -20,7 +20,7 @@
 %   none
 
 function mredge_normalize_phase(info, prefs)
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
         phase_vol = load_untouch_nii_eb(path);
         if ~isempty(prefs.phase_unwrapping_settings.phase_range)

@@ -18,7 +18,7 @@ function mredge_temporal_ft(info, prefs)
 %
 %   none
 
-for subdir = info.ds.subdirs_comps
+for subdir = info.ds.subdirs_comps_files
     time_series_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
     time_series_vol = load_untouch_nii_eb(time_series_path);
     % make dummy complex 3d volume

@@ -64,8 +64,8 @@ function [OSS_SNR,Motion_SNR,OSS_SNR_Dist,Motion_SNR_Dist,oss,ons]=Strain_SNR_fr
 
 %% Preferences
 
-Parr= false; %true; % Paralell Matlab indicator
-nlabs=7; % Number of Matlab Processes to use
+Parr= true; %true; % Paralell Matlab indicator
+nlabs=4; % Number of Matlab Processes to use
 
 opt=3; % Output Option (1=lots of figs, 2=just OSS, 3=no figures output)
 
@@ -172,7 +172,7 @@ Ui_n=sqrt(2/nph).*ErrorMap;
 runtme=tic; %start timer
 
 if(Parr)  % Start Labs    
-    matlabpool('open',nlabs);
+    parpool('open',nlabs);
 end
 
 % OSS of motions
@@ -243,7 +243,7 @@ end
 disp(['CD oss time = ' num2str(toc(cdtic))])
 
 if(Parr)
-    matlabpool close
+    parpool close
 end
 
 %% OSS SNR

@@ -20,7 +20,7 @@ function mredge_slice_align(info, prefs)
 %
 %   none
 
-for subdir = info.ds.subdirs_comps
+for subdir = info.ds.subdirs_comps_files
     vol_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'FT'), subdir));
     vol = load_untouch_nii_eb(vol_path);
     %vol.img = dejitter_phase_mask(vol.img, logical(mredge_load_mask(info, prefs)), 0.5, 256);

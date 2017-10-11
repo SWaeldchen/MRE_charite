@@ -23,7 +23,8 @@ function zip = mredge_zip_if_unzip(unzip)
 zip = [unzip, '.gz'];
 
 if exist(unzip, 'file')
-	gzip(zip);
+	gzip(unzip);
+    delete(unzip);
 end
 
 

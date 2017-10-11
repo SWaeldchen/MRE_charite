@@ -16,8 +16,8 @@ if numel(sz) < 4
 else
     d4 = sz(4);
 end       
-numerator = zeros(sz);
-denominator = zeros(sz);
+numerator = zeros(sz(1:3));
+denominator = zeros(sz(1:3));
 k = get_kernel(ndims, spacing);
 
 for m = 1:d4

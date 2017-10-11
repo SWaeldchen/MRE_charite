@@ -33,42 +33,34 @@
 %
 %   none
 
-function mredge_oss(info, prefs)
+function mredge_oss(info, prefs, label)
 
-	
-	display('Calculating OSS');
-	[PHASE_SUB, OSS_SUB, STATS_SUB] = set_dirs(info, prefs);
-    if ~exist(OSS_SUB, 'dir')
-        mkdir(OSS_SUB)
+    if nargin < 3
+        label = '';
     end
-	RGA_DIFFERENCES_FILE_PATH = '/home/ericbarnhill/barnhill-eclipse-workspace/PhaseTools/differences.dat';
-	NIF_EXT = '.nii.gz';
-	mredge_average_magnitude(info, prefs);
-    oss_snr_file_path = fullfile(STATS_SUB, 'oss_snr.csv');
+	display('Calculating OSS');
+    mask = mredge_load_mask(info, prefs);
+    magnitude = mredge_load_magnitude_as_6d(info);
+    oss_snr_file_path = fullfile(mredge_analysis_path(info, prefs, 'stats'), [label, 'oss_snr.csv']);
     oss_snr_ID = fopen(oss_snr_file_path, 'w');
     fprintf(oss_snr_ID, 'F, OSS SNR \n');
-    motion_snr_file_path = fullfile(STATS_SUB, 'motion_snr.csv');
+    motion_snr_file_path = fullfile(mredge_analysis_path(info, prefs, 'stats'), [label, 'motion_snr.csv']);
     motion_snr_ID = fopen(motion_snr_file_path, 'w');
     fprintf(motion_snr_ID, 'F, Motion SNR \n');
-    fclose('all');
-    parfor f_num = 1:numel(info.driving_frequencies)
-		f = info.driving_frequencies(f_num);
-		denoised_components = []; % cat strategy
-		for c = 1:3
-			tic
-			display([num2str(f), ' ', num2str(c)]);
-			vol_path = fullfile(PHASE_SUB, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
-			vol = load_untouch_nii_eb(vol_path);
-			rg4d = com.ericbarnhill.phaseTools.RG4D;
-			rg4d.setDifferencesFilePath(RGA_DIFFERENCES_FILE_PATH);
-			vol.img =  rga_progressive(vol.img, rg4d); 
-			vol.img =  dtdenoise_z_auto_noise_est(vol.img, prefs.denoise_settings.z_level, 'w1', 0);
-			vol.img =  dtdenoise_xy_pca_mad(vol.img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_num_spins,0);
-			denoised_components = cat(5, denoised_components, vol.img);
-			toc
-		end
-		mask = mredge_load_mask(info,prefs);
-		[OSS_SNR,Motion_SNR,OSS_SNR_Dist,Motion_SNR_Dist,oss,ons]=Strain_SNR_from_phase(denoised_components,mask,info.voxel_spacing); %#ok<ASGLU>
+    for f = 1:numel(info.ds.subdirs)
+        components = [];
+        components_ts = [];
+        for c = 1:3
+            subdir = mredge_file_component_path(info.ds.subdirs(f), c);
+            wavefield_path = fullfile(mredge_analysis_path(info, prefs, 'FT'), subdir);
+            wavefield_vol = load_untouch_nii_eb(wavefield_path);
+            components = cat(4, components, wavefield_vol.img);
+            ts = ft_to_time_steps(wavefield_vol.img, magnitude(:,:,:,:,f,c));
+            components_ts = cat(5, components_ts, ts);
+        end
+        E = strain_tensor(components);
+        [OSS_SNR,Motion_SNR,OSS_SNR_Dist,Motion_SNR_Dist,oss,ons]=Strain_SNR_from_phase(denoised_components,mask,info.voxel_spacing); %#ok<ASGLU>
+
         oss_snr_ID = fopen(oss_snr_file_path, 'a');
         fprintf(oss_snr_ID, '%d, %1.3f \n',f, OSS_SNR);
         fclose(oss_snr_ID);
@@ -76,11 +68,5 @@ function mredge_oss(info, prefs)
         fprintf(motion_snr_ID, '%d, %1.3f \n',f, Motion_SNR);
         fclose(motion_snr_ID);
     end
-
-end
-
-function [PHASE_SUB, OSS_SUB, STATS_SUB] = set_dirs(info, prefs)
-	PHASE_SUB = fullfile(info.path, 'Phase');
-	OSS_SUB = mredge_analysis_path(info, prefs, 'OSS');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    fclose('all');
 end

@@ -48,7 +48,7 @@ tic
 [xa,it,dJ]=min_L22_smooth_regu_1D_HQ_Additive(x0,y,A,phi,a,b,tol,MxIt); t=toc;
 disp(['Additive:       ',num2str(it),' iterations, CPU=',num2str(t),' sec.  precision dJ=',num2str(dJ)]);
 tic
-[xaf,it,dJ]=min_L22_smooth_regu_1D_HQ_Additive_fast(x0,y,A,phi,a,b,tol,MxIt);t=toc;
+[xaf,it,dJ]=min_L22_smooth_regu_1D_HQ_AdditiveF(x0,y,A,phi,a,b,tol,MxIt);t=toc;
 disp(['Additive fast:  ',num2str(it),' iterations, CPU=',num2str(t),' sec.  precision dJ=',num2str(dJ)]);
 
 rer=100*norm(xm-xa)/min( norm(xm), norm(xa));
@@ -68,7 +68,7 @@ tic
 [xa,it,dJ]=min_L22_smooth_regu_1D_HQ_Additive(x0,y,A,phi,a,b,tol,MxIt);t=toc;
 disp(['Additive:       ',num2str(it),' iterations, CPU=',num2str(t),' sec.  precision dJ=',num2str(dJ)]);
 tic
-[xaf,it,dJ]=min_L22_smooth_regu_1D_HQ_Additive_fast(x0,y,A,phi,a,b,tol,MxIt); t=toc;
+[xaf,it,dJ]=min_L22_smooth_regu_1D_HQ_AdditiveF(x0,y,A,phi,a,b,tol,MxIt); t=toc;
 disp(['Additive fast:  ',num2str(it),' iterations, CPU=',num2str(t),' sec.  precision dJ=',num2str(dJ)]);
 
 rer=100*norm(xm-xa)/min( norm(xm), norm(xa));

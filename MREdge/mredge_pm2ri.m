@@ -19,7 +19,7 @@ function mredge_pm2ri(info)
 %
 % none
 
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         % load p and m
         p = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir)));
         m = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir)));

@@ -49,7 +49,7 @@ function mredge_distortion_correction_raw(info)
     system(topup_command);
     TOPUP_RESULTS = fullfile(fieldmap_dir, 'topup_results');
 
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         mredge_pm2ri(info, subdir);
         apply_topup(REAL_SUB, f, c, TOPUP_RESULTS);
         apply_topup(IMAG_SUB, f, c, TOPUP_RESULTS);

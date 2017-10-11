@@ -30,9 +30,6 @@ function mredge_brain_analysis(info, prefs)
         if prefs.outputs.absg
             brain_analysis(info, prefs, 'Abs_G');
         end
-        if prefs.outputs.phi
-            brain_analysis(info, prefs, 'Phi');
-        end
         if prefs.outputs.springpot
             brain_analysis_springpot(info, prefs);
         end
@@ -43,7 +40,7 @@ function mredge_brain_analysis(info, prefs)
             brain_analysis(info, prefs, 'A');
         end
         if prefs.outputs.amplitude
-            brain_analysis(info, prefs, 'Amp');
+            brain_analysis(info, prefs, 'amp');
         end
     elseif strcmpi(prefs.inversion_strategy, 'SFWI')
         brain_analysis(info, prefs, 'SFWI');

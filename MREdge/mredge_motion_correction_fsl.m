@@ -23,7 +23,7 @@ function mredge_motion_correction_fsl(info)
     tic
     disp('MREdge Motion Correction with FSL');
     mredge_pm2ri(info);
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         % make a copy, motion correct with copy in, original out
         subdir_temp = [mredge_remove_nifti_extension(subdir), '_temp', NIF_EXT];
         copyfile([info.ds.list(info.ds.enum.magnitude), subdir], [info.ds.list(info.ds.enum.magnitude), subdir_temp]);

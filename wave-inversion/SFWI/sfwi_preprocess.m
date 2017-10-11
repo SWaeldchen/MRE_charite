@@ -9,19 +9,19 @@ K_LEVELS = [1 1 1];
 ORD = 4;
 den_fac = 2;
 z_den_fac = 2;
-den_fac_3d = 0.5;
+den_fac_3d = 20;
 
 if nargin < 6
     CUT = 0.03;
 end
 if nargin < 5
-    mask = ones(size(U, 1), size(U, 2), size(U, 3));
+    mask = true(size(U, 1), size(U, 2), size(U, 3));
 end
 if unwrap > 0
     disp('Unwrapping');
     U = dct_unwrap(U,2);
 end
-
+mask = logical(mask);
 % denoise
 if den_meth == 0
     parfor m = 1:d5
@@ -58,6 +58,7 @@ elseif den_meth == 2 % LINEAR THRESHOLD
         d5 = 1;
     else
         d5 = sz(5);
+        
     end
     U = dejitter_phase_mask(U, logical(mask), 0.5, 256);
     tic
@@ -104,6 +105,8 @@ elseif den_meth == 4 % OGS THRESHOLD
     parfor m = 1:d5
         U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
         U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac_3d, DEN_LEVELS, mask);
+        U(:,:,:,:,m) = butter_3d(ORD, CUT, U(:,:,:,:,m), 1);
+        U(:,:,:,:,m) = butter_3d(4, 0.4, U(:,:,:,:,m));
     end
 end
 toc

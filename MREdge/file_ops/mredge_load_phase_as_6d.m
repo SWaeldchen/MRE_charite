@@ -1,5 +1,25 @@
 function data_6d = mredge_load_phase_as_6d (info)
+%% function mredge_load_phase_as_6d(info, prefs)
 
+%
+% Part of the MREdge software package
+% Created 2016 at Charite Medical University Berlin
+% Private usage only. Distribution only by permission of Elastography working
+% group.
+%
+% USAGE:
+%
+% Loads the phase images of the acquisition into a 6D matlab object
+%
+% INPUTS:
+%
+% info - an acquisition info structure created by make_acquisition_info
+%
+% OUTPUTS:
+%
+% none
+
+%%
 	PHASE_SUB = set_dirs(info);
     NIF_EXT = getenv('NIFTI_EXTENSION');
     data_6d = [];

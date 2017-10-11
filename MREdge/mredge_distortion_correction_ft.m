@@ -51,7 +51,7 @@ function mredge_distortion_correction_ft(info, prefs)
 	topup_command = ['fsl5.0-topup --imain=', name_4d, ' --datain=', getenv('TOPUP_PARAMS'), ' --config=b02b0.cnf --out=topup_results --fout=topup_field --iout=topup_field_map'];
     system(topup_command);
     TOPUP_RESULTS = fullfile(fieldmap_dir, 'topup_results');
-    for subdir = info.ds.subdirs_comps
+    for subdir = info.ds.subdirs_comps_files
         apply_topup(fullfile(ftr_dir, subdir), TOPUP_RESULTS);
         apply_topup(fullfile(fti_dir, subdir), TOPUP_RESULTS);
     end

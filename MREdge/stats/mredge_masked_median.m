@@ -39,7 +39,7 @@ function mredge_masked_median(info, prefs)
             masked(info, prefs, 'A');
         end
         if prefs.outputs.amplitude == 1
-            masked(info, prefs, 'Amp');
+            masked(info, prefs, 'amp');
         end
     elseif strcmpi(prefs.inversion_strategy, 'SFWI') == 1
         masked(info, prefs, 'SFWI');
@@ -92,7 +92,7 @@ function masked_sliding(info, prefs, param)
 	display(['Masked Medians, Stable Inversions ',param]);
     [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param);
     mask = double(mredge_load_mask(info,prefs));
-    [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 0);
+    [stable_filenames, stable_frequencies] = mredge_invert_sliding(info, prefs, 0);
     fileID = fopen(fullfile(STATS_SUB, [ 'masked_stable_',param,'.csv']), 'w');
     fprintf(fileID, 'F, Masked Median \n');
     fclose(fileID);
