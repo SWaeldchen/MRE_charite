@@ -118,7 +118,7 @@ K_sfwi = K1_sfwi*K2_sfwi;
 
 %u_helm = K_helm \ f;
 if (nohelm == 0)
-    u_helm = lsqr(K_helm, f, 1e-15, 100000);
+    u_helm = lsqr(K_helm, f, 1e-15, 20000);
     mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
     %mu_helm = mircrop(reshape(u_helm, [sz(1) sz(2) sz(3)]));
 end

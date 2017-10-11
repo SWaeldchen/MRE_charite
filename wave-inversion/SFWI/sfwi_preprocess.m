@@ -3,13 +3,14 @@ function U = sfwi_preprocess(U, unwrap, ft, den_meth, mask, CUT)
 % (c) Eric Barnhill 2016. All Rights Reserved.
 % For private use only.
 
-DEN_LEVELS = 2;
+DEN_LEVELS = 3;
 Z_DEN_LEVELS = 2;
 K_LEVELS = [1 1 1];
 ORD = 4;
 den_fac = 2;
 z_den_fac = 2;
 den_fac_3d = 20;
+%den_fac_3d = 0.2;
 
 if nargin < 6
     CUT = 0.03;

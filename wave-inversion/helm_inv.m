@@ -35,16 +35,16 @@ absg = numerator ./ denominator;
 end
 
 function k = get_kernel(ndims, spacing)
+    %k{1} = [1 -2 1];
+    k{1} = [0.25 0 -0.5 0 0.25];
     switch ndims
         case 2
-            k{1} = [1 -2 1];
             k{2} = k{1}';
             k{1} = k{1} / spacing(1)^2;
             k{2} = k{2} / spacing(2)^2;
         case 3
-            k{1} = [1 -2 1];
             k{2} = k{1}';
-            k{3} = zeros(1, 1, 3);
+            k{3} = zeros(1, 1, length(k{1}));
             k{3}(:) = k{1};
             k{1} = k{1} / spacing(1)^2;
             k{2} = k{2} / spacing(2)^2;
