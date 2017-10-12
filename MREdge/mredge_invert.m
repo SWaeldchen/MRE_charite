@@ -34,7 +34,7 @@ if strcmpi(prefs.inversion_strategy, 'MDEV')
     if prefs.outputs.a == 1
         mredge_invert_param_mdev(info, prefs, 'a');
     end
-elseif strcmpi(prefs.inversion_strategy, 'SFWI')
+elseif strcmpi(prefs.inversion_strategy, 'sfwi')
 	mredge_invert_sfwi(info, prefs);
 end
 

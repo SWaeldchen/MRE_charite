@@ -49,8 +49,12 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
     end
 	%call inversion
 	%[g_sfwi, g_helm] = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing);
-	g_sfwi = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
-    % sfwi output - take last loaded volume as placeholder
+    if strcmpi(prefs.gradient_strategy, 'fd')
+        g_sfwi = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
+    elseif strcmpi(prefs.gradient_strategy, 'lsq')
+        g_sfwi = sfwi_inversion_reg_grad(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
+    end
+        % sfwi output - take last loaded volume as placeholder
 	sfwi_set = {g_sfwi, SFWI_SUB};
 	%helm_set = {g_helm, HELM_SUB};
     sets = {sfwi_set}; %, helm_set};
@@ -59,6 +63,7 @@ function mredge_invert_sfwi(info, prefs, freq_indices)
     	param_vol = wavefield_vol;
 		param_vol.hdr.dime.datatype = 64;
 		param_vol.img = set{1};
+        param_vol = update_nifti_dims(param_vol);
 		param_dir = set{2};
 		if ~exist(param_dir, 'dir')
 			mkdir(param_dir);

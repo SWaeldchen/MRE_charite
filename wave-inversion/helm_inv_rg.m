@@ -29,7 +29,8 @@ for m = 1:d4
     end
 end
 
-absg = numerator ./ denominator;
+absg = zeros(sz(1), sz(2), sz(3));
+absg(2:end-1, 2:end-1, 2:end-1) = numerator ./ denominator;
 
 end
 

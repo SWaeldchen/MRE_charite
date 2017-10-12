@@ -59,14 +59,19 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
             for d = 1:numel(FT_DIRS)
                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), mredge_filename(f, c, NIF_EXT));
                 wavefield_vol = load_untouch_nii_eb(wavefield_path);
-                wavefield_img = wavefield_vol.img;
+                wavefield_img = double(wavefield_vol.img);
                 freq_u = cat(4, freq_u, wavefield_img);
             end
             % outputs for component
             if special_freq_set == 0
-                absg = helmholtz_inversion(wavefield_img, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, ndims, iso);
+                if strcmpi(prefs.gradient_strategy, 'fd') 
+                    absg = helmholtz_inversion(wavefield_img, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, ndims, iso);
+                elseif strcmpi(prefs.gradient_strategy, 'lsq')                    
+                    absg = helm_inv_rg(wavefield_img, f, info.voxel_spacing);
+                end
                 param_comp = wavefield_vol;
                 param_comp.img = absg;
+                %param_comp = update_nifti_dims(param_comp);
                 param_comp_dir = fullfile(PARAM_SUB, num2str(f), num2str(c));
                 if ~exist(param_comp_dir, 'dir')
                     mkdir(param_comp_dir);
@@ -78,10 +83,15 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
         all_u = cat(5, all_u, freq_u);
         % outputs for frequency
         if special_freq_set == 0
-            absg = helmholtz_inversion(freq_u, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+            if strcmpi(prefs.gradient_strategy, 'fd')
+                absg = helmholtz_inversion(freq_u, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+            elseif strcmpi(prefs.gradient_strategy, 'lsq')
+                absg = helm_inv_rg(freq_u, f, info.voxel_spacing); 
+            end
             param_freq = wavefield_vol;
             param_freq.img = absg;
             param_freq.hdr.dime.datatype = 64;
+            %param_freq = update_nifti_dims(param_freq);
             param_freq_dir = fullfile(PARAM_SUB, num2str(f));
             if ~exist(param_freq_dir, 'dir')
                disp('MREdge ERROR: Frequency folder not found');
@@ -97,11 +107,16 @@ function mredge_invert_param_mdev(info, prefs, param, freq_indices)
         mean_freq = mean(info.driving_frequencies);
         absg = x0 + x1*mean_freq;
     else
-        absg = helmholtz_inversion(all_u, info.driving_frequencies, info.voxel_spacing, ...
+        if strcmpi(prefs.gradient_strategy, 'fd')
+            absg = helmholtz_inversion(all_u, info.driving_frequencies(freq_indices), info.voxel_spacing, ...
             prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+        elseif strcmpi(prefs.gradient_strategy, 'lsq')
+            absg = helm_inv_rg(all_u, info.driving_frequencies(freq_indices), info.voxel_spacing);
+        end
     end
     param_all = wavefield_vol;
     param_all.img = absg;
+    %param_all = update_nifti_dims(param_all);
     param_all.hdr.dime.datatype = 64;
     param_all_dir = fullfile(PARAM_SUB);
     if ~exist(param_all_dir, 'dir')
