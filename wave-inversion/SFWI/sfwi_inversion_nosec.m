@@ -1,4 +1,4 @@
-function [mu_sfwi, mu_helm] = sfwi_inversion_reg_grad(U, freqvec, spacing, xyz_order, nohelm, kern_ord)
+function [mu_sfwi, mu_helm] = sfwi_inversion_nosec(U, freqvec, spacing, xyz_order, nohelm, kern_ord)
 
 %mu_sfwi includes all first and second order gradients
 %mu_helm neglects all first gradients
@@ -11,8 +11,7 @@ if numel(sz) < 5
 else
     nfreqs = sz(5);
 end
-sz_adj = [sz(1)-1, sz(2)-1, sz(3)-1];
-N = prod(sz_adj);
+N = sz(1)*sz(2)*sz(3);
 if nargin < 5
     nohelm = 1;
     if nargin < 4
@@ -20,10 +19,11 @@ if nargin < 5
     end
 end
 y_diags = [0 1];
-x_diags = [0 sz_adj(1)];
-z_diags = [0 sz_adj(1)*sz_adj(2)];
+x_diags = [0 sz(1)];
+z_diags = [0 sz(1)*sz(2)];
 onevec = ones(N,1);
 zerovec = zeros(N,1);
+
 %onevec(1) = 0;
 %onevec(end) = 0;
 
@@ -49,9 +49,9 @@ x_grad_kern = kern  / spacing(1);
 y_grad_kern = kern'  / spacing(2);
 z_grad_kern = zeros(1,1,numel(kern)); z_grad_kern(:) = kern  / spacing(3);
 
-%xgrad = @(v) convn(v, x_grad_kern, 'same');
-%ygrad = @(v) convn(v, y_grad_kern, 'same');
-%zgrad = @(v) convn(v, z_grad_kern, 'same');
+xgrad = @(v) convn(v, x_grad_kern, 'same');
+ygrad = @(v) convn(v, y_grad_kern, 'same');
+zgrad = @(v) convn(v, z_grad_kern, 'same');
 
 xgrad_ = @(v) convn(cell2mat(v), x_grad_kern, 'same');
 ygrad_ = @(v) convn(cell2mat(v), y_grad_kern, 'same');
@@ -65,16 +65,13 @@ spdiag_ = @(x) spdiags(vec(cell2mat(x)), 0, N, N);
 % stack for n frequencies
 for n = 1:nfreqs
     
-    [x_derivs, U_x] = gradestim4d(double(U(:,:,:,xyz_order(1),n)), spacing);
-    [y_derivs, U_y] = gradestim4d(double(U(:,:,:,xyz_order(2),n)), spacing);
-    [z_derivs, U_z] = gradestim4d(double(U(:,:,:,xyz_order(3),n)), spacing);
+    U_x = double(U(:,:,:,xyz_order(1),n)); %nifti complex format is single
+    U_y = double(U(:,:,:,xyz_order(2),n));
+    U_z = double(U(:,:,:,xyz_order(3),n));
     
-    x_x = x_derivs(:,:,:,1); x_y = x_derivs(:,:,:,2); x_z = x_derivs(:,:,:,3);
-    y_x = y_derivs(:,:,:,1); y_y = y_derivs(:,:,:,2); y_z = y_derivs(:,:,:,3);
-    z_x = z_derivs(:,:,:,1); z_y = z_derivs(:,:,:,2); z_z = z_derivs(:,:,:,3);
-    %x_x = x_derivs(:,:,:,2); x_y = x_derivs(:,:,:,1); x_z = x_derivs(:,:,:,3);
-    %y_x = y_derivs(:,:,:,2); y_y = y_derivs(:,:,:,1); y_z = y_derivs(:,:,:,3);
-    %z_x = z_derivs(:,:,:,2); z_y = z_derivs(:,:,:,1); z_z = z_derivs(:,:,:,3);
+    x_x = xgrad(U_x); x_y = ygrad(U_x); x_z = zgrad(U_x);
+    y_x = xgrad(U_y); y_y = ygrad(U_y); y_z = zgrad(U_y);
+    z_x = xgrad(U_z); z_y = ygrad(U_z); z_z = zgrad(U_z);
 
     % INFINITESIMAL STRAIN TENSOR
     %E = {   { 2*x_x         }  {(x_y + y_x)}  {(x_z + z_x)}    ;   ...
@@ -125,7 +122,7 @@ K_sfwi = K1_sfwi*K2_sfwi;
 %u_helm = K_helm \ f;
 if (nohelm == 0)
     u_helm = lsqr(K_helm, f, 1e-15, 20000);
-    mu_helm = reshape(u_helm, [sz_adj(1) sz_adj(2) sz_adj(3)]);
+    mu_helm = reshape(u_helm, [sz(1) sz(2) sz(3)]);
     %mu_helm = mircrop(reshape(u_helm, [sz(1) sz(2) sz(3)]));
 end
 
@@ -133,5 +130,5 @@ end
 %u_sfwi = lsqr(K_sfwi, f, 1e-15, 100000);
 u_sfwi = lsqr(K_sfwi, f, 1e-15, 20000);
 %mu_sfwi = mircrop(reshape(u_sfwi, [sz(1) sz(2) sz(3)]));
-mu_sfwi = reshape(u_sfwi, [sz_adj(1) sz_adj(2) sz_adj(3)]);
+mu_sfwi = reshape(u_sfwi, [sz(1) sz(2) sz(3)]);
 end
