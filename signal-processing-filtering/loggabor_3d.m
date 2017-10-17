@@ -54,7 +54,7 @@ if t0 >= 0 && p0 >= 0
     lg = lg .* rf;
 end
 lg(I2+1, J2+1, K2+1) = 0;
-%[~, f] = butter_3d(ORD, CUT, lg);
-%lg = lg.*f;
+[~, f] = butter_3d(ORD, CUT, lg);
+lg = lg.*f;
 
     
