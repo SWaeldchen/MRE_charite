@@ -29,10 +29,10 @@ for scale = 1:OCTAVES
     lam = MIN_WAVELENGTH * mult^(scale-1);
     w0(scale) = 1 / lam;
 end
-%num_theta = 6;
-%num_phi = 4;
-num_theta = 2;
-num_phi = 2;
+num_theta = 6;
+num_phi = 4;
+%num_theta = 2;
+%num_phi = 2;
 
 n_results = d4*d5*OCTAVES*num_theta*num_phi;
 om_vec = 2*pi*vec(permute(repmat(freqvec, [1 n_results]), [2 1]));
