@@ -83,7 +83,7 @@ end
 
 function [AVG_MAG_SUB, STATS_DIR] = set_dirs(info, prefs)
     AVG_MAG_SUB = mredge_analysis_path(info, prefs, 'Magnitude');
-    STATS_DIR = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_DIR = mredge_analysis_path(info, prefs, 'stats');
 end
 
 function calc_segmented_voxels(AVG_MAG_SUB, seg_filepath)

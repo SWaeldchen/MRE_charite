@@ -141,11 +141,11 @@ end
 function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)
 
     PARAM_SUB = mredge_analysis_path(info, prefs, param);
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 end
 
 function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)
 
     SPRINGPOT_SUB = mredge_analysis_path(info, prefs, 'Springpot');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 end

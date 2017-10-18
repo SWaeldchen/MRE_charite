@@ -45,7 +45,7 @@ end
 function [PARAM_SUB, STATS_SUB] = set_dirs(info_mag, info_an, prefs, param)
 
     PARAM_SUB =  mredge_analysis_path(info_an, prefs, param);
-    STATS_SUB = mredge_analysis_path(info_an, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info_an, prefs, 'stats');
 
 end
 

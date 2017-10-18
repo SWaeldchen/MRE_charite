@@ -142,7 +142,7 @@ if ~isempty(info.other)
     end
 end
 
-STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 if ~exist(STATS_SUB, 'dir')
     mkdir(STATS_SUB);
 end

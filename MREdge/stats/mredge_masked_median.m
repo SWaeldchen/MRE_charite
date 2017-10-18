@@ -59,6 +59,7 @@ function masked(info, prefs, param)
     param_img = param_vol.img;
 	mask = double(mredge_load_mask(info,prefs));
 	masked = double(mask).*double(param_img);
+    masked = masked(:,:,4:end-3);
 	masked(masked == 0) = nan;
     masked_nonan = masked(~isnan(masked));
     THRESH = 300;
@@ -75,6 +76,7 @@ function masked(info, prefs, param)
             param_vol = load_untouch_nii_eb(param_path);
             param_img = param_vol.img;
             masked = double(mask).*double(param_img);
+            masked = masked(:,:,4:end-3);
             masked(masked == 0) = nan;
             param_median = median(masked(~isnan(masked)));
             fileID = fopen(fullfile(STATS_SUB, [ 'masked_',param,'.csv']), 'a');
@@ -117,7 +119,7 @@ end
 function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)
 
     PARAM_SUB = mredge_analysis_path(info, prefs, param);
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
     if ~exist(STATS_SUB, 'dir')
             mkdir(STATS_SUB);
     end
@@ -126,7 +128,7 @@ end
 function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)
 
     SPRINGPOT_SUB = mredge_analysis_path(info, prefs, 'Springpot');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 end
 
 

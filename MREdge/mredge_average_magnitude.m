@@ -48,8 +48,10 @@ function mredge_average_magnitude(info, prefs)
     avg_vol.img = avg_vol.img ./ ( numel(info.driving_frequencies) * 3 * info.time_steps);
     avg_path = fullfile(AVG_SUB, 'Avg_Magnitude', NIF_EXT);
     save_untouch_nii_eb(avg_vol, avg_path);
-    avg_vol.img(avg_vol.img <= prefs.anat_mask_thresh) = 0;
-    avg_vol.img(avg_vol.img > prefs.anat_mask_thresh) = 1;
+    avg_vol.img(avg_vol.img <= prefs.anat_mask_thresh_low) = nan;
+    avg_vol.img(avg_vol.img >= prefs.anat_mask_thresh_high) = nan;
+    avg_vol.img(~isnan(avg_vol.img)) = 1;
+    avg_vol.img(isnan(avg_vol.img)) = 0;
     avg_vol.img = double(avg_vol.img);
 	mask_path = fullfile(AVG_SUB, 'Magnitude_Mask', NIF_EXT);
 	save_untouch_nii_eb(avg_vol, mask_path);

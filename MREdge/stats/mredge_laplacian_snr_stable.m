@@ -48,7 +48,7 @@ end
 function [AMP_SUB, STATS_SUB] = set_dirs(info, prefs)
 
     AMP_SUB = mredge_analysis_path(info, prefs, 'Amp');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 
 end
 

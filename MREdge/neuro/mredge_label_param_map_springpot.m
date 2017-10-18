@@ -50,7 +50,7 @@ end
 function [SPRINGPOT_SUB, STATS_SUB] = set_dirs(info, prefs)
 
     SPRINGPOT_SUB =  mredge_analysis_path(info, prefs, 'Springpot');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 
 end
 

@@ -58,7 +58,7 @@ function [FT_DIRS, STATS_SUB] = set_dirs(info, prefs)
 		FT_DIRS = cell(1,1);
 		FT_DIRS{1} = FT_SUB;
 	end
-	STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+	STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 end
 
 

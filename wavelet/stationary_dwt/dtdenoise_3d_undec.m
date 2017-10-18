@@ -1,10 +1,10 @@
-function u = dtdenoise_3d_undec(u, J, mask)
+function u = dtdenoise_3d_undec(u, J, mask, gain)
 
 % 3D Dualtree complex denoising 
 % with NNG thresholding
 
 if nargin < 4
-    thresh = 'visu';
+    gain = 1;
     if nargin < 3
         mask = ones(size(u));
     end
@@ -17,14 +17,14 @@ end
 
 for n = 1:n_vol
         %disp(['------',num2str(n),'------'])
-        u_resh(:,:,:,n) = cdwt_den(real(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf) + 1i*cdwt_den(imag(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf);
+        u_resh(:,:,:,n) = cdwt_den(real(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf, gain) + 1i*cdwt_den(imag(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf, gain);
 end
 
 u = reshape(u_resh, size(u));
 
 end
 
-function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf)
+function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, gain)
     w = cplxdual3D_u(u, J, Faf, af);
     % loop thru scales
     for j = 1:J
@@ -37,7 +37,7 @@ function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf)
                     a = w{j}{1}{s1}{s2}{s3};
                     b = w{j}{2}{s1}{s2}{s3};
                     C = a + 1i*b;
-                    noise_est = 1.5*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
+                    noise_est = gain*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
                     %if j == 1
                     %    noise_est = 0.4;
                     %else

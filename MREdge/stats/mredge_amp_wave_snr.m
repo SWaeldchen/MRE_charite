@@ -72,7 +72,7 @@ end
     
 function [STATS_SUB, AMP_SUB, SNR_SUB] = set_dirs(info, prefs)
 
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 	AMP_SUB = mredge_analysis_path(info, prefs, 'Amp');
 	if strcmp(prefs.phase_unwrap, 'gradient') == 1
         SNR_SUB = mredge_analysis_path(info, prefs, 'SNR X'); % only one required as they will be comparable

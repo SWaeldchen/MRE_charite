@@ -81,6 +81,6 @@ function [AVG_SUB, MAG_SUB, STATS_SUB] = set_dirs(info, prefs)
 
     MAG_SUB = fullfile(info.path, 'Magnitude');
     AVG_SUB = mredge_analysis_path(info, prefs, 'Magnitude');
-    STATS_SUB = mredge_analysis_path(info, prefs, 'Stats');
+    STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
             
 end
