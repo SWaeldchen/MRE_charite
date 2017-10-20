@@ -1,0 +1,86 @@
+function MInf_af2(PROJ_DIR,Asubject,id,prestr)
+
+for subj = 1:numel(Asubject)
+    
+    SUBJ_DIR = Asubject{subj}{1};
+    X =  int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA','MNI_MPRAGE.nii'))));
+    Yo = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_orig.nii']))));
+    Yc = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_dico.nii']))));
+    
+    disp(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_modico.nii']));
+    
+    Mm(:,:,:,1) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_orig.nii']))));
+    Mm(:,:,:,2) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_moco.nii']))));
+    Mm(:,:,:,3) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_dico.nii']))));
+    Mm(:,:,:,4) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'MAGm_modico.nii']))));
+    
+    A(:,:,:,1) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_orig.nii']))));
+    A(:,:,:,2) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_moco.nii']))));
+    A(:,:,:,3) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_dico.nii']))));
+    A(:,:,:,4) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_modico.nii']))));
+    A_nc(:,:,:,1) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_orig_nc.nii']))));
+    A_nc(:,:,:,2) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_moco_nc.nii']))));
+    A_nc(:,:,:,3) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_dico_nc.nii']))));
+    A_nc(:,:,:,4) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'ABSG_modico_nc.nii']))));
+    
+    P(:,:,:,1) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_orig.nii']))));
+    P(:,:,:,2) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_moco.nii']))));
+    P(:,:,:,3) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_dico.nii']))));
+    P(:,:,:,4) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_modico.nii']))));
+    P_nc(:,:,:,1) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_orig_nc.nii']))));
+    P_nc(:,:,:,2) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_moco_nc.nii']))));
+    P_nc(:,:,:,3) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_dico_nc.nii']))));
+    P_nc(:,:,:,4) = int32(spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,'ANA',[prestr 'PHI_modico_nc.nii']))));    
+
+    if strcmp(id,'data3T')
+        threshold = 200;
+        TMPBW1 = getLargestCc(Yo>threshold);
+        TMPBW2 = getLargestCc(Yc>threshold);
+        BW1 = imfill(TMPBW1,'holes');
+        BW2 = imfill(TMPBW2,'holes');
+        BW = (BW1+BW2) > 0.9;
+    end
+    
+    if strcmp(id,'data7T')
+        threshold = 100;
+        TMPBW1 = getLargestCc(Yo>threshold,4,70);
+        TMPBW2 = getLargestCc(Yc>threshold,4,70);
+        BW1 = imfill(TMPBW1,'holes');
+        BW2 = imfill(TMPBW2,'holes');
+        BW = (BW1+BW2) > 0.9;
+    end
+        
+    mask1 = BW;
+    mask2 = BW;
+    
+    for s=1:size(X,3)
+        disp([subj s]);
+        %         Dxs(s,subj)   = sum(abs(Dx(Yc(:,:,s)>30)))/numel(Yc(:,:,s)>30);
+        MI_o(s,subj)     = MI_GG(X(:,:,s).*int32(mask2(:,:,s)), Yo(:,:,s) .*int32(mask2(:,:,s)));
+        MI_c(s,subj)     = MI_GG(X(:,:,s).*int32(mask2(:,:,s)), Yc(:,:,s) .*int32(mask2(:,:,s)));
+        MInomask_o(s,subj) = MI_GG(X(:,:,s),Yo(:,:,s));
+        MInomask_c(s,subj) = MI_GG(X(:,:,s),Yc(:,:,s));
+        IMI(s,subj) = MI_GG(X(:,:,s),X(:,:,s));
+        
+        IIGLCM(s,subj) = mutualInformationGLCM(double(X(:,:,s)), double(mask1(:,:,s)), double(X(:,:,s)), double(mask1(:,:,s)));
+        MIGLCM_o(s,subj) = mutualInformationGLCM(double(X(:,:,s)), double(mask1(:,:,s)), double(Yo(:,:,s)), double(mask2(:,:,s)));
+        MIGLCM_c(s,subj) = mutualInformationGLCM(double(X(:,:,s)), double(mask1(:,:,s)), double(Yc(:,:,s)), double(mask2(:,:,s)));
+        MIGLCMnomask_o(s,subj) = mutualInformationGLCM(double(X(:,:,s)), double(mask1(:,:,s)), double(Yo(:,:,s)), double(mask2(:,:,s)));
+        MIGLCMnomask_c(s,subj) = mutualInformationGLCM(double(X(:,:,s)), ones(size(mask1(:,:,s))), double(Yc(:,:,s)), ones(size(mask2(:,:,s))));        
+        
+        for kmod = 1:4
+            MIGLCM_A(s,subj,kmod) = mutualInformationGLCM(double(A(:,:,s,kmod)), double(mask1(:,:,s)), double(X(:,:,s)), double(mask2(:,:,s)));
+            MIGLCM_Anc(s,subj,kmod) = mutualInformationGLCM(double(A_nc(:,:,s,kmod)), double(mask1(:,:,s)), double(X(:,:,s)), double(mask2(:,:,s)));
+            MIGLCM_P(s,subj,kmod) = mutualInformationGLCM(double(P(:,:,s,kmod)), double(mask1(:,:,s)), double(X(:,:,s)), double(mask2(:,:,s)));
+            MIGLCM_Pnc(s,subj,kmod) = mutualInformationGLCM(double(P_nc(:,:,s,kmod)), double(mask1(:,:,s)), double(X(:,:,s)), double(mask2(:,:,s)));
+        end
+        
+    end
+   
+end
+
+save(fullfile(PROJ_DIR,['mutual_' id '_' prestr]),'MIGLCM_o','MIGLCM_c','MI_o','MI_c',...
+    'MIGLCMnomask_o','MIGLCMnomask_c','MInomask_o','MInomask_c','IMI','IIGLCM',...
+    'MIGLCM_A','MIGLCM_Anc','MIGLCM_P','MIGLCM_Pnc');
+
+end
