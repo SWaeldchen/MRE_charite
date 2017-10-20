@@ -28,6 +28,6 @@ setenv('NIFTI_EXTENSION', '.nii');
 setenv('RHO', '1000');
 setenv('ABSG_NOISE_THRESH', '300');
 setenv('SFWI_NOISE_THRESH', '500');
-nifti_convert_command = ['dcm2niix -f %s -z n '];
+nifti_convert_command = ['C:\Program Files\mricron\dcm2nii.exe -f %s -z n '];
 setenv('NIFTI_CONVERT_COMMAND', nifti_convert_command);
 setenv('PHASE_DIVISOR', '4096');
