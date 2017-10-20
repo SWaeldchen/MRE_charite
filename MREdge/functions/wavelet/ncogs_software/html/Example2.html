@@ -1,0 +1,430 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Group-sparse denoising by non-convex regularization: Speech denoising</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-06-02"><meta name="DC.source" content="Example2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Group-sparse denoising by non-convex regularization: Speech denoising</h1><!--introduction--><p>This example illustrates speech denoising using 2D overlapping group sparsity (OGS) with a non-convex regularizer (the 'atan' function). 2D OGS is applied to the spectrogram.</p><p>Po-Yu Chen and Ivan Selesnick, August 2013</p><p>Reference: Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization <a href="http://arxiv.org/abs/1308.5038">http://arxiv.org/abs/1308.5038</a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Set up</a></li><li><a href="#2">Load speech signal</a></li><li><a href="#3">Make noisy signal</a></li><li><a href="#4">Define STFT function</a></li><li><a href="#5">STFT of noisy speech</a></li><li><a href="#6">Soft thresholding</a></li><li><a href="#8">OGS[abs]</a></li><li><a href="#10">OGS[atan]</a></li><li><a href="#12">SNR summary</a></li><li><a href="#13">Listen to results</a></li><li><a href="#14">Wiener post-processing</a></li></ul></div><h2>Set up<a name="1"></a></h2><pre class="codeinput">close <span class="string">all</span>
+clear <span class="string">all</span>
+
+printme = @(txt) <span class="keyword">...</span>
+   print(<span class="string">'-dpdf'</span>, sprintf(<span class="string">'figures/Example2_%s'</span>, txt));
+</pre><h2>Load speech signal<a name="2"></a></h2><pre class="codeinput">[x, Fs] = wavread(<span class="string">'arctic_a0001.wav'</span>);
+
+x = x(:)';              <span class="comment">% Convert to row vector</span>
+
+N = length(x);          <span class="comment">% N : signal length</span>
+
+T = N/Fs;               <span class="comment">% T : signal duration (sec)</span>
+</pre><h2>Make noisy signal<a name="3"></a></h2><pre class="codeinput"><span class="comment">% snr_dB : SNR level of noisy signal (dB)</span>
+snr_dB = 10;
+snr = 10^(snr_dB/10);
+
+Px = var(x) + mean(x)^2;
+Pn = Px/snr;
+
+<span class="comment">% sigma_n : standard deviation of noise</span>
+sigma_n = sqrt(Pn);
+
+<span class="comment">% Set state for reproducibility of example</span>
+randn(<span class="string">'state'</span>, 0);
+
+<span class="comment">% y : noisy speech signal</span>
+y = x + sigma_n * randn(1, N);
+</pre><h2>Define STFT function<a name="4"></a></h2><pre class="codeinput">Nf = 2^9;                       <span class="comment">% FFT length</span>
+F = @(y) stft(y, Nf);           <span class="comment">% STFT</span>
+invF = @(c) istft(c, Nf, N);    <span class="comment">% inverse STFT</span>
+
+Y = F(y);    <span class="comment">% Y : STFT of noisy speech signal</span>
+X = F(x);    <span class="comment">% X : STFT of clean speech signal</span>
+</pre><h2>STFT of noisy speech<a name="5"></a></h2><pre class="codeinput">dBlim = [-50 0];
+
+figure(1)
+clf
+displaySTFT(Y, Fs, T, dBlim)
+title( sprintf(<span class="string">'Noisy signal (SNR = %2.0f dB)'</span>, <span class="keyword">...</span>
+    get_snr(x, y)) )
+printme(<span class="string">'noisy'</span>)
+
+<span class="comment">% sigma_stft: noise standard deviation in STFT domain</span>
+sigma_stft = sigma_n/sqrt(2);
+</pre><img vspace="5" hspace="5" src="Example2_01.png" alt=""> <h2>Soft thresholding<a name="6"></a></h2><pre class="codeinput"><span class="comment">% Calculate lambda by table look up and interpolation</span>
+stdo = 3E-4;
+
+<span class="comment">% Group size of 1 by 1 (scalar)</span>
+lam_factor = find_lam(stdo, <span class="string">'abs'</span>, <span class="string">'complex'</span>, 1, 1);
+lam = lam_factor * sigma_stft;
+
+X_soft = soft(Y, lam);
+x_soft = real(invF(X_soft));
+
+<span class="comment">% Compute SNR</span>
+snr_soft = get_snr(x, x_soft);
+fprintf(<span class="string">'Soft thresholding: SNR = %.2f dB\n'</span>, snr_soft)
+</pre><pre class="codeoutput">Soft thresholding: SNR = 9.60 dB
+</pre><img vspace="5" hspace="5" src="Example2_02.png" alt=""> <p>Display the spectrogram</p><pre class="codeinput">figure(1)
+clf
+displaySTFT(X_soft, Fs, T, dBlim)
+tstr = sprintf(<span class="string">'soft (SNR = %3.2f dB, \\lambda = %3.2f\\sigma)'</span>, <span class="keyword">...</span>
+    snr_soft, lam_factor);
+title( tstr );
+printme(<span class="string">'soft'</span>)
+</pre><img vspace="5" hspace="5" src="Example2_03.png" alt=""> <h2>OGS[abs]<a name="8"></a></h2><pre class="codeinput"><span class="comment">% (K1, K2) : Two-dimensional group size in STFT domain</span>
+K1 = 8;     <span class="comment">% K1 : number of spectral samples</span>
+K2 = 2;     <span class="comment">% K2 : number of temporal samples</span>
+
+Nit = 25;   <span class="comment">% Nit : number of iterations of OGS algorithm</span>
+
+<span class="comment">% Calculate lambda by table look up and interpolation</span>
+stdo = 3E-4;
+lam_factor = find_lam(stdo, <span class="string">'abs'</span>, <span class="string">'complex'</span>, K1, K2);
+lam = lam_factor * sigma_stft;
+
+<span class="comment">% Run OGS[abs] algorithm</span>
+X_ogs_abs = ogs2(Y, K1, K2, lam, <span class="string">'abs'</span>, 0, Nit);
+
+<span class="comment">% inverse STFT</span>
+x_ogs_abs = real(invF(X_ogs_abs));
+
+<span class="comment">% Compute SNR</span>
+snr_ogs_abs = get_snr(x, x_ogs_abs);
+fprintf(<span class="string">'OGS[abs]: SNR = %.2f dB\n'</span>, snr_ogs_abs)
+</pre><pre class="codeoutput">OGS[abs]: SNR = 13.36 dB
+</pre><img vspace="5" hspace="5" src="Example2_04.png" alt=""> <p>Spectrogram</p><pre class="codeinput">figure(3)
+clf
+displaySTFT(X_ogs_abs, Fs, T, dBlim)
+tstr = sprintf(<span class="string">'OGS[abs] (SNR = %3.2f dB, \\lambda = %3.2f\\sigma, %d iterations)'</span>, <span class="keyword">...</span>
+    snr_ogs_abs, lam_factor, Nit);
+title( tstr );
+printme(<span class="string">'ogs_abs'</span>)
+</pre><img vspace="5" hspace="5" src="Example2_05.png" alt=""> <h2>OGS[atan]<a name="10"></a></h2><pre class="codeinput"><span class="comment">% Calculate lambda by table look up and interpolation</span>
+stdo = 3E-4;
+lam_factor = find_lam(stdo, <span class="string">'atan'</span>, <span class="string">'complex'</span>, K1, K2);
+lam = lam_factor * sigma_stft;
+
+<span class="comment">% Run OGS[tan] algorithm</span>
+X_ogs_atan = ogs2(Y,  K1, K2, lam, <span class="string">'atan'</span>, 1, Nit);
+
+<span class="comment">% inverse STFT</span>
+x_ogs_atan = real(invF(X_ogs_atan));
+
+<span class="comment">% Compute SNR</span>
+snr_ogs_atan = get_snr(x, x_ogs_atan);
+fprintf(<span class="string">'OGS[atan]: SNR = %.2f dB\n'</span>, snr_ogs_atan)
+</pre><pre class="codeoutput">OGS[atan]: SNR = 16.28 dB
+</pre><img vspace="5" hspace="5" src="Example2_06.png" alt=""> <p>Spectrogram</p><pre class="codeinput">figure(4)
+clf
+displaySTFT(X_ogs_atan, Fs, T, dBlim)
+tstr = sprintf(<span class="string">'OGS[atan] (SNR = %3.2f dB, \\lambda = %3.2f\\sigma, %d iterations)'</span>, <span class="keyword">...</span>
+    snr_ogs_atan, lam_factor, Nit);
+title( tstr )
+printme(<span class="string">'ogs_atan'</span>)
+</pre><img vspace="5" hspace="5" src="Example2_07.png" alt=""> <h2>SNR summary<a name="12"></a></h2><pre class="codeinput">fprintf(<span class="string">'\n'</span>)
+fprintf(<span class="string">'Summary:\n'</span>)
+fprintf(<span class="string">'Soft thresholding: SNR = %.2f dB\n'</span>, snr_soft)
+fprintf(<span class="string">'OGS[abs]: SNR = %.2f dB\n'</span>, snr_ogs_abs)
+fprintf(<span class="string">'OGS[atan]: SNR = %.2f dB\n'</span>, snr_ogs_atan)
+</pre><pre class="codeoutput">
+Summary:
+Soft thresholding: SNR = 9.60 dB
+OGS[abs]: SNR = 13.36 dB
+OGS[atan]: SNR = 16.28 dB
+</pre><h2>Listen to results<a name="13"></a></h2><p>Uncomment following lines to hear the denoised speech signals.</p><pre class="codeinput"><span class="comment">% sound(x_soft, Fs);</span>
+<span class="comment">%</span>
+<span class="comment">% sound(x_ogs_abs, Fs);</span>
+<span class="comment">%</span>
+<span class="comment">% sound(x_ogs_atan, Fs);</span>
+</pre><h2>Wiener post-processing<a name="14"></a></h2><p>For this example, Wiener post-processing improves soft-thresholding and OGS[abs] but it does not improve OGS[atan].</p><pre class="codeinput"><span class="comment">% soft thresholing</span>
+X_soft_wp = Y .* abs(X_soft).^2 ./ ( abs(X_soft).^2 + sigma_stft^2 );
+x_soft_wp = invF(X_soft_wp);
+
+<span class="comment">% OGS[abs]</span>
+X_ogs_abs_wp = Y .* abs(X_ogs_abs).^2 ./ ( abs(X_ogs_abs).^2 + sigma_stft^2 );
+x_ogs_abs_wp = invF(X_ogs_abs_wp);
+
+<span class="comment">% OGS[atan]</span>
+X_ogs_atan_wp = Y .* abs(X_ogs_atan).^2 ./ ( abs(X_ogs_atan).^2 + sigma_stft^2 );
+x_ogs_atan_wp = invF(X_ogs_atan_wp);
+
+<span class="comment">% Compute SNR values</span>
+snr_soft_wp = get_snr(x, x_soft_wp);
+snr_ogs_abs_wp = get_snr(x, x_ogs_abs_wp);
+snr_ogs_atan_wp = get_snr(x, x_ogs_atan_wp);
+
+<span class="comment">% Display SNR values</span>
+fprintf(<span class="string">'\n'</span>)
+fprintf(<span class="string">'With Wiener post-processing:\n'</span>)
+fprintf(<span class="string">'Soft thresholding: SNR = %.2f dB\n'</span>, snr_soft_wp)
+fprintf(<span class="string">'OGS[abs]: SNR = %.2f dB\n'</span>, snr_ogs_abs_wp)
+fprintf(<span class="string">'OGS[atan]: SNR = %.2f dB\n'</span>, snr_ogs_atan_wp)
+</pre><pre class="codeoutput">
+With Wiener post-processing:
+Soft thresholding: SNR = 12.23 dB
+OGS[abs]: SNR = 15.36 dB
+OGS[atan]: SNR = 16.21 dB
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Group-sparse denoising by non-convex regularization: Speech denoising
+% This example illustrates speech denoising using 2D overlapping
+% group sparsity (OGS) with a non-convex regularizer (the 'atan' function). 
+% 2D OGS is applied to the spectrogram.
+%
+% Po-Yu Chen and Ivan Selesnick, August 2013
+%
+% Reference: Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization 
+% http://arxiv.org/abs/1308.5038
+
+
+%% Set up
+
+close all
+clear all
+
+printme = @(txt) ...
+   print('-dpdf', sprintf('figures/Example2_%s', txt));
+
+%% Load speech signal
+
+[x, Fs] = wavread('arctic_a0001.wav');
+
+x = x(:)';              % Convert to row vector
+
+N = length(x);          % N : signal length
+
+T = N/Fs;               % T : signal duration (sec)
+
+%% Make noisy signal
+
+% snr_dB : SNR level of noisy signal (dB)
+snr_dB = 10;                    
+snr = 10^(snr_dB/10);
+
+Px = var(x) + mean(x)^2;
+Pn = Px/snr;
+
+% sigma_n : standard deviation of noise
+sigma_n = sqrt(Pn);             
+
+% Set state for reproducibility of example
+randn('state', 0);              
+
+% y : noisy speech signal
+y = x + sigma_n * randn(1, N);  
+
+%% Define STFT function
+
+Nf = 2^9;                       % FFT length
+F = @(y) stft(y, Nf);           % STFT
+invF = @(c) istft(c, Nf, N);    % inverse STFT
+
+Y = F(y);    % Y : STFT of noisy speech signal
+X = F(x);    % X : STFT of clean speech signal
+
+%% STFT of noisy speech
+
+dBlim = [-50 0];
+
+figure(1)
+clf
+displaySTFT(Y, Fs, T, dBlim)
+title( sprintf('Noisy signal (SNR = %2.0f dB)', ...
+    get_snr(x, y)) )
+printme('noisy')
+
+% sigma_stft: noise standard deviation in STFT domain
+sigma_stft = sigma_n/sqrt(2);    
+
+
+%% Soft thresholding
+
+% Calculate lambda by table look up and interpolation
+stdo = 3E-4;
+
+% Group size of 1 by 1 (scalar)
+lam_factor = find_lam(stdo, 'abs', 'complex', 1, 1);  
+lam = lam_factor * sigma_stft;
+
+X_soft = soft(Y, lam);
+x_soft = real(invF(X_soft));
+
+% Compute SNR
+snr_soft = get_snr(x, x_soft); 
+fprintf('Soft thresholding: SNR = %.2f dB\n', snr_soft)
+
+%%  
+% Display the spectrogram
+
+figure(1)
+clf
+displaySTFT(X_soft, Fs, T, dBlim)
+tstr = sprintf('soft (SNR = %3.2f dB, \\lambda = %3.2f\\sigma)', ...
+    snr_soft, lam_factor);
+title( tstr );
+printme('soft')
+
+
+%% OGS[abs]
+
+% (K1, K2) : Two-dimensional group size in STFT domain
+K1 = 8;     % K1 : number of spectral samples
+K2 = 2;     % K2 : number of temporal samples
+
+Nit = 25;   % Nit : number of iterations of OGS algorithm
+
+% Calculate lambda by table look up and interpolation
+stdo = 3E-4;
+lam_factor = find_lam(stdo, 'abs', 'complex', K1, K2);
+lam = lam_factor * sigma_stft;
+
+% Run OGS[abs] algorithm
+X_ogs_abs = ogs2(Y, K1, K2, lam, 'abs', 0, Nit);
+
+% inverse STFT
+x_ogs_abs = real(invF(X_ogs_abs));                  
+
+% Compute SNR
+snr_ogs_abs = get_snr(x, x_ogs_abs); 
+fprintf('OGS[abs]: SNR = %.2f dB\n', snr_ogs_abs)
+
+%%
+% Spectrogram
+
+figure(3)
+clf
+displaySTFT(X_ogs_abs, Fs, T, dBlim)
+tstr = sprintf('OGS[abs] (SNR = %3.2f dB, \\lambda = %3.2f\\sigma, %d iterations)', ...
+    snr_ogs_abs, lam_factor, Nit);
+title( tstr );
+printme('ogs_abs')
+
+
+%% OGS[atan]
+
+% Calculate lambda by table look up and interpolation
+stdo = 3E-4;
+lam_factor = find_lam(stdo, 'atan', 'complex', K1, K2);    
+lam = lam_factor * sigma_stft;
+
+% Run OGS[tan] algorithm
+X_ogs_atan = ogs2(Y,  K1, K2, lam, 'atan', 1, Nit);
+
+% inverse STFT
+x_ogs_atan = real(invF(X_ogs_atan));
+
+% Compute SNR
+snr_ogs_atan = get_snr(x, x_ogs_atan);
+fprintf('OGS[atan]: SNR = %.2f dB\n', snr_ogs_atan)
+
+%%
+% Spectrogram
+
+figure(4)
+clf
+displaySTFT(X_ogs_atan, Fs, T, dBlim)
+tstr = sprintf('OGS[atan] (SNR = %3.2f dB, \\lambda = %3.2f\\sigma, %d iterations)', ...
+    snr_ogs_atan, lam_factor, Nit);
+title( tstr )
+printme('ogs_atan')
+
+%% SNR summary
+
+fprintf('\n')
+fprintf('Summary:\n')
+fprintf('Soft thresholding: SNR = %.2f dB\n', snr_soft)
+fprintf('OGS[abs]: SNR = %.2f dB\n', snr_ogs_abs)
+fprintf('OGS[atan]: SNR = %.2f dB\n', snr_ogs_atan)
+
+%% Listen to results
+% Uncomment following lines to hear the denoised speech signals.
+
+% sound(x_soft, Fs);
+% 
+% sound(x_ogs_abs, Fs);
+% 
+% sound(x_ogs_atan, Fs);
+
+
+%% Wiener post-processing
+% For this example, Wiener post-processing improves soft-thresholding and OGS[abs]
+% but it does not improve OGS[atan].
+
+% soft thresholing
+X_soft_wp = Y .* abs(X_soft).^2 ./ ( abs(X_soft).^2 + sigma_stft^2 );   
+x_soft_wp = invF(X_soft_wp);
+
+% OGS[abs]
+X_ogs_abs_wp = Y .* abs(X_ogs_abs).^2 ./ ( abs(X_ogs_abs).^2 + sigma_stft^2 );   
+x_ogs_abs_wp = invF(X_ogs_abs_wp);
+
+% OGS[atan]
+X_ogs_atan_wp = Y .* abs(X_ogs_atan).^2 ./ ( abs(X_ogs_atan).^2 + sigma_stft^2 );
+x_ogs_atan_wp = invF(X_ogs_atan_wp);
+
+% Compute SNR values
+snr_soft_wp = get_snr(x, x_soft_wp);
+snr_ogs_abs_wp = get_snr(x, x_ogs_abs_wp);
+snr_ogs_atan_wp = get_snr(x, x_ogs_atan_wp);
+
+% Display SNR values
+fprintf('\n')
+fprintf('With Wiener post-processing:\n')
+fprintf('Soft thresholding: SNR = %.2f dB\n', snr_soft_wp)
+fprintf('OGS[abs]: SNR = %.2f dB\n', snr_ogs_abs_wp)
+fprintf('OGS[atan]: SNR = %.2f dB\n', snr_ogs_atan_wp)
+
+
+
+##### SOURCE END #####
+--></body></html>
