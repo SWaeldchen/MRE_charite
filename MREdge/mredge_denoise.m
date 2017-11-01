@@ -34,6 +34,8 @@ function mredge_denoise(info, prefs)
           wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh, prefs.denoise_settings.xy_level, 1, mask);
       elseif strcmpi(prefs.denoise_strategy, '3d_soft_visu') == 1
           wavefield_img = dtdenoise_3d_undec(wavefield_img, prefs.denoise_settings.full3d_level, mask, prefs.denoise_settings.threshold_gain);
+       elseif strcmpi(prefs.denoise_strategy, '3d_nng_visu') == 1
+          wavefield_img = dtdenoise_3d_nng(wavefield_img, prefs.denoise_settings.full3d_level, mask, prefs.denoise_settings.threshold_gain);
       elseif strcmpi(prefs.denoise_strategy, '3d_ogs') == 1
           wavefield_img = dtdenoise_3d_mad_ogs_undec_log(wavefield_img, prefs.denoise_settings.full3d_thresh, prefs.denoise_settings.full3d_level, mask, fileID, prefs.base1, prefs.base2);
       elseif strcmpi(prefs.denoise_strategy, '2d_soft_visu')

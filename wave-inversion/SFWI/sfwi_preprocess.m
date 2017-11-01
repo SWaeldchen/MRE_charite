@@ -62,9 +62,8 @@ elseif den_meth == 2 % LINEAR THRESHOLD
         
     end
     U = dejitter_phase_mask(U, logical(mask), 0.5, 256);
-    tic
-    for m = 1:d5
-        disp(m)
+    disp('Denoise');
+    parfor m = 1:d5
         tic
         U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
         U(:,:,:,:,m) = dtdenoise_3d_undec(U(:,:,:,:,m), DEN_LEVELS, mask);
@@ -72,7 +71,7 @@ elseif den_meth == 2 % LINEAR THRESHOLD
         toc
         %U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac, DEN_LEVELS, mask);
     end
-    toc
+    
 elseif den_meth == 3 % Z NEGLECT
    if ft > 0
         disp('FT');

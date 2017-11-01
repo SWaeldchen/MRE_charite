@@ -1,4 +1,4 @@
-function [mu_sfwi, mu_helm] = sfwi_inversion_reg_grad(U, freqvec, spacing, xyz_order, nohelm, kern_ord)
+function [mu_sfwi, mu_helm] = sfwi2(U, freqvec, spacing, xyz_order, nohelm, kern_ord)
 
 %mu_sfwi includes all first and second order gradients
 %mu_helm neglects all first gradients
