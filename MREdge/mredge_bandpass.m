@@ -47,6 +47,9 @@ parfor s = 1:numel(info.ds.subdirs_comps_files)
     resid_vol.img = resid_vol.img - wavefield_img;
     save_untouch_nii(wavefield_vol, wavefield_path);
     resid_dir = fullfile(mredge_analysis_path(info, prefs, 'bandpass_resid'));
+    if ~exist(resid_dir)
+        mkdir(resid_dir)
+    end
     resid_path = cell2str(fullfile(resid_dir, subdir));
     save_untouch_nii_eb(resid_vol, resid_path);
 end

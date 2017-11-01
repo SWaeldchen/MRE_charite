@@ -100,7 +100,7 @@ else
     end
     
     if prefs.outputs.snr.oss
-        mredge_oss(info, prefs, 'post');
+        %mredge_oss(info, prefs, 'post');
     end
     if prefs.outputs.snr.laplacian
         mredge_laplacian_snr(info, prefs, 'post');

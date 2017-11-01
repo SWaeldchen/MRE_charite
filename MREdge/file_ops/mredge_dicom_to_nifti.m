@@ -20,7 +20,7 @@ function mredge_dicom_to_nifti(info)
 %% collect series numbers
 
 disp('Organizing Acquisition Folder...');
-evalc('system([getenv(''NIFTI_CONVERT_COMMAND''), info.path])');
+system([getenv('NIFTI_CONVERT_COMMAND'), info.path]);
 
 if (info.fd_import) 
     evalc('mredge_fd_import(info)');

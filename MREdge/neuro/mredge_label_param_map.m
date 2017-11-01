@@ -63,7 +63,7 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
     labels_img = labels_vol.img;
     labels_file = importdata('labels_Neuromorphometrics.xls');
     label_nums = labels_file.data;
-    labels = labels_file.textdata(:,2);
+    labels = labels_file.textdata(:);
     label_stats_path = fullfile(STATS_SUB, ['label_stats_', param, '.csv']);
     num_labels = numel(label_nums);
     WM = 'White Matter';

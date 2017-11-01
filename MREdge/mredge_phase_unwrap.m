@@ -31,8 +31,9 @@ for s = 1:numel(info.ds.subdirs_comps_files)
     vol_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
     vol = load_untouch_nii_eb(vol_path);
     if strcmp(prefs.phase_unwrap, 'laplacian') || strcmp(prefs.phase_unwrap, 'laplacian2d')
-        pu6d = com.ericbarnhill.magnitude.Unwrapper6D;
-        vol.img = pu6d.unwrap(vol.img, 0);
+        %pu6d = com.ericbarnhill.magnitude.Unwrapper6D;
+        %vol.img = pu6d.unwrap(vol.img, 0);
+        vol.img = dct_unwrap(vol.img, 2);
         save_untouch_nii(vol, vol_path);
     elseif strcmp(prefs.phase_unwrap, 'rga') == 1
         rg4d = com.ericbarnhill.phaseTools.RG4D;

@@ -128,6 +128,6 @@ function info = initialize_info
 	info.driving_frequencies = 0;
 	info.voxel_spacing = [.002 .002 .002];
     info.time_steps = 8;
-    info.all_freqs_one_series = 0;
+    info.all_freqs_one_series = 1;
     info.fd_import = 0;
 end

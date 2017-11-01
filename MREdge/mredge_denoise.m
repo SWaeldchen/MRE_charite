@@ -19,16 +19,16 @@ function mredge_denoise(info, prefs)
 %
 %   none
     mask = mredge_load_mask(info, prefs);
-    denoise_log_path = mredge_analysis_path(info, prefs, 'denoise_log.txt');
-    fileID = fopen(denoise_log_path, 'w');
-    fprintf(fileID, '%s \n %s \n %s \n', 'Denoise Log', string(datetime), prefs.denoise_strategy);
+    %denoise_log_path = mredge_analysis_path(info, prefs, 'denoise_log.txt');
+    %fileID = fopen(denoise_log_path, 'w');
+    %fprintf(fileID, '%s \n %s \n %s \n', 'Denoise Log', string(datetime), prefs.denoise_strategy);
     parfor s = 1:numel(info.ds.subdirs_comps_files)
       subdir = info.ds.subdirs_comps_files(s);
       wavefield_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'FT'), subdir));
       wavefield_vol = load_untouch_nii_eb(wavefield_path);
       wavefield_img = wavefield_vol.img;
       resid_vol = wavefield_vol;
-      fprintf(fileID, '%s \n', cell2str(subdir));
+      %fprintf(fileID, '%s \n', cell2str(subdir));
       if strcmpi(prefs.denoise_strategy, 'z-xy') == 1
           wavefield_img = dtdenoise_z_mad_u(wavefield_img, prefs.denoise_settings.z_thresh, prefs.denoise_settings.z_level, 1);
           wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh, prefs.denoise_settings.xy_level, 1, mask);

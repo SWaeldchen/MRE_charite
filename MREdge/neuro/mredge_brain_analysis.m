@@ -44,6 +44,8 @@ function mredge_brain_analysis(info, prefs)
         end
     elseif strcmpi(prefs.inversion_strategy, 'SFWI')
         brain_analysis(info, prefs, 'SFWI');
+    elseif strcmpi(prefs.inversion_strategy, 'FV')
+        brain_analysis(info, prefs, 'FV');
         %brain_analysis(info, prefs, 'HELM');
     end
     if prefs.sliding_windows
