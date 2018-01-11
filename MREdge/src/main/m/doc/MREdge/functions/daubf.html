@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of daubf</title>
+  <meta name="keywords" content="daubf">
+  <meta name="description" content="[h0, h1, g0, g1] = daubechies_filters(K)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; daubf.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>daubf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>[h0, h1, g0, g1] = daubechies_filters(K)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [h0, h1, g0, g1] = daubf(K) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> [h0, h1, g0, g1] = daubechies_filters(K)
+ Dauechies wavelet filters of length N = 2K (K = 1...5)
+
+ h0 - low-pass analysis filter
+ h1 - high-pass analysis filter
+ g0 - low-pass synthesis filter
+ g1 - high-pass synthesis filter</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/reverse_hard_thresh.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">reverse_hard_thresh</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/zden_3D_DWT.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">zden_3D_DWT</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/testing.html" class="code" title="">testing</a>	% TESTING MODULE</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/udwt_derivative_demo.html" class="code" title="">udwt_derivative_demo</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/udwt_example.html" class="code" title="">udwt_example</a>	CONSTRUCT FILTERS</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/udwt_example_2.html" class="code" title="">udwt_example_2</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/udwt_laplacian_demo.html" class="code" title="">udwt_laplacian_demo</a>	</li><li><a href="zden_3D_DWT.html" class="code" title="function [u_den] = zden_3D_DWT(u, J, mask, cut)">zden_3D_DWT</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [h0, h1, g0, g1] = daubf(K)</a>
+0002 
+0003 <span class="comment">% [h0, h1, g0, g1] = daubechies_filters(K)</span>
+0004 <span class="comment">% Dauechies wavelet filters of length N = 2K (K = 1...5)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% h0 - low-pass analysis filter</span>
+0007 <span class="comment">% h1 - high-pass analysis filter</span>
+0008 <span class="comment">% g0 - low-pass synthesis filter</span>
+0009 <span class="comment">% g1 - high-pass synthesis filter</span>
+0010 
+0011 <span class="keyword">switch</span> K
+0012     <span class="keyword">case</span> 1
+0013         c = [
+0014             0.707106781186548   0.707106781186548   0.707106781186548  -0.707106781186548
+0015             0.707106781186548  -0.707106781186548   0.707106781186548   0.707106781186548
+0016             ];
+0017     <span class="keyword">case</span> 2
+0018         c = [
+0019             0.482962913144534  -0.129409522551260  -0.129409522551260  -0.482962913144534
+0020             0.836516303737808  -0.224143868042013   0.224143868042013   0.836516303737808
+0021             0.224143868042013   0.836516303737808   0.836516303737808  -0.224143868042013
+0022             -0.129409522551260  -0.482962913144534   0.482962913144534  -0.129409522551260
+0023             ];
+0024     <span class="keyword">case</span> 3
+0025         c = [
+0026             0.332670552950083   0.035226291885710   0.035226291885710  -0.332670552950083
+0027             0.806891509311093   0.085441273882027  -0.085441273882027   0.806891509311093
+0028             0.459877502118491  -0.135011020010255  -0.135011020010255  -0.459877502118491
+0029             -0.135011020010255  -0.459877502118491   0.459877502118491  -0.135011020010255
+0030             -0.085441273882027   0.806891509311093   0.806891509311093   0.085441273882027
+0031             0.035226291885710  -0.332670552950083   0.332670552950083   0.035226291885710
+0032             ];
+0033     <span class="keyword">case</span> 4
+0034         c = [
+0035             0.230377813308896  -0.010597401785069  -0.010597401785069  -0.230377813308896
+0036             0.714846570552915  -0.032883011666885   0.032883011666885   0.714846570552915
+0037             0.630880767929859   0.030841381835560   0.030841381835560  -0.630880767929859
+0038             -0.027983769416859   0.187034811719093  -0.187034811719093  -0.027983769416859
+0039             -0.187034811719093  -0.027983769416859  -0.027983769416859   0.187034811719093
+0040             0.030841381835560  -0.630880767929859   0.630880767929859   0.030841381835560
+0041             0.032883011666885   0.714846570552915   0.714846570552915  -0.032883011666885
+0042             -0.010597401785069  -0.230377813308896   0.230377813308896  -0.010597401785069
+0043             ];
+0044     <span class="keyword">case</span> 5
+0045         c = [
+0046             0.160102397974193   0.003335725285474   0.003335725285474  -0.160102397974193
+0047             0.603829269797189   0.012580751999082  -0.012580751999082   0.603829269797189
+0048             0.724308528437772  -0.006241490212798  -0.006241490212798  -0.724308528437772
+0049             0.138428145901320  -0.077571493840046   0.077571493840046   0.138428145901320
+0050             -0.242294887066382  -0.032244869584638  -0.032244869584638   0.242294887066382
+0051             -0.032244869584638   0.242294887066382  -0.242294887066382  -0.032244869584638
+0052             0.077571493840046   0.138428145901320   0.138428145901320  -0.077571493840046
+0053             -0.006241490212798  -0.724308528437772   0.724308528437772  -0.006241490212798
+0054             -0.012580751999082   0.603829269797189   0.603829269797189   0.012580751999082
+0055             0.003335725285474  -0.160102397974193   0.160102397974193   0.003335725285474
+0056             ];
+0057 <span class="keyword">end</span>
+0058 
+0059 h0 = c(:,1);    <span class="comment">% low-pass analysis filter</span>
+0060 h1 = c(:,2);    <span class="comment">% high-pass analysis filter</span>
+0061 g0 = c(:,3);    <span class="comment">% low-pass synthesis filter</span>
+0062 g1 = c(:,4);    <span class="comment">% high-pass synthesis filter</span>
+0063 
+0064 <span class="keyword">end</span>
+0065</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

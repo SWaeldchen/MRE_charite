@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pm</title>
+  <meta name="keywords" content="pm">
+  <meta name="description" content="[u v] = pm(a,b)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; pm.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>pm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>[u v] = pm(a,b)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [u, v] = pm(a,b) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> [u v] = pm(a,b)
+ u = (a + b)/sqrt(2);
+ v = (a - b)/sqrt(2);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdtw_2d_stationary.html" class="code" title="function w = cdtw_2d_stationary(x, J, Faf, af)">cdtw_2d_stationary</a>	Stationary Version of Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dt_direc_decomp.html" class="code" title="function y = dt_direc_decomp(w, J, Fsf, sf)">dt_direc_decomp</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/icdtw_2d_stationary.html" class="code" title="function y = icdtw_2d_stationary(w, J, Fsf, sf)">icdtw_2d_stationary</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="cplxdual2DOpenAll.html" class="code" title="function w = cplxdual2DOpenAll(x, J, Faf, af)">cplxdual2DOpenAll</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="icplxdual2D_diff.html" class="code" title="function y = icplxdual2D_diff(w, J, Fsf, sf)">icplxdual2D_diff</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>	Inverse Dual-Tree Complex Undecimated 2D Discrete Wavelet Transform</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [u, v] = pm(a,b)</a>
+0002 
+0003 <span class="comment">% [u v] = pm(a,b)</span>
+0004 <span class="comment">% u = (a + b)/sqrt(2);</span>
+0005 <span class="comment">% v = (a - b)/sqrt(2);</span>
+0006 
+0007 u = (a + b)/sqrt(2);
+0008 v = (a - b)/sqrt(2);
+0009</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

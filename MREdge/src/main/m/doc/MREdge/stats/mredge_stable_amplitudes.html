@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_stable_amplitudes</title>
+  <meta name="keywords" content="mredge_stable_amplitudes">
+  <meta name="description" content="% function mredge_stable_amplitudes(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_stable_amplitudes.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_stable_amplitudes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_stable_amplitudes(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_stable_amplitudes(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Creates sliding window amplitudes, expected use is the weighted stable
+    springpot.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_ft_to_end.html" class="code" title="function mredge_ft_to_end(info, prefs)">mredge_ft_to_end</a>	% function [outputs] = mredge_ft_to_end(info, prefs);</li><li><a href="../../MREdge/mredge_ft_to_end_nopar.html" class="code" title="function mredge_ft_to_end_nopar(info, prefs)">mredge_ft_to_end_nopar</a>	% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function AMP_SUB = set_dirs(info, prefs)</a></li><li><a href="#_sub2" class="code">function create_stable_amplitude(stable_group, stable_group_indices, AMP_SUB)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_stable_amplitudes(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Creates sliding window amplitudes, expected use is the weighted stable</span>
+0012 <span class="comment">%    springpot.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs)</a>
+0024     <span class="keyword">if</span> nargin &lt; 2
+0025         invert = 0;
+0026     <span class="keyword">end</span>
+0027     AMP_SUB = <a href="#_sub1" class="code" title="subfunction AMP_SUB = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0028     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0029     df = info.driving_frequencies;
+0030     nf = numel(df);
+0031     stable_filenames = cell(nf-2, 1);
+0032     stable_frequencies = zeros(nf-2, 1);
+0033     [freqs_sorted, freq_indices] = sort(info.driving_frequencies, <span class="string">'ascend'</span>);
+0034     <span class="keyword">for</span> n = 1:nf-2
+0035         stable_group = [freqs_sorted(n), freqs_sorted(n+1), freqs_sorted(n+2)];
+0036         stable_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
+0037         <a href="#_sub2" class="code" title="subfunction create_stable_amplitude(stable_group, stable_group_indices, AMP_SUB)">create_stable_amplitude</a>(stable_group, stable_group_indices, AMP_SUB);
+0038         stable_filenames{n} = [num2str(stable_group(1)),<span class="string">'_'</span>,num2str(stable_group(2)),<span class="string">'_'</span>,num2str(stable_group(3)), NIF_EXT];
+0039         stable_frequencies(n) = mean(stable_group);
+0040     <span class="keyword">end</span>
+0041 <span class="keyword">end</span>
+0042 
+0043 <a name="_sub1" href="#_subfunctions" class="code">function AMP_SUB = set_dirs(info, prefs)</a>
+0044     AMP_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Amp'</span>);
+0045 <span class="keyword">end</span>
+0046 
+0047 <a name="_sub2" href="#_subfunctions" class="code">function create_stable_amplitude(stable_group, stable_group_indices, AMP_SUB)</a>
+0048     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0049     first_amp_path = fullfile(AMP_SUB, num2str(stable_group(1)), [num2str(stable_group(1)), NIF_EXT]);
+0050     amp_sum_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(first_amp_path);
+0051     <span class="keyword">for</span> n = 2:numel(stable_group)
+0052         amp_path = fullfile(AMP_SUB, num2str(stable_group(n)), [num2str(stable_group(n)), NIF_EXT]);
+0053         <span class="comment">%amp_path = mredge_unzip_if_zip(amp_path);</span>
+0054         amp_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(amp_path);
+0055         amp_sum_vol.img = amp_sum_vol.img + amp_vol.img;
+0056     <span class="keyword">end</span>
+0057     stable_filename = [num2str(stable_group(1)),<span class="string">'_'</span>,num2str(stable_group(2)),<span class="string">'_'</span>,num2str(stable_group(3)), NIF_EXT];
+0058     save_untouch_nii(amp_sum_vol, fullfile(AMP_SUB, stable_filename));
+0059 <span class="keyword">end</span>
+0060     
+0061</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

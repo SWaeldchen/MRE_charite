@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of full_wave_inversion_cohort</title>
+  <meta name="keywords" content="full_wave_inversion_cohort">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; full_wave_inversion_cohort.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>full_wave_inversion_cohort
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sfwi_preprocess_stationary.html" class="code" title="function U = sfwi_preprocess_stationary(U, unwrap, ft, den_meth, den_fac, z_den_fac)">sfwi_preprocess_stationary</a>	stacked frequency wave inversion</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 load(<span class="string">'firstHarmonic_FD'</span>);
+0002 subj{1} = firstHarmCorr;
+0003 load(<span class="string">'firstHarmonic_HT'</span>);
+0004 subj{2} = firstHarmCorr;
+0005 load(<span class="string">'firstHarmonic_IS'</span>);
+0006 subj{3} = firstHarmCorr;
+0007 load(<span class="string">'firstHarmonic_JG'</span>);
+0008 subj{4} = firstHarmCorr;
+0009 clear firstHarmCorr
+0010 mu = cell(4, 3);
+0011 mag = cell(4,3);
+0012 preprocs = cell(4,3);
+0013 freqvec = [20 25 30];
+0014 spacing = [.002 .002 .002];
+0015 <span class="keyword">for</span> b = 1:4
+0016     <span class="keyword">for</span> n = [1 2 4]
+0017         preprocs{b, n} = <a href="sfwi_preprocess_stationary.html" class="code" title="function U = sfwi_preprocess_stationary(U, unwrap, ft, den_meth, den_fac, z_den_fac)">sfwi_preprocess_stationary</a>(subj{b}(:,:,:,:,:,n), 0, 0, 1, 0.14, 0.35);
+0018         mu{b, n} = abs(full_wave_inversion(preprocs{b, n}, freqvec, spacing, 1, 2));
+0019         mag{b, n} = finish_from_hodge(preprocs{b, n}, freqvec, spacing, 2, 10);
+0020         save(<span class="string">'sfwi_hypo'</span>, <span class="string">'mu'</span>, <span class="string">'mag'</span>, <span class="string">'preprocs'</span>);
+0021     <span class="keyword">end</span>
+0022 <span class="keyword">end</span>
+0023</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

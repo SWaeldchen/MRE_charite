@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of normalizeImage</title>
+  <meta name="keywords" content="normalizeImage">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; normalizeImage.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>normalizeImage
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ y ] = normalise( x ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_est_mad.html" class="code" title="function sigma = mredge_est_mad(volume, mask, normalize)">mredge_est_mad</a>	</li><li><a href="../../MREdge/mredge_normalize_phase.html" class="code" title="function mredge_normalize_phase(info, prefs)">mredge_normalize_phase</a>	Normalizes phase data to [0, 2pi) .</li><li><a href="../../MREdge/mredge_normalize_phase_prelude.html" class="code" title="function mredge_normalize_phase_prelude(info, prefs)">mredge_normalize_phase_prelude</a>	% function mredge_normalize_phase(info, prefs);</li><li><a href="../../MREdge/mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ y ] = normalise( x )</a>
+0002 
+0003 mn = min(x(:));
+0004 mx = max(x(:));
+0005 
+0006 y = (x - mn) ./ (mx-mn);
+0007 
+0008 <span class="keyword">end</span>
+0009</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

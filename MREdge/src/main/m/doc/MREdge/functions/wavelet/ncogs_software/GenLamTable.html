@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of GenLamTable</title>
+  <meta name="keywords" content="GenLamTable">
+  <meta name="description" content="'GenLamTable' generates the table of lambda for desired output">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; GenLamTable.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>GenLamTable
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>'GenLamTable' generates the table of lambda for desired output</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function GenLamTable(pen, Nit, realcompl, stdo1, stdo2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 'GenLamTable' generates the table of lambda for desired output 
+  standard deviation for OGS2['pen'] with group size (K1,K2).
+  All of group size (K1,K2) are
+  K1 = [1 1 1 1 1 2 2 2 2 3 3 3 4 4 5 2]; 
+  K2 = [1 2 3 4 5 2 3 4 5 3 4 5 4 5 5 8];
+
+  Input :
+          pen: penalty function (eg., pen = 'abs', 'log', 'rat', 'atan')
+          Nit: number of iteration
+          realcompl: 'real' or 'complex'
+          stdo1, stdo2: desired output std 
+  Output : 
+          Output are put in the folder ./lambda_data,
+  
+          
+  Po-Yu Chen and Ivan Selesnick,
+  August 2013</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="ogs2.html" class="code" title="function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)">ogs2</a>	[x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% 'GenLamTable' generates the table of lambda for desired output</span>
+0002 <span class="comment">%  standard deviation for OGS2['pen'] with group size (K1,K2).</span>
+0003 <span class="comment">%  All of group size (K1,K2) are</span>
+0004 <span class="comment">%  K1 = [1 1 1 1 1 2 2 2 2 3 3 3 4 4 5 2];</span>
+0005 <span class="comment">%  K2 = [1 2 3 4 5 2 3 4 5 3 4 5 4 5 5 8];</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Input :</span>
+0008 <span class="comment">%          pen: penalty function (eg., pen = 'abs', 'log', 'rat', 'atan')</span>
+0009 <span class="comment">%          Nit: number of iteration</span>
+0010 <span class="comment">%          realcompl: 'real' or 'complex'</span>
+0011 <span class="comment">%          stdo1, stdo2: desired output std</span>
+0012 <span class="comment">%  Output :</span>
+0013 <span class="comment">%          Output are put in the folder ./lambda_data,</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  Po-Yu Chen and Ivan Selesnick,</span>
+0017 <span class="comment">%  August 2013</span>
+0018 
+0019 <a name="_sub0" href="#_subfunctions" class="code">function GenLamTable(pen, Nit, realcompl, stdo1, stdo2)</a>
+0020 randn(<span class="string">'state'</span>, 0);
+0021 N1 = 1000;
+0022 N2 = 1000;
+0023 
+0024 <span class="keyword">if</span> stdo1 &lt; stdo2
+0025    temp = stdo1;
+0026    stdo1 = stdo2;
+0027    stdo2 = temp;
+0028 <span class="keyword">end</span>
+0029     
+0030 <span class="keyword">switch</span> realcompl
+0031     <span class="keyword">case</span> <span class="string">'real'</span>
+0032         y = randn(N1, N2);
+0033     <span class="keyword">case</span> <span class="string">'complex'</span>
+0034         y = ( randn(N1, N2) + 1i*randn(N1, N2) ) / sqrt(2);
+0035     <span class="keyword">otherwise</span>
+0036         disp(<span class="string">'realcompl should be real or complex.'</span>)
+0037         <span class="keyword">return</span>
+0038 <span class="keyword">end</span>
+0039 
+0040 
+0041     
+0042 num = 5; <span class="comment">% size of lam</span>
+0043 K1 = [1 1 1 1 1 2 2 2 2 3 3 3 4 4 5 2]; 
+0044 K2 = [1 2 3 4 5 2 3 4 5 3 4 5 4 5 5 8];
+0045 lam = zeros(length(K1), num);
+0046 std_v = lam;
+0047 
+0048 <span class="keyword">for</span> i = 1 : length(K1)
+0049     A = @(y, lam) <a href="ogs2.html" class="code" title="function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)">ogs2</a>(y, K1(i), K2(i), lam, pen, 1, Nit);
+0050     clc
+0051     dlam = 10^-4;
+0052     
+0053     <span class="keyword">if</span> i == 1
+0054       <span class="keyword">switch</span> pen
+0055           <span class="keyword">case</span> <span class="string">'abs'</span>
+0056               <span class="keyword">switch</span> realcompl
+0057                   <span class="keyword">case</span> <span class="string">'real'</span>
+0058                       std_fun = @(t) sqrt( 2*(1+t^2)*qfunc(t) - t*sqrt(2/pi)*exp(-t^2/2) );
+0059                   <span class="keyword">case</span> <span class="string">'complex'</span>
+0060                       std_fun = @(t) sqrt( exp(-t^2)-2*sqrt(pi)*t*qfunc(sqrt(2)*t) );  
+0061               <span class="keyword">end</span>
+0062                
+0063               lam1 =  bisect_abs11(stdo1, dlam, realcompl);
+0064               lam2 =  bisect_abs11(stdo2, dlam, realcompl);
+0065               lam(i,:) = linspace(lam1, lam2, num);
+0066               <span class="keyword">for</span> j = 1 : length(lam(i,:))
+0067                   std_v(i,j) = std_fun(lam(i,j));
+0068               <span class="keyword">end</span>
+0069           <span class="keyword">otherwise</span>
+0070               lam1 =  bisect(A, stdo1, dlam, N1, N2, realcompl);
+0071               lam2 =  bisect(A, stdo2, dlam, N1, N2, realcompl);
+0072               lam(i,:) = linspace(lam1, lam2, num);
+0073               <span class="keyword">for</span> j = 1 : length(lam(i,:))
+0074                   [x, cost] = A(y, lam(i,j));
+0075                   std_v(i,j) = std(x(:));
+0076               <span class="keyword">end</span>
+0077       <span class="keyword">end</span>
+0078       
+0079     <span class="keyword">else</span>  
+0080        lam1 =  bisect(A, stdo1, dlam, N1, N2, realcompl);
+0081        lam2 =  bisect(A, stdo2, dlam, N1, N2, realcompl);
+0082        lam(i,:) = linspace(lam1, lam2, num);
+0083        <span class="keyword">for</span> j = 1 : length(lam(i,:))
+0084            [x, cost] = A(y, lam(i,j));
+0085            std_v(i,j) = std(x(:));
+0086        <span class="keyword">end</span>
+0087     <span class="keyword">end</span>
+0088     
+0089     figure(1)
+0090     clf
+0091     h = semilogy(lam(i,:), std_v(i,:),<span class="string">'.-'</span>);
+0092     set(h, <span class="string">'markersize'</span>, 20)
+0093     xlabel(<span class="string">'lambda'</span>)
+0094     ylabel(<span class="string">'std'</span>)
+0095     ylim([0.7*10^-4 10^-2*1.2])
+0096     grid on
+0097 <span class="keyword">end</span>
+0098 txt_lam = sprintf(<span class="string">'./lambda_data/lam_%s_%s_Nit_%2d.txt'</span>, pen, realcompl, Nit);
+0099 txt_std = sprintf(<span class="string">'./lambda_data/std_%s_%s_Nit_%2d.txt'</span>, pen, realcompl, Nit);
+0100 
+0101 Lam = [K1' K2' lam];
+0102 STD = [K1' K2' std_v];
+0103 save(txt_lam,<span class="string">'-ascii'</span>,<span class="string">'Lam'</span>);
+0104 save(txt_std,<span class="string">'-ascii'</span>,<span class="string">'STD'</span>);
+0105 
+0106 
+0107</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

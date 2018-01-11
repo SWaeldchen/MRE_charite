@@ -40,7 +40,7 @@ tile(dim) = size(x,dim);
 if flag
     % Compute the median of the absolute deviations from the median.
     x_nonan = x(~isnan(x));
-    y = nanmedian(abs(x - repmat(nanmedian(x,dim), tile)),dim);
+    y = median(abs(x_nonan - repmat(median(x_nonan,dim), tile)),dim);
 else
     % Compute the mean of the absolute deviations from the mean.
     y = nanmean(abs(x - repmat(nanmean(x,dim), tile)),dim);

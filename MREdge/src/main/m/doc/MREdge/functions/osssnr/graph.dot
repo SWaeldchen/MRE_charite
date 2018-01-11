@@ -1,0 +1,30 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  donoho_method_snr_multichannel -> donoho_method_snr;
+  mre_snr -> donoho_method_snr;
+  mre_snr -> donoho_method_snr_multichannel;
+  mre_snr -> oss_image;
+  mre_snr_2d -> donoho_method_snr;
+  mre_snr_2d -> donoho_method_snr_multichannel;
+  mre_snr_2d -> oss_image_2d;
+  mre_snr_multifreq -> mre_snr;
+  mre_snr_multifreq_2d -> mre_snr_2d;
+  oss_snr_cal_method1 -> nampCal;
+  oss_snr_cal_method1 -> ossNoiseCal;
+  oss_snr_cal_method1 -> ossSigCal;
+  oss_snr_method2 -> nampCal;
+
+  donoho_method_snr [URL="donoho_method_snr.html"];
+  donoho_method_snr_multichannel [URL="donoho_method_snr_multichannel.html"];
+  mre_snr [URL="mre_snr.html"];
+  mre_snr_2d [URL="mre_snr_2d.html"];
+  mre_snr_multifreq [URL="mre_snr_multifreq.html"];
+  mre_snr_multifreq_2d [URL="mre_snr_multifreq_2d.html"];
+  nampCal [URL="nampCal.html"];
+  ossNoiseCal [URL="ossNoiseCal.html"];
+  ossSigCal [URL="ossSigCal.html"];
+  oss_image [URL="oss_image.html"];
+  oss_image_2d [URL="oss_image_2d.html"];
+  oss_snr_cal_method1 [URL="oss_snr_cal_method1.html"];
+  oss_snr_method2 [URL="oss_snr_method2.html"];
+}

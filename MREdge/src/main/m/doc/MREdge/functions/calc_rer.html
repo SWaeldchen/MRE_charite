@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_rer</title>
+  <meta name="keywords" content="calc_rer">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; calc_rer.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_rer
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [res] = calc_res_rer(PROJ_DIR,Asubject,n1,n2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [res] = calc_res_rer(PROJ_DIR,Asubject,n1,n2)</a>
+0002 
+0003 <span class="keyword">for</span> subj = 1:numel(Asubject)
+0004     disp(subj);
+0005     SUBJ_DIR = Asubject{subj}{1};
+0006     
+0007     MAG_X(:,:,:,1) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_MAGm_orig.nii'</span>)));
+0008     MAG_X(:,:,:,2) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_MAGm_moco.nii'</span>)));
+0009     MAG_X(:,:,:,3) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_MAGm_dico.nii'</span>)));
+0010     MAG_X(:,:,:,4) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_MAGm_modico.nii'</span>)));
+0011     
+0012     ABSG_X(:,:,:,1) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_ABSG_orig.nii'</span>)));
+0013     ABSG_X(:,:,:,2) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_ABSG_moco.nii'</span>)));
+0014     ABSG_X(:,:,:,3) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_ABSG_dico.nii'</span>)));
+0015     ABSG_X(:,:,:,4) = spm_read_vols(spm_vol(fullfile(PROJ_DIR,SUBJ_DIR,<span class="string">'ANA'</span>,<span class="string">'EPI_ABSG_modico.nii'</span>))); 
+0016     
+0017     
+0018     <span class="comment">%% Entropy</span>
+0019     
+0020     <span class="comment">% Orig vs Moco</span>
+0021     BW1 = MAG_X(:,:,:,1)&gt;200;
+0022     BW2 = MAG_X(:,:,:,2)&gt;200;
+0023     BW3 = BW1.*BW2;    
+0024     M1=MAG_X(:,:,:,1);
+0025     TM1 = M1(M1&gt;0);    
+0026     NTM1 = TM1/norm(TM1);    
+0027     M2=MAG_X(:,:,:,2).*BW3;
+0028     TM2 = M2(M2&gt;0);
+0029     NTM2 = TM2/norm(TM2);    
+0030     ENTM1 = entropy(NTM1);
+0031     ENTM2 = entropy(NTM2);       
+0032     M1=ABSG_X(:,:,:,1);
+0033     TM1 = M1(M1&gt;0);
+0034     NTM1A = TM1/norm(TM1);
+0035     M2=ABSG_X(:,:,:,2).*BW3;
+0036     TM2 = M2(M2&gt;0);
+0037     NTM2A = TM2/norm(TM2);
+0038     ENTM1A = entropy(NTM1A);
+0039     ENTM2A = entropy(NTM2A);
+0040     
+0041     res.entropy_MAG(subj,1)=ENTM1;
+0042     res.entropy_MAG(subj,2)=ENTM2;
+0043     res.entropy_ABSG(subj,1)=ENTM1A;
+0044     res.entropy_ABSG(subj,2)=ENTM2A;
+0045     
+0046     <span class="comment">% Dico vs Modico</span>
+0047     BW1 = MAG_X(:,:,:,3)&gt;200;
+0048     BW2 = MAG_X(:,:,:,4)&gt;200;
+0049     BW3 = BW1.*BW2;    
+0050     M3=MAG_X(:,:,:,3);
+0051     TM3 = M3(M3&gt;0);    
+0052     NTM3 = TM3/norm(TM3);    
+0053     M4=MAG_X(:,:,:,4).*BW3;
+0054     TM4 = M4(M4&gt;0);
+0055     NTM4 = TM4/norm(TM4);    
+0056     ENTM3 = entropy(NTM3);
+0057     ENTM4 = entropy(NTM4);
+0058     
+0059     M3=ABSG_X(:,:,:,3);
+0060     TM4 = M4(M4&gt;0);
+0061     NTM3A = TM4/norm(TM4);
+0062     M4=ABSG_X(:,:,:,4).*BW3;
+0063     TM4 = M4(M4&gt;0);
+0064     NTM4A = TM4/norm(TM4);
+0065     ENTM3A = entropy(NTM3A);
+0066     ENTM4A = entropy(NTM4A);
+0067     
+0068     res.entropy_MAG(subj,3)=ENTM3;
+0069     res.entropy_MAG(subj,4)=ENTM4;
+0070     res.entropy_ABSG(subj,3)=ENTM3A;
+0071     res.entropy_ABSG(subj,4)=ENTM3A;
+0072     
+0073     
+0074     
+0075     [rer_M_orig, er_M_orig] = rer_3d(MAG_X(:,:,:,1)); <span class="comment">% orig</span>
+0076     [rer_M_moco, er_M_moco] = rer_3d(MAG_X(:,:,:,2)); <span class="comment">% moco</span>
+0077     [rer_M_dico, er_M_dico] = rer_3d(MAG_X(:,:,:,3)); <span class="comment">% dico</span>
+0078     [rer_M_modico, er_M_modico] = rer_3d(MAG_X(:,:,:,4)); <span class="comment">% modico</span>
+0079     
+0080     [rer_A_orig2, er_A_orig2] = rer_3d_2(ABSG_X(:,:,:,1)); <span class="comment">% orig</span>
+0081     [rer_A_moco2, er_A_moco2] = rer_3d_2(ABSG_X(:,:,:,2)); <span class="comment">% moco</span>
+0082     [rer_A_dico2, er_A_dico2] = rer_3d_2(ABSG_X(:,:,:,3)); <span class="comment">% dico</span>
+0083     [rer_A_modico2, er_A_modico2] = rer_3d_2(ABSG_X(:,:,:,4)); <span class="comment">% modico</span>
+0084     
+0085     [rer_M_orig, er_M_orig] = rer_3d(MAG_X(:,:,:,1)); <span class="comment">% orig</span>
+0086     [rer_M_moco, er_M_moco] = rer_3d(MAG_X(:,:,:,2)); <span class="comment">% moco</span>
+0087     [rer_M_dico, er_M_dico] = rer_3d(MAG_X(:,:,:,3)); <span class="comment">% dico</span>
+0088     [rer_M_modico, er_M_modico] = rer_3d(MAG_X(:,:,:,4)); <span class="comment">% modico</span>
+0089     
+0090     [rer_A_orig2, er_A_orig2] = rer_3d_2(ABSG_X(:,:,:,1)); <span class="comment">% orig</span>
+0091     [rer_A_moco2, er_A_moco2] = rer_3d_2(ABSG_X(:,:,:,2)); <span class="comment">% moco</span>
+0092     [rer_A_dico2, er_A_dico2] = rer_3d_2(ABSG_X(:,:,:,3)); <span class="comment">% dico</span>
+0093     [rer_A_modico2, er_A_modico2] = rer_3d_2(ABSG_X(:,:,:,4)); <span class="comment">% modico</span>
+0094     
+0095     BW1 = MAG_X(:,:,:,1)&gt;200;
+0096     BW2 = MAG_X(:,:,:,2)&gt;200;
+0097     BW12 = BW1.*BW2;    
+0098     
+0099     
+0100     BW3 = MAG_X(:,:,:,3)&gt;200;
+0101     BW4 = MAG_X(:,:,:,4)&gt;200;
+0102     BW34 = BW1.*BW4;    
+0103     
+0104     
+0105     res.rer_MAG1(subj,1)=median(rer_M_orig(BW12));
+0106     res.rer_MAG1(subj,2)=median(rer_M_moco(BW12));
+0107     res.rer_MAG1(subj,3)=median(rer_M_dico(BW12));
+0108     res.rer_MAG1(subj,4)=median(rer_M_modico(BW12));
+0109     res.rer_ABSG1(subj,1)=median(rer_A_orig(BW12));
+0110     res.rer_ABSG1(subj,2)=median(rer_A_moco(BW12));
+0111     res.rer_ABSG1(subj,3)=median(rer_A_dico(BW12));
+0112     res.rer_ABSG1(subj,4)=median(rer_A_modico(BW12));
+0113     
+0114     res.rer_MAG2(subj,1)=median(rer_orig2(BW12));
+0115     res.rer_MAG2(subj,2)=median(rer_moco2(BW12));
+0116     res.rer_MAG2(subj,3)=median(rer_dico2(BW12));
+0117     res.rer_MAG2(subj,4)=median(rer_modico2(BW12));
+0118     res.rer_ABSG2(subj,1)=median(rer_A_orig2(BW12));
+0119     res.rer_ABSG2(subj,2)=median(rer_A_moco2(BW12));
+0120     res.rer_ABSG2(subj,3)=median(rer_A_dico2(BW12));
+0121     res.rer_ABSG2(subj,4)=median(rer_A_modico2(BW12));
+0122     
+0123   
+0124     
+0125     
+0126     <span class="comment">%[rer, er] = rer_3d_2(X1_TMP);</span>
+0127     
+0128     
+0129     <span class="comment">%plot2waves(MAG_X(:,:,:,1)&gt;200);</span>
+0130     
+0131     
+0132    <span class="comment">% X(:,subj) = G;</span>
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

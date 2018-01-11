@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_motion_correction</title>
+  <meta name="keywords" content="mredge_motion_correction">
+  <meta name="description" content="Performs motion correction on raw MRE acquisitions, using FSL or SPM.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_motion_correction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_motion_correction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Performs motion correction on raw MRE acquisitions, using FSL or SPM.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_motion_correction(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Performs motion correction on raw MRE acquisitions, using FSL or SPM.
+
+ INPUTS:
+
+   info - an acquisition info structure created with make_acquisition_info
+   prefs - a preference file structure created with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ SEE ALSO:
+
+   <a href="mredge_motion_correction_fsl.html" class="code" title="function mredge_motion_correction_fsl(info)">mredge_motion_correction_fsl</a>, <a href="mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_motion_correction_fsl.html" class="code" title="function mredge_motion_correction_fsl(info)">mredge_motion_correction_fsl</a>	Applies motion correction using FSL. Requires a Debian installation of FSL 5.0+</li><li><a href="mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>	Performs motion correction using SPM. Requires SPM 12.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li><li><a href="mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_motion_correction(info, prefs)</a>
+0002 <span class="comment">% Performs motion correction on raw MRE acquisitions, using FSL or SPM.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">%   prefs - a preference file structure created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SEE ALSO:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   mredge_motion_correction_fsl, mredge_motion_correction_spm</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Part of the MREdge software package</span>
+0018 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0019 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0020 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0021 <span class="comment">%</span>
+0022 <span class="keyword">if</span> strcmp(prefs.moco_method,<span class="string">'fsl'</span>) == 1
+0023     <a href="mredge_motion_correction_fsl.html" class="code" title="function mredge_motion_correction_fsl(info)">mredge_motion_correction_fsl</a>(info);
+0024 <span class="keyword">elseif</span> strcmp(prefs.moco_method,<span class="string">'spm'</span>) == 1
+0025     <a href="mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>(info, prefs);
+0026 <span class="keyword">else</span>
+0027     disp(<span class="string">'MREdge ERROR: Invalid motion correction method.'</span>);
+0028 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of idwt3D_u</title>
+  <meta name="keywords" content="idwt3D_u">
+  <meta name="description" content="Inverse 3-D Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; idwt3D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>idwt3D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Inverse 3-D Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = idwt3D_u(w, J, sf) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Inverse 3-D Discrete Wavelet Transform
+
+ USAGE:
+   y = idwt3D(w, J, sf)
+ INPUT:
+   w - wavelet coefficient
+   J  - number of stages
+   sf - synthesis filters
+ OUTPUT:
+   y - output array
+ See: dwt3D
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sfb3D_u.html" class="code" title="function y = sfb3D_u(lo, hi, j, sf1, sf2, sf3)">sfb3D_u</a>	3D Synthesis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="wavelet_gradients_stationary.html" class="code" title="function [u_x, u_y, u_z] = wavelet_gradients_stationary(U, J, spacing)">wavelet_gradients_stationary</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = idwt3D_u(w, J, sf)</a>
+0002 
+0003 <span class="comment">% Inverse 3-D Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   y = idwt3D(w, J, sf)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   w - wavelet coefficient</span>
+0009 <span class="comment">%   J  - number of stages</span>
+0010 <span class="comment">%   sf - synthesis filters</span>
+0011 <span class="comment">% OUTPUT:</span>
+0012 <span class="comment">%   y - output array</span>
+0013 <span class="comment">% See: dwt3D</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0016 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0017 
+0018 y = w{J+1};
+0019 <span class="keyword">for</span> j = J:-1:1
+0020    y = <a href="sfb3D_u.html" class="code" title="function y = sfb3D_u(lo, hi, j, sf1, sf2, sf3)">sfb3D_u</a>(y, w{j}, j, sf, sf, sf);
+0021 <span class="keyword">end</span>
+0022</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

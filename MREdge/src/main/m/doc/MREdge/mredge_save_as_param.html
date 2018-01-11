@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_save_as_param</title>
+  <meta name="keywords" content="mredge_save_as_param">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_save_as_param.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_save_as_param
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_save_as_param (info, prefs, param_name, data, nifti_placeholder) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_compat_cisnmo.html" class="code" title="function matlab_outputs = mredge_compat_cisnmo(info, prefs)">mredge_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li><li><a href="mredge_invert_compat_cisnmo.html" class="code" title="function mredge_compat_cisnmo(info, prefs)">mredge_invert_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_save_as_param (info, prefs, param_name, data, nifti_placeholder)</a>
+0002 
+0003     ANALYSIS_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs);
+0004     nifti_placeholder.img = data;
+0005     save_untouch_nii(nifti_placeholder, fullfile(ANALYSIS_SUB, [param_name, <span class="string">'.nii'</span>]));
+0006     
+0007 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

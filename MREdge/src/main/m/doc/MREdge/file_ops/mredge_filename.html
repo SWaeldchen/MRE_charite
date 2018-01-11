@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_filename</title>
+  <meta name="keywords" content="mredge_filename">
+  <meta name="description" content="% function filename = mredge_filename(series, component)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_filename.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_filename
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function filename = mredge_filename(series, component)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function filename = mredge_filename(series, component, extension, descriptor) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function filename = mredge_filename(series, component)
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+ USAGE:
+
+ Ensures consistent NIfTI file nomenclature.
+
+
+ INPUTS:
+
+ series - experimental driving series
+ component - component of motion (1, 2, or 3)
+ extension - file extension
+ descriptor - optional. adds additional string at end. frequently used for temporary files
+
+ OUTPUTS:
+
+ none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_break_into_frequencies.html" class="code" title="function mredge_break_into_frequencies(series_number, subdir, info)">mredge_break_into_frequencies</a>	For acquisitions with the all_frequencies_one_series flag, partitions the time series by frequency</li><li><a href="mredge_load_magnitude_as_6d.html" class="code" title="function data_6d = mredge_load_magnitude_as_6d (info)">mredge_load_magnitude_as_6d</a>	% function mredge_laplacian_snr(info, prefs)</li><li><a href="mredge_load_phase_as_6d.html" class="code" title="function data_6d = mredge_load_phase_as_6d (info)">mredge_load_phase_as_6d</a>	% function mredge_load_phase_as_6d(info, prefs)</li><li><a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>	For acquisitions where each frequency has its own series number, rename each series to its corresponding frequency.</li><li><a href="mredge_reorganize_by_frequency.html" class="code" title="function mredge_reorganize_by_frequency(series_number, subdir, driving_frequencies)">mredge_reorganize_by_frequency</a>	% function mredge_reorganize_by_frequency(subdir, driving_frequencies)</li><li><a href="mredge_rezip.html" class="code" title="function mredge_rezip(info, subdir)">mredge_rezip</a>	% function mredge_temporal_ft(info, prefs);</li><li><a href="mredge_save_4d_with_spm.html" class="code" title="function mredge_save_4d_with_spm(header, image, subdir, series, component)">mredge_save_4d_with_spm</a>	% function mredge_save_with_spm(path)</li><li><a href="mredge_save_5d_as_FT.html" class="code" title="function mredge_save_5d_as_FT (data_5d, info, prefs)">mredge_save_5d_as_FT</a>	</li><li><a href="../../MREdge/functions/loop_over_freqs_and_components_4d_nii.html" class="code" title="function [] = loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)">loop_over_freqs_and_components_4d_nii</a>	loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</li><li><a href="../../MREdge/mredge_3d_to_4d_moco.html" class="code" title="function mredge_3d_to_4d_moco(cell_array, subdir, series, component)">mredge_3d_to_4d_moco</a>	% function mredge_3d_to_4d_moco(cell_array, name_4d)</li><li><a href="../../MREdge/mredge_curl.html" class="code" title="function mredge_curl(info, prefs)">mredge_curl</a>	% function mredge_curl(info, prefs);</li><li><a href="../../MREdge/mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>	Correct distortion, applied to the Fourier-transformed wavefield.</li><li><a href="../../MREdge/mredge_filepath.html" class="code" title="function path = mredge_filepath(DIR, f, c)">mredge_filepath</a>	Creates consistent file path given directory, frequency and component</li><li><a href="../../MREdge/mredge_ft2double.html" class="code" title="function mredge_ft2double(info,prefs)">mredge_ft2double</a>	% function mredge_ft2double(info,prefs);</li><li><a href="../../MREdge/mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>	Performs motion correction using SPM. Requires SPM 12.</li><li><a href="../../MREdge/mredge_normalize_phase_prelude.html" class="code" title="function mredge_normalize_phase_prelude(info, prefs)">mredge_normalize_phase_prelude</a>	% function mredge_normalize_phase(info, prefs);</li><li><a href="../../MREdge/mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>	Numerical divergence removal of the wave field</li><li><a href="../../MREdge/mredge_zden.html" class="code" title="function mredge_zden(info, prefs)">mredge_zden</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_amp_wave_snr.html" class="code" title="function mredge_amp_wave_snr(info, prefs)">mredge_amp_wave_snr</a>	% function mredge_amp_guided_wave_to_noise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>	Creates summed amplitude images</li><li><a href="../../MREdge/stats/mredge_psf.html" class="code" title="function mredge_psf(info, prefs)">mredge_psf</a>	% function mredge_psf(info);</li><li><a href="../../MREdge/stats/mredge_z_discontinuities.html" class="code" title="function mredge_z_discontinuities(info, prefs)">mredge_z_discontinuities</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function filename = mredge_filename(series, component)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% USAGE:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Ensures consistent NIfTI file nomenclature.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% INPUTS:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% series - experimental driving series</span>
+0016 <span class="comment">% component - component of motion (1, 2, or 3)</span>
+0017 <span class="comment">% extension - file extension</span>
+0018 <span class="comment">% descriptor - optional. adds additional string at end. frequently used for temporary files</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% OUTPUTS:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% none</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function filename = mredge_filename(series, component, extension, descriptor)</a>
+0025     
+0026     <span class="keyword">if</span> nargin &lt; 4
+0027       descriptor = <span class="string">''</span>;
+0028     <span class="keyword">else</span>
+0029       descriptor = [<span class="string">'_'</span>, descriptor];
+0030     <span class="keyword">end</span>
+0031     <span class="keyword">if</span> isreal(series)
+0032       freq_str = num2str(series);
+0033     <span class="keyword">elseif</span> iscell(series)
+0034       freq_str = num2str(cell2mat(series));
+0035     <span class="keyword">elseif</span> ischar(series)
+0036       freq_str = series;
+0037     <span class="keyword">else</span>
+0038       display(<span class="string">'MREdge ERROR: invalid series field'</span>);
+0039       <span class="keyword">return</span>;
+0040     <span class="keyword">end</span>
+0041     
+0042     <span class="keyword">if</span> isreal(component)
+0043       comp_str = num2str(component);
+0044     <span class="keyword">elseif</span> iscell(component)
+0045       comp_str = num2str(cell2mat(component));
+0046     <span class="keyword">elseif</span> ischar(component)
+0047       comp_str = component;
+0048     <span class="keyword">else</span>
+0049       display(<span class="string">'MREdge ERROR: invalid motion component field'</span>);
+0050       <span class="keyword">return</span>;
+0051     <span class="keyword">end</span>
+0052     
+0053     filename = [freq_str, <span class="string">'_'</span>, comp_str, descriptor, extension];    
+0054     
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

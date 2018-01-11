@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Example1</title>
+  <meta name="keywords" content="Example1">
+  <meta name="description" content="% Group-sparse denoising by non-convex regularization: 1D example">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; Example1.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>Example1
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% Group-sparse denoising by non-convex regularization: 1D example</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Group-sparse denoising by non-convex regularization: 1D example
+ This example illustrates 1D signal denoising using overlapping
+ group sparsity (OGS) with a non-convex regularizer (the 'atan' function). 
+ Although the regularizer is non-convex, it is chosen such that
+ the total cost function is convex. The comparison to convex-regularized
+ OGS demonstrates the improvement obtained by non-convex regularization.
+
+ Po-Yu Chen and Ivan Selesnick, August 2013
+
+ Reference: 'Group-Sparse Signal Denoising: Non-Convex Regularization,
+ Convex Optimization'
+ http://arxiv.org/abs/1308.5038</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/soft.html" class="code" title="function y = soft(x,T)">soft</a>	</li><li><a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>	SNR = get_snr(x, y)</li><li><a href="ogs1.html" class="code" title="function [x, cost] = ogs1(y, K, lam, pen, rho, Nit)">ogs1</a>	[x, cost] = ogs1(y, K, lam, pen, rho, Nit)</li><li><a href="soft.html" class="code" title="function y = soft(x, T)">soft</a>	Soft-threshold function (real or complex x)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Group-sparse denoising by non-convex regularization: 1D example</span>
+0002 <span class="comment">% This example illustrates 1D signal denoising using overlapping</span>
+0003 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.sparsity (OGS) with a non-convex regularizer (the 'atan' function).</span>
+0004 <span class="comment">% Although the regularizer is non-convex, it is chosen such that</span>
+0005 <span class="comment">% the total cost function is convex. The comparison to convex-regularized</span>
+0006 <span class="comment">% OGS demonstrates the improvement obtained by non-convex regularization.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Po-Yu Chen and Ivan Selesnick, August 2013</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Reference: 'Group-Sparse Signal Denoising: Non-Convex Regularization,</span>
+0011 <span class="comment">% Convex Optimization'</span>
+0012 <span class="comment">% http://arxiv.org/abs/1308.5038</span>
+0013 
+0014 <span class="comment">%% Set up</span>
+0015 
+0016 clear all
+0017 close all
+0018 
+0019 printme = @(txt) <span class="keyword">...</span>
+0020    print(<span class="string">'-dpdf'</span>, sprintf(<span class="string">'figures/Example1_%s'</span>, txt));
+0021 
+0022 
+0023 <span class="comment">%% Make signals</span>
+0024 
+0025 <span class="comment">% N : length of signal</span>
+0026 N = 100;                     
+0027 
+0028 <span class="comment">% x : noise-free signal</span>
+0029 x = zeros(N,1);              
+0030 x(20+(-3:3)) = [2 3 4 5 4 3 2];
+0031 x(40+(-3:3)) = [3 -2 -4 5 2 4 -3];
+0032 x(60+(-3:3)) = [3 4 2 5 -4 -2 -3];
+0033 x(80+(-3:3)) = [3 -4 -2 5 4 2 -3];
+0034 
+0035 <span class="comment">% Set state for reproducibility</span>
+0036 randn(<span class="string">'state'</span>, 0)               
+0037 
+0038 <span class="comment">% y : signal + noise</span>
+0039 y = x + (2/3) * randn(N, 1);
+0040 
+0041 snr_y = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, y);
+0042 
+0043 
+0044 <span class="comment">%% Plot signals</span>
+0045 
+0046 ylim1 = [-8 8];
+0047 
+0048 figure(1)
+0049 clf
+0050 subplot(2, 1, 1)
+0051 stem(x, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+0052 ylim(ylim1);
+0053 title(<span class="string">'Signal'</span>);
+0054 
+0055 subplot(2, 1, 2)
+0056 stem(y, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+0057 title(sprintf(<span class="string">'Signal + noise (SNR = %3.2f dB)'</span>, snr_y));
+0058 ylim(ylim1);
+0059 xlabel(<span class="string">'n'</span>)
+0060 printme(<span class="string">'data'</span>)
+0061 
+0062 
+0063 <span class="comment">%% Denoising using the soft threshold</span>
+0064 <span class="comment">% Compute SNR as a function of lambda.</span>
+0065 
+0066 L = 50;
+0067 lam = linspace(0.01, 0.8, L);
+0068 SNR = zeros(1, L);
+0069 
+0070 <span class="keyword">for</span> i = 1:L
+0071     f = <a href="soft.html" class="code" title="function y = soft(x, T)">soft</a>(y, lam(i));
+0072     SNR(i) = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, f); 
+0073 <span class="keyword">end</span>
+0074 
+0075 figure(1)
+0076 clf
+0077 plot(lam, SNR)
+0078 xlabel(<span class="string">'\lambda'</span>)
+0079 title(<span class="string">'Soft-thresholding'</span>)
+0080 ylabel(<span class="string">'SNR (dB)'</span>)
+0081 
+0082 <span class="comment">%%</span>
+0083 <span class="comment">% Find the lambda that maximizes the SNR.</span>
+0084 
+0085 [~, k] = max(SNR);
+0086 lam_soft = lam(k);
+0087 x_soft = <a href="soft.html" class="code" title="function y = soft(x, T)">soft</a>(y,  lam_soft);
+0088 snr_soft = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, x_soft);
+0089 
+0090 figure(2)
+0091 clf
+0092 subplot(2, 1, 1)
+0093 stem(x_soft, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+0094 ylim(ylim1);
+0095 title(sprintf(<span class="string">'Soft thr. (SNR = %3.2f dB)'</span>, snr_soft));
+0096 text(5, -6, sprintf(<span class="string">'\\lambda = %3.2f'</span>, lam_soft))
+0097 xlabel(<span class="string">'n'</span>)
+0098 printme(<span class="string">'soft'</span>)
+0099 
+0100 
+0101 <span class="comment">%% Denoising using OGS[abs]</span>
+0102 <span class="comment">% Compute SNR as a function of lambda.</span>
+0103 
+0104 K = 5;             <span class="comment">% K : group size</span>
+0105 Nit = 30;          <span class="comment">% Nit : number of iterations.</span>
+0106 
+0107 lam = linspace(0.01, 0.3, L);
+0108 SNR = zeros(1, L);
+0109 pen = <span class="string">'abs'</span>;
+0110 rho = 0;
+0111 <span class="keyword">for</span> i = 1:L
+0112     f = <a href="ogs1.html" class="code" title="function [x, cost] = ogs1(y, K, lam, pen, rho, Nit)">ogs1</a>(y, K, lam(i), pen, rho, Nit);
+0113     SNR(i) = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, f);    
+0114 <span class="keyword">end</span>
+0115 
+0116 figure(1)
+0117 clf
+0118 plot(lam, SNR)
+0119 xlabel(<span class="string">'\lambda'</span>)
+0120 title(<span class="string">'OGS[abs]'</span>)
+0121 ylabel(<span class="string">'SNR (dB)'</span>)
+0122 
+0123 <span class="comment">%%</span>
+0124 <span class="comment">% Find the lambda that maximizes the SNR.</span>
+0125 
+0126 [~, k] = max(SNR);
+0127 lam_abs = lam(k);
+0128 [x_abs, cost_abs] = <a href="ogs1.html" class="code" title="function [x, cost] = ogs1(y, K, lam, pen, rho, Nit)">ogs1</a>(y, K, lam_abs, <span class="string">'abs'</span>, 0, Nit);
+0129 snr_abs = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, x_abs);
+0130 
+0131 figure(2)
+0132 clf
+0133 subplot(2, 1, 1)
+0134 stem(x_abs, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+0135 ylim(ylim1);
+0136 title(sprintf(<span class="string">'OGS[abs] (SNR = %3.2f dB)'</span>, snr_abs));
+0137 text(5, -6, sprintf(<span class="string">'\\lambda = %3.2f, K = %d'</span>, lam_abs, K));
+0138 xlabel(<span class="string">'n'</span>)
+0139 printme(<span class="string">'ogs_abs'</span>)
+0140 
+0141 
+0142 <span class="comment">%% Denoising using OGS[atan]</span>
+0143 <span class="comment">% Compute SNR as a function of lambda.</span>
+0144 
+0145 lam = linspace(0.01, 0.8, L);
+0146 pen = <span class="string">'atan'</span>;
+0147 SNR = zeros(1, L);
+0148 
+0149 <span class="keyword">for</span> i = 1:L
+0150     f = <a href="ogs1.html" class="code" title="function [x, cost] = ogs1(y, K, lam, pen, rho, Nit)">ogs1</a>(y, K, lam(i), pen, 1, Nit);
+0151     SNR(i) = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, f);    
+0152 <span class="keyword">end</span>
+0153 
+0154 figure(1)
+0155 clf
+0156 plot(lam, SNR)
+0157 xlabel(<span class="string">'\lambda'</span>)
+0158 title(<span class="string">'OGS[atan]'</span>)
+0159 ylabel(<span class="string">'SNR (dB)'</span>)
+0160 
+0161 <span class="comment">%%</span>
+0162 <span class="comment">% Find the lambda that maximizes the SNR.</span>
+0163 
+0164 [~, k] = max(SNR);
+0165 lam_atan = lam(k);
+0166 [x_atan, cost_atan] = <a href="ogs1.html" class="code" title="function [x, cost] = ogs1(y, K, lam, pen, rho, Nit)">ogs1</a>(y, K, lam_atan, <span class="string">'atan'</span>, 1, Nit);
+0167 snr_atan = <a href="get_snr.html" class="code" title="function SNR = get_snr(x, y)">get_snr</a>(x, x_atan);
+0168 
+0169 figure(2)
+0170 subplot(2, 1, 1)
+0171 stem(x_atan, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+0172 ylim(ylim1);
+0173 title(sprintf(<span class="string">'OGS[atan] (SNR = %3.2f dB)'</span>, snr_atan));
+0174 text(5, -6, <span class="keyword">...</span>
+0175     sprintf(<span class="string">'\\lambda = %3.2f, K = %d'</span>, lam_atan, K))
+0176 xlabel(<span class="string">'n'</span>)
+0177 printme(<span class="string">'ogs_atan'</span>)
+0178 
+0179 
+0180 
+0181 <span class="comment">%% Input-output graph</span>
+0182 
+0183 figure(3)
+0184 clf
+0185 h = plot( abs(y), abs(x_atan), <span class="string">'ko'</span>, <span class="keyword">...</span>
+0186     abs(y), abs(x_abs), <span class="string">'kx'</span> );
+0187 set(h(1), <span class="string">'markersize'</span>, 5)
+0188 set(h(2), <span class="string">'markersize'</span>, 4)
+0189 line([0 5], [0 5], <span class="string">'linestyle'</span>, <span class="string">':'</span>, <span class="string">'color'</span>, <span class="string">'black'</span>)
+0190 axis square
+0191 xlabel(<span class="string">'y'</span>)
+0192 ylabel(<span class="string">'x'</span>)
+0193 title(<span class="string">'Output versus input'</span>);
+0194 
+0195 legend(h, <span class="string">'OGS[atan]'</span>, <span class="string">'OGS[abs]'</span>)
+0196 legend(h, <span class="string">'location'</span>, <span class="string">'southeast'</span>)
+0197 
+0198 printme(<span class="string">'Input_Output'</span>)
+0199 
+0200 
+0201 <span class="comment">%% Sorted error functions</span>
+0202 
+0203 err_abs = x - x_abs;
+0204 err_atan = x - x_atan;
+0205 
+0206 figure(4)
+0207 clf
+0208 n = 1:N;
+0209 plot(n, sort(abs(err_abs), <span class="string">'descend'</span>), <span class="string">'--'</span>, <span class="keyword">...</span>
+0210     n, sort(abs(err_atan), <span class="string">'descend'</span>))
+0211 ylim([0 1.25])
+0212 xlabel(<span class="string">' '</span>)
+0213 legend(<span class="string">'OGS[abs]'</span>, <span class="string">'OGS[atan]'</span>, <span class="string">'location'</span>, <span class="string">'east'</span>)
+0214 title(<span class="string">'Sorted error'</span>);
+0215 printme(<span class="string">'sorted_error'</span>)
+0216 
+0217</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

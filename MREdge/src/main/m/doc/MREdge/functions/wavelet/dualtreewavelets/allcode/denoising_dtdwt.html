@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of denoising_dtdwt</title>
+  <meta name="keywords" content="denoising_dtdwt">
+  <meta name="description" content="Local Adaptive Image Denoising Algorithm">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; denoising_dtdwt.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>denoising_dtdwt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Local Adaptive Image Denoising Algorithm</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = denoising_dtdwt(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Local Adaptive Image Denoising Algorithm
+ Usage :
+        y = denoising_dtdwt(x)
+ INPUT :
+        x - a noisy image
+ OUTPUT :
+        y - the corresponding denoised image</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="AntonB.html" class="code" title="function [af, sf] = AntonB">AntonB</a>	</li><li><a href="bishrink.html" class="code" title="function [w1] = bishrink(y1,y2,T)">bishrink</a>	Bivariate Shrinkage Function</li><li><a href="cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="expand.html" class="code" title="function[y] = expand(x)">expand</a>	</li><li><a href="icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="symextend.html" class="code" title="function [y] = symextend(x,Nnum)">symextend</a>	</li><li><a href="unnormcoef.html" class="code" title="function [W]= normcoef(W,L,nor)">unnormcoef</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="main_dtdwt.html" class="code" title="">main_dtdwt</a>	Main function</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = denoising_dtdwt(x)</a>
+0002 <span class="comment">% Local Adaptive Image Denoising Algorithm</span>
+0003 <span class="comment">% Usage :</span>
+0004 <span class="comment">%        y = denoising_dtdwt(x)</span>
+0005 <span class="comment">% INPUT :</span>
+0006 <span class="comment">%        x - a noisy image</span>
+0007 <span class="comment">% OUTPUT :</span>
+0008 <span class="comment">%        y - the corresponding denoised image</span>
+0009 
+0010 <span class="comment">% Set the windowsize and the corresponding filter</span>
+0011 windowsize  = 7;
+0012 windowfilt = ones(1,windowsize)/windowsize;
+0013 
+0014 <span class="comment">% Number of Stages</span>
+0015 J = 6;
+0016 I=sqrt(-1);
+0017 
+0018 <span class="comment">% symmetric extension</span>
+0019 L = length(x); <span class="comment">% length of the original image.</span>
+0020 N = L+2^J;     <span class="comment">% length after extension.</span>
+0021 x = <a href="symextend.html" class="code" title="function [y] = symextend(x,Nnum)">symextend</a>(x,2^(J-1));
+0022 
+0023 load nor_dualtree    <span class="comment">% run normaliz_coefcalc_dual_tree to generate this mat file.</span>
+0024 
+0025 <span class="comment">% Forward dual-tree DWT</span>
+0026 <span class="comment">% Either FSfarras or AntonB function can be used to compute the stage 1 filters</span>
+0027 <span class="comment">%[Faf, Fsf] = FSfarras;</span>
+0028 [Faf, Fsf] = <a href="AntonB.html" class="code" title="function [af, sf] = AntonB">AntonB</a>;
+0029 [af, sf] = <a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0030 W = <a href="cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>(x, J, Faf, af);
+0031 W = normcoef(W,J,nor);
+0032 
+0033 
+0034 <span class="comment">% Noise variance estimation using robust median estimator..</span>
+0035 tmp = W{1}{1}{1}{1};
+0036 Nsig = median(abs(tmp(:)))/0.6745;
+0037 
+0038 <span class="keyword">for</span> scale = 1:J-1
+0039     <span class="keyword">for</span> dir = 1:2
+0040         <span class="keyword">for</span> dir1 = 1:3
+0041             
+0042             <span class="comment">% Noisy complex coefficients</span>
+0043             <span class="comment">%Real part</span>
+0044             Y_coef_real = W{scale}{1}{dir}{dir1};
+0045             <span class="comment">% imaginary part</span>
+0046             Y_coef_imag = W{scale}{2}{dir}{dir1};
+0047             <span class="comment">% The corresponding noisy parent coefficients</span>
+0048             <span class="comment">%Real part</span>
+0049             Y_parent_real = W{scale+1}{1}{dir}{dir1};
+0050             <span class="comment">% imaginary part</span>
+0051             Y_parent_imag = W{scale+1}{2}{dir}{dir1};
+0052             <span class="comment">% Extend noisy parent matrix to make the matrix size the same as the coefficient matrix.</span>
+0053             Y_parent_real  = <a href="expand.html" class="code" title="function[y] = expand(x)">expand</a>(Y_parent_real);
+0054             Y_parent_imag   = <a href="expand.html" class="code" title="function[y] = expand(x)">expand</a>(Y_parent_imag);
+0055             
+0056             <span class="comment">% Signal variance estimation</span>
+0057             Wsig = conv2(windowfilt,windowfilt,(Y_coef_real).^2,<span class="string">'same'</span>);
+0058             Ssig = sqrt(max(Wsig-Nsig.^2,eps));
+0059             
+0060             <span class="comment">% Threshold value estimation</span>
+0061             T = sqrt(3)*Nsig^2./Ssig;
+0062             
+0063             <span class="comment">% Bivariate Shrinkage</span>
+0064             Y_coef = Y_coef_real+I*Y_coef_imag;
+0065             Y_parent = Y_parent_real + I*Y_parent_imag;
+0066             Y_coef = <a href="bishrink.html" class="code" title="function [w1] = bishrink(y1,y2,T)">bishrink</a>(Y_coef,Y_parent,T);
+0067             W{scale}{1}{dir}{dir1} = real(Y_coef);
+0068             W{scale}{2}{dir}{dir1} = imag(Y_coef);
+0069             
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">end</span>
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="comment">% Inverse Transform</span>
+0075 W = <a href="unnormcoef.html" class="code" title="function [W]= normcoef(W,L,nor)">unnormcoef</a>(W,J,nor);
+0076 y = <a href="icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>(W, J, Fsf, sf);
+0077 
+0078 <span class="comment">% Extract the image</span>
+0079 ind = 2^(J-1)+1:2^(J-1)+L;
+0080 y = y(ind,ind);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

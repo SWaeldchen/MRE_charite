@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_sort_time_steps</title>
+  <meta name="keywords" content="mredge_sort_time_steps">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_sort_time_steps.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_sort_time_steps
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_sort_time_steps(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/functions/resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>	y = reshape(x,d)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_sort_time_steps(info, prefs)</a>
+0002 
+0003 disp(<span class="string">'Sorting time steps'</span>);
+0004 <span class="comment">%% create image series</span>
+0005 imSer = createImageSeriesFromDicomFiles( info.path );
+0006 
+0007 <span class="keyword">for</span> i = 1:numel(imSer)
+0008     dicomHeader=imSer{i}.info;
+0009     seriesNumber=getDicomHeaderInfo(dicomHeader,<span class="string">'SeriesNumber'</span>);
+0010     <span class="keyword">if</span> (seriesNumber == info.phase)
+0011         retainedimSer = imSer(i);
+0012     <span class="keyword">end</span>
+0013 <span class="keyword">end</span>
+0014 
+0015 imSer = retainedimSer;
+0016 
+0017 <span class="comment">%% convert image series to data cubes</span>
+0018 dataCubes = convertAllImageSeriesToDataCubes( imSer );
+0019 
+0020 <span class="comment">%% split mosaics</span>
+0021 dataCubeWithSplitMosaics = splitAllMosaicDataCubes( dataCubes );
+0022 
+0023 <span class="comment">%% sort data cubes and convert MRE data to complex cube</span>
+0024 tic;
+0025 complexCubes = convertMreDataToComplexCubes( dataCubeWithSplitMosaics );
+0026 toc;
+0027 
+0028 <span class="comment">%% extract meta information from dicom headers</span>
+0029 complexCubes=autoExtractMetaInformationFromDicomHeaders(complexCubes);
+0030 complexCubes = autoReshapeAndExtractMreInfoInComplexCubes( complexCubes );
+0031 mreCubes = transform3DWaveFieldsIntoImageCoordinateSystem( complexCubes );
+0032 phase_filepath = fullfile(info.path, [num2str(info.phase), <span class="string">'.nii'</span>]);
+0033 phase_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(phase_filepath);
+0034 phase_img_resh = <a href="../../MREdge/functions/resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(phase_vol.img, 3);
+0035 phase_vol.img = reshape(phase_img_resh_sort, size(phase_vol.img));
+0036 save_untouch_nii(phase_vol, phase_filepath);
+0037 
+0038 dataCubeDir = fullfile(<a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs),<span class="string">'dataCubes'</span>);
+0039 <span class="keyword">if</span> ~exist(dataCubeDir, <span class="string">'dir'</span>)
+0040     mkdir(dataCubeDir);
+0041 <span class="keyword">end</span>
+0042 save(fullfile(dataCubeDir, <span class="string">'dataCubes.mat'</span>), <span class="string">'mreCubes'</span>);
+0043 
+0044 
+0045 
+0046 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

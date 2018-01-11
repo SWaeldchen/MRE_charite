@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_xy_elasto</title>
+  <meta name="keywords" content="dtdenoise_xy_elasto">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dtdenoise_xy_elasto.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_xy_elasto
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function U_den = dtdenoise_xy_elasto(U, lambda) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function U_den = dtdenoise_xy_elasto(U, lambda)</a>
+0003     <span class="keyword">if</span> nargin &lt; 2
+0004         <span class="comment">%lambda = 0.01*mean(U(U&gt;1000));</span>
+0005         lambda = 100;
+0006     <span class="keyword">end</span>
+0007     sz = size(U);
+0008     denR = zeros(size(U));
+0009     denI = zeros(size(U));
+0010     midpts = sz ./ 2;
+0011     <span class="keyword">if</span> (numel(sz) &lt; 4)
+0012         d4 = 1;
+0013     <span class="keyword">else</span> 
+0014         d4 = sz(4);
+0015     <span class="keyword">end</span>
+0016     pad1 = nextpwr2(sz(1));
+0017     pad2 = nextpwr2(sz(2));
+0018     padMax = max(pad1, pad2);
+0019     <span class="keyword">for</span> m = 1:d4
+0020         <span class="keyword">for</span> k = 1:size(U,3)
+0021             <span class="keyword">for</span> jiggerY = 0:3
+0022                 <span class="keyword">for</span> jiggerX = 0:3
+0023                     U_temp = circshift(simplepad(U(:,:,k,m), [padMax, padMax]), [jiggerY jiggerX]);
+0024                     denR_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(real(U_temp), lambda);
+0025                     denI_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(imag(U_temp), lambda);
+0026                     denR_temp = circshift(denR_temp, [-jiggerY -jiggerX]);
+0027                     denI_temp = circshift(denI_temp, [-jiggerY -jiggerX]);
+0028                     denR(:,:,k,m) = denR(:,:,k,m) + denR_temp(1:sz(1), 1:sz(2), :);
+0029                     denI(:,:,k,m) = denI(:,:,k,m) + denI_temp(1:sz(1), 1:sz(2), :);
+0030                 <span class="keyword">end</span>
+0031             <span class="keyword">end</span>
+0032         <span class="keyword">end</span>
+0033     <span class="keyword">end</span>
+0034     U_den = (denR + 1i*denI) ./ 16;
+0035 <span class="keyword">end</span>
+0036 
+0037</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

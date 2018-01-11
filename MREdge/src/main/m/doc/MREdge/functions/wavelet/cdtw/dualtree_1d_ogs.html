@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dualtree_1d_ogs</title>
+  <meta name="keywords" content="dualtree_1d_ogs">
+  <meta name="description" content="Dual-tree Complex Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dualtree_1d_ogs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dualtree_1d_ogs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Dual-tree Complex Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w = dualtree_1d_ogs(x, J, Faf, af) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Dual-tree Complex Discrete Wavelet Transform
+
+ USAGE:
+    w = dualtree(x, J, Faf, af)
+ INPUT:
+   x - N-point vector
+       1) N is divisible by 2^J
+       2) N &gt;= 2^(J-1)*length(af)
+   J - number of stages
+   Faf - filters for the first stage 
+   af - filters for the remaining stages
+ OUTPUT:
+   w - DWT coefficients
+      w{j}{1}, j = 1..J - real part 
+      w{j}{2}, j = 1..J - imaginary part 
+      w{J+1}{d} - lowpass coefficients, d = 1,2
+ EXAMPLE:
+    x = rand(1, 512);
+    J = 4;
+    [Faf, Fsf] = FSfarras;
+    [af, sf] = dualfilt1;
+    w = dualtree(x, J, Faf, af);
+    y = idualtree(w, J, Fsf, sf);
+    err = x - y;
+    max(abs(err))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb.html" class="code" title="function [lo, hi] = afb(x, af)">afb</a>	Analysis filter bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = dualtree_1d_ogs(x, J, Faf, af)</a>
+0002 
+0003 <span class="comment">% Dual-tree Complex Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%    w = dualtree(x, J, Faf, af)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - N-point vector</span>
+0009 <span class="comment">%       1) N is divisible by 2^J</span>
+0010 <span class="comment">%       2) N &gt;= 2^(J-1)*length(af)</span>
+0011 <span class="comment">%   J - number of stages</span>
+0012 <span class="comment">%   Faf - filters for the first stage</span>
+0013 <span class="comment">%   af - filters for the remaining stages</span>
+0014 <span class="comment">% OUTPUT:</span>
+0015 <span class="comment">%   w - DWT coefficients</span>
+0016 <span class="comment">%      w{j}{1}, j = 1..J - real part</span>
+0017 <span class="comment">%      w{j}{2}, j = 1..J - imaginary part</span>
+0018 <span class="comment">%      w{J+1}{d} - lowpass coefficients, d = 1,2</span>
+0019 <span class="comment">% EXAMPLE:</span>
+0020 <span class="comment">%    x = rand(1, 512);</span>
+0021 <span class="comment">%    J = 4;</span>
+0022 <span class="comment">%    [Faf, Fsf] = FSfarras;</span>
+0023 <span class="comment">%    [af, sf] = dualfilt1;</span>
+0024 <span class="comment">%    w = dualtree(x, J, Faf, af);</span>
+0025 <span class="comment">%    y = idualtree(w, J, Fsf, sf);</span>
+0026 <span class="comment">%    err = x - y;</span>
+0027 <span class="comment">%    max(abs(err))</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0030 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0031 
+0032 <span class="comment">% normalization</span>
+0033 x = x/sqrt(2);
+0034 
+0035 <span class="comment">% Tree 1</span>
+0036 [x1 w{1}{1}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb.html" class="code" title="function [lo, hi] = afb(x, af)">afb</a>(x, Faf{1});
+0037 <span class="keyword">for</span> j = 2:J
+0038     [x1 w{j}{1}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb.html" class="code" title="function [lo, hi] = afb(x, af)">afb</a>(x1, af{1});
+0039 <span class="keyword">end</span>
+0040 w{J+1}{1} = x1;
+0041 
+0042 <span class="comment">% Tree 2</span>
+0043 [x2 w{1}{2}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb.html" class="code" title="function [lo, hi] = afb(x, af)">afb</a>(x, Faf{2});
+0044 <span class="keyword">for</span> j = 2:J
+0045     [x2 w{j}{2}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb.html" class="code" title="function [lo, hi] = afb(x, af)">afb</a>(x2, af{2});
+0046 <span class="keyword">end</span>
+0047 w{J+1}{2} = x2;
+0048 
+0049</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

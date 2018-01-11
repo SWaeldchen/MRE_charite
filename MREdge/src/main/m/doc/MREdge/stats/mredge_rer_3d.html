@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_rer_3d</title>
+  <meta name="keywords" content="mredge_rer_3d">
+  <meta name="description" content="% function mredge_rer_3d(vol)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_rer_3d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_rer_3d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_rer_3d(vol)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [rer_vol] = mredge_rer_3d(vol) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_rer_3d(vol)
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+ USAGE:
+
+ Measures Reduced Energy Ratio for 3D volumes,
+ using the 2D method in the paper found in
+ Lee, S. Y., Yoo, J. T., Kumar, Y., &amp; Kim, S. W. (2009). 
+ Reduced energy-ratio measure for robust autofocusing in digital camera. 
+ IEEE Signal Processing Letters, 16(2), 133-136.
+
+ Also uses code from fmeasure, Said Pertuz, 2016, found at:
+ http://www.mathworks.com/matlabcentral/fileexchange/27314-focus-measure/content/fmeasure/fmeasure.m
+
+
+
+ INPUTS:
+
+ dir - location of the time series
+
+ OUTPUTS:
+
+ none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>	% function mredge_rer(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function slice_rer = rer_slice(slice)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_rer_3d(vol)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% USAGE:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Measures Reduced Energy Ratio for 3D volumes,</span>
+0011 <span class="comment">% using the 2D method in the paper found in</span>
+0012 <span class="comment">% Lee, S. Y., Yoo, J. T., Kumar, Y., &amp; Kim, S. W. (2009).</span>
+0013 <span class="comment">% Reduced energy-ratio measure for robust autofocusing in digital camera.</span>
+0014 <span class="comment">% IEEE Signal Processing Letters, 16(2), 133-136.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Also uses code from fmeasure, Said Pertuz, 2016, found at:</span>
+0017 <span class="comment">% http://www.mathworks.com/matlabcentral/fileexchange/27314-focus-measure/content/fmeasure/fmeasure.m</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% INPUTS:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% dir - location of the time series</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% OUTPUTS:</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% none</span>
+0028 
+0029 <a name="_sub0" href="#_subfunctions" class="code">function [rer_vol] = mredge_rer_3d(vol)</a>
+0030     sz = size(vol);
+0031     rer_vol = zeros(sz);
+0032     parfor n = 1:sz(3)
+0033         rer_vol(:,:,n) = <a href="#_sub1" class="code" title="subfunction slice_rer = rer_slice(slice)">rer_slice</a>(vol(:,:,n));
+0034     <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036 
+0037 <a name="_sub1" href="#_subfunctions" class="code">function slice_rer = rer_slice(slice)</a>
+0038     slice_rer = zeros(size(slice));
+0039     sz = size(slice);
+0040     <span class="keyword">for</span> i = 1:sz(1)-8
+0041         <span class="keyword">for</span> j = 1:sz(2)-8
+0042             window = slice(i:i+7, j:j+7);
+0043             win_dct = dct2(window);
+0044             slice_rer(i+3,j+3) = (win_dct(1,2)^2+win_dct(1,3)^2+win_dct(2,1)^2+win_dct(2,2)^2+win_dct(3,1)^2)/(win_dct(1,1)^2);
+0045         <span class="keyword">end</span>
+0046     <span class="keyword">end</span>
+0047 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

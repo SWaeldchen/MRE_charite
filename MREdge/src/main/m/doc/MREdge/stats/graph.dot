@@ -1,0 +1,29 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  mredge_rer -> mredge_rer_3d;
+
+  mredge_amp_wave_snr [URL="mredge_amp_wave_snr.html"];
+  mredge_amplitudes [URL="mredge_amplitudes.html"];
+  mredge_amplitudes_sliding [URL="mredge_amplitudes_sliding.html"];
+  mredge_cortical_average [URL="mredge_cortical_average.html"];
+  mredge_cortical_median [URL="mredge_cortical_median.html"];
+  mredge_cortical_median_stable [URL="mredge_cortical_median_stable.html"];
+  mredge_displacement_snr [URL="mredge_displacement_snr.html"];
+  mredge_displacement_snr_stable [URL="mredge_displacement_snr_stable.html"];
+  mredge_laplacian_snr [URL="mredge_laplacian_snr.html"];
+  mredge_laplacian_snr_stable [URL="mredge_laplacian_snr_stable.html"];
+  mredge_masked_median [URL="mredge_masked_median.html"];
+  mredge_oss [URL="mredge_oss.html"];
+  mredge_psf [URL="mredge_psf.html"];
+  mredge_rer [URL="mredge_rer.html"];
+  mredge_rer_3d [URL="mredge_rer_3d.html"];
+  mredge_snr [URL="mredge_snr.html"];
+  mredge_snr_stable [URL="mredge_snr_stable.html"];
+  mredge_springpot [URL="mredge_springpot.html"];
+  mredge_springpot_stable [URL="mredge_springpot_stable.html"];
+  mredge_springpot_stable_weighted [URL="mredge_springpot_stable_weighted.html"];
+  mredge_stable_amplitudes [URL="mredge_stable_amplitudes.html"];
+  mredge_whole_brain_median [URL="mredge_whole_brain_median.html"];
+  mredge_z_discontinuities [URL="mredge_z_discontinuities.html"];
+  mredge_z_xy_noise [URL="mredge_z_xy_noise.html"];
+}

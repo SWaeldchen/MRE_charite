@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_xy_pca_mad_amp</title>
+  <meta name="keywords" content="dtdenoise_xy_pca_mad_amp">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dtdenoise_xy_pca_mad_amp.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_xy_pca_mad_amp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function U_den = dtdenoise_xy_pca_mad_amp(U, amp, fac, n_spins, is_complex) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="DT_SOFT_2D_ampguided.html" class="code" title="function [y, w] = DT_SOFT_2D_ampguided(x, amp, T, J)">DT_SOFT_2D_ampguided</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function U_den = dtdenoise_xy_pca_mad_amp(U, amp, fac, n_spins, is_complex) </a>
+0003     <span class="keyword">if</span> nargin &lt; 5
+0004         <span class="keyword">if</span> nargin &lt; 4
+0005             <span class="keyword">if</span> nargin &lt; 3
+0006                 fac = 0.1;
+0007             <span class="keyword">end</span>
+0008             n_spins = 0;
+0009         <span class="keyword">end</span>
+0010         is_complex = 1;
+0011     <span class="keyword">end</span>
+0012     sz = size(U);
+0013     denR = zeros(size(U));
+0014     denI = zeros(size(U));
+0015     <span class="keyword">if</span> (numel(sz) &lt; 4)
+0016         d4 = 1;
+0017     <span class="keyword">else</span> 
+0018         d4 = sz(4);
+0019     <span class="keyword">end</span>
+0020     pad1 = nextpwr2(sz(1));
+0021     pad2 = nextpwr2(sz(2));
+0022     padMax = max(pad1, pad2);
+0023     <span class="keyword">for</span> m = 1:d4
+0024        mad_r = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(real(U(:,:,:,m)));
+0025        mad_i = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(imag(U(:,:,:,m)));
+0026           lambda_r = (fac*mad_r);
+0027        lambda_i = (fac*mad_i);
+0028        <span class="keyword">for</span> k = 1:size(U,3)
+0029             <span class="keyword">for</span> jiggerY = 0:n_spins
+0030                 <span class="keyword">for</span> jiggerX = 0:n_spins
+0031                     U_temp = circshift(simplepad(U(:,:,k,m), [padMax, padMax]), [jiggerY jiggerX]);
+0032                     denR_temp = <a href="DT_SOFT_2D_ampguided.html" class="code" title="function [y, w] = DT_SOFT_2D_ampguided(x, amp, T, J)">DT_SOFT_2D_ampguided</a>(real(U_temp), simplepad(amp(:,:,k,m), [padMax padMax]), lambda_r);
+0033                     denR_temp = circshift(denR_temp, [-jiggerY -jiggerX]);
+0034                     denR(:,:,k,m) = denR(:,:,k,m) + denR_temp(1:sz(1), 1:sz(2), :);
+0035                     <span class="keyword">if</span> is_complex == 1
+0036                         denI_temp = <a href="DT_SOFT_2D_ampguided.html" class="code" title="function [y, w] = DT_SOFT_2D_ampguided(x, amp, T, J)">DT_SOFT_2D_ampguided</a>(imag(U_temp), amp(:,:,k,m), lambda_i*fac);
+0037                         denI_temp = circshift(denI_temp, [-jiggerY -jiggerX]);
+0038                         denI(:,:,k,m) = denI(:,:,k,m) + denI_temp(1:sz(1), 1:sz(2), :);
+0039                     <span class="keyword">end</span>
+0040                 <span class="keyword">end</span>
+0041             <span class="keyword">end</span>
+0042         <span class="keyword">end</span>
+0043     <span class="keyword">end</span>
+0044     <span class="keyword">if</span> is_complex == 1
+0045         U_den = (denR + 1i*denI) ./ 16;
+0046     <span class="keyword">else</span>
+0047         U_den = denR ./ 16;
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 
+0051</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

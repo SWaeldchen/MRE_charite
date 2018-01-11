@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_cortical_average</title>
+  <meta name="keywords" content="mredge_cortical_average">
+  <meta name="description" content="% function mredge_cortical_average(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_cortical_average.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_cortical_average
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_cortical_average(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_cortical_average(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_cortical_average(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Using the previously set T2 mask, calculates cortical values for a
+   parameter
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function cortex(info, prefs, param)</a></li><li><a href="#_sub2" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_cortical_average(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Using the previously set T2 mask, calculates cortical values for a</span>
+0012 <span class="comment">%   parameter</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function mredge_cortical_average(info, prefs)</a>
+0024 
+0025     <span class="keyword">if</span> prefs.outputs.absg == 1
+0026         <a href="#_sub1" class="code" title="subfunction cortex(info, prefs, param)">cortex</a>(info, prefs, <span class="string">'Abs_G'</span>);
+0027     <span class="keyword">end</span>
+0028     <span class="keyword">if</span> prefs.outputs.phi == 1
+0029         <a href="#_sub1" class="code" title="subfunction cortex(info, prefs, param)">cortex</a>(info, prefs, <span class="string">'Phi'</span>);
+0030     <span class="keyword">end</span>
+0031     <span class="keyword">if</span> prefs.outputs.c == 1
+0032         <a href="#_sub1" class="code" title="subfunction cortex(info, prefs, param)">cortex</a>(info, prefs, <span class="string">'C'</span>);
+0033     <span class="keyword">end</span>
+0034     <span class="keyword">if</span> prefs.outputs.a == 1
+0035         <a href="#_sub1" class="code" title="subfunction cortex(info, prefs, param)">cortex</a>(info, prefs, <span class="string">'A'</span>);
+0036     <span class="keyword">end</span>
+0037     <span class="keyword">if</span> prefs.outputs.amplitude == 1
+0038         <a href="#_sub1" class="code" title="subfunction cortex(info, prefs, param)">cortex</a>(info, prefs, <span class="string">'Amp'</span>);
+0039     <span class="keyword">end</span>
+0040 <span class="keyword">end</span>
+0041 
+0042 <a name="_sub1" href="#_subfunctions" class="code">function cortex(info, prefs, param)</a>
+0043 
+0044     display([<span class="string">'Cortical Averages '</span>,param]);
+0045 
+0046     [PARAM_SUB, STATS_SUB] = <a href="#_sub2" class="code" title="subfunction [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)">set_dirs</a>(info, prefs, param);
+0047     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0048     param_path = fullfile(PARAM_SUB, <span class="string">'MDEV.nii.gz'</span>);
+0049     param_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_path);
+0050     param_img = param_vol.img;
+0051     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0052     cortex_masked = double(mask).*double(mredge_cortex_3d(param_img));
+0053     cortex_masked(cortex_masked == 0) = nan;
+0054     param_cortex = median(cortex_masked(~isnan(cortex_masked)));
+0055     fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'cortex_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'w'</span>);
+0056     fprintf(fileID, <span class="string">'F, Cortical Average \n'</span>);
+0057     fprintf(fileID, <span class="string">'MDEV, %1.4f \n'</span>, param_cortex);
+0058     save(fullfile(PARAM_SUB, <span class="string">'MDEV_cortex_image.mat'</span>), <span class="string">'cortex_masked'</span>);
+0059     <span class="keyword">for</span> f = info.driving_frequencies
+0060         display([num2str(f), <span class="string">'Hz'</span>]);
+0061         param_path = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]);
+0062         param_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_path);
+0063         param_img = param_vol.img;
+0064         cortex_masked = double(mask).*double(mredge_cortex_3d(param_img));
+0065         cortex_masked(cortex_masked == 0) = nan;
+0066         param_cortex = median(cortex_masked(~isnan(cortex_masked)));
+0067         save(fullfile(PARAM_SUB, [ num2str(f), <span class="string">'_cortex_image.mat'</span>]), <span class="string">'cortex_masked'</span>);
+0068         fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'cortex_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'a'</span>);
+0069         fprintf(fileID, <span class="string">'%d, %1.4f \n'</span>, f, param_cortex);
+0070     <span class="keyword">end</span>
+0071     fclose(<span class="string">'all'</span>);
+0072 
+0073 <span class="keyword">end</span> 
+0074     
+0075 <a name="_sub2" href="#_subfunctions" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a>
+0076 
+0077     PARAM_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0078     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0079     
+0080 <span class="keyword">end</span>
+0081</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

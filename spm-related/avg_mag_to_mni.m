@@ -1,15 +1,5 @@
-%% function mredge_avg_mag_to_mni(info)
-
-%
-% Part of the MREdge software package
-% Created 2016 at Charite Medical University Berlin
-% Private usage only. Distribution only by permission of Elastography working
-% group.
-%
-% USAGE:
-%
-% Deforms acquisition T2 image to MNI space, and saves deformation field,
-% which can be applied to elastograms
+function avg_mag_to_mni(path, name)
+% Co-registers magnitude image to MNI space. The deformation map is then used to co-register all elasticity maps.
 %
 % INPUTS:
 %
@@ -18,10 +8,13 @@
 % OUTPUTS:
 %
 % none
-
+%
+% Part of the MREdge software package
+% Created 2016 at Charite Medical University Berlin
+% Private usage only. Distribution only by permission of Elastography working
+% group.
+%
 %% collect series numbers
-
-function avg_mag_to_mni(path, name)
 
     TPM_dir = fullfile(spm('Dir'),'tpm');
     spm('defaults','fmri');

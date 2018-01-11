@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_2D_u</title>
+  <meta name="keywords" content="DT_2D_u">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_2D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_2D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = DT_2D_u(x, T, J, meth) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/ncogs_software/ogs2.html" class="code" title="function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)">ogs2</a>	[x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>	Inverse Dual-Tree Complex Undecimated 2D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="dtdenoise_xy_pca_mad_u.html" class="code" title="function U_den = dtdenoise_xy_pca_mad_u(U, fac, J, is_complex, mask, meth)">dtdenoise_xy_pca_mad_u</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = DT_2D_u(x, T, J, meth)</a>
+0002 <span class="keyword">if</span> (nargin == 1)
+0003     T = 0.08;
+0004 <span class="keyword">end</span>
+0005 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0006 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0007 <span class="keyword">if</span> nargin &lt; 4
+0008     meth = 4;
+0009     <span class="keyword">if</span> nargin &lt; 3
+0010         J = 3;
+0011     <span class="keyword">end</span>
+0012 <span class="keyword">end</span>
+0013 w = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>(x,J,Faf,af);
+0014 I = sqrt(-1);
+0015 <span class="comment">% loop thru scales:</span>
+0016 <span class="keyword">for</span> j = 1:J
+0017     <span class="comment">% loop thru subbands</span>
+0018     <span class="keyword">for</span> s1 = 1:2
+0019         <span class="keyword">for</span> s2 = 1:3
+0020             C = w{j}{1}{s1}{s2} + I*w{j}{2}{s1}{s2};
+0021             <span class="keyword">switch</span> meth
+0022                 <span class="keyword">case</span> 1
+0023                      C = C.*(abs(C) &gt; T);  <span class="comment">%HARD</span>
+0024                 <span class="keyword">case</span> 2
+0025                      C = max(abs(C) - T, 0);  <span class="comment">%SOFT</span>
+0026                 <span class="keyword">case</span> 3
+0027                      C = ( C - T^2 ./ C ) .* (abs(C) &gt; T);  <span class="comment">%NNG</span>
+0028                 <span class="keyword">case</span> 4       
+0029                      C = <a href="../../../../MREdge/functions/wavelet/ncogs_software/ogs2.html" class="code" title="function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)">ogs2</a>(C, 3, 3, T, <span class="string">'atan'</span>, 1, 5); <span class="comment">% OGS</span>
+0030                 <span class="keyword">case</span> 5
+0031                      <span class="comment">%C = C;</span>
+0032             <span class="keyword">end</span>
+0033             C(isnan(C)) = 0;
+0034             w{j}{1}{s1}{s2} = real(C);
+0035             w{j}{2}{s1}{s2} = imag(C);
+0036         <span class="keyword">end</span>
+0037     <span class="keyword">end</span>
+0038 <span class="keyword">end</span>
+0039 y = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>(w,J,Fsf,sf);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

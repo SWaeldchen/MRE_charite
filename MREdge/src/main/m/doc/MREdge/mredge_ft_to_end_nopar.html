@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_ft_to_end_nopar</title>
+  <meta name="keywords" content="mredge_ft_to_end_nopar">
+  <meta name="description" content="% function [outputs] = mredge_ft_to_end_nopar(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_ft_to_end_nopar.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_ft_to_end_nopar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_ft_to_end_nopar(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function [outputs] = mredge_ft_to_end_nopar(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   calls inversion pipeline specified in prefs on data set specified in info.
+    no parallel processing to enable full step debugging.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   returns a structure containing outputs as specified by prefs</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_curl.html" class="code" title="function mredge_curl(info, prefs)">mredge_curl</a>	% function mredge_curl(info, prefs);</li><li><a href="mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li><li><a href="mredge_invert.html" class="code" title="function mredge_invert(info, prefs, freq_indices)">mredge_invert</a>	Wave inversion of preprocessed MRE data</li><li><a href="mredge_invert_compat_cisnmo.html" class="code" title="function mredge_compat_cisnmo(info, prefs)">mredge_invert_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li><li><a href="mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>	Temporally Fourier-transforms the complex wave field.</li><li><a href="../MREdge/neuro/mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>	Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.</li><li><a href="../MREdge/neuro/mredge_brain_analysis_stable.html" class="code" title="function mredge_brain_analysis_stable(info_mag, info_an, prefs)">mredge_brain_analysis_stable</a>	% function mredge_brain_analysis(info, prefs);</li><li><a href="../MREdge/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>	Creates summed amplitude images</li><li><a href="../MREdge/stats/mredge_cortical_median.html" class="code" title="function mredge_cortical_median(info, prefs)">mredge_cortical_median</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../MREdge/stats/mredge_cortical_median_stable.html" class="code" title="function mredge_cortical_median_stable(info, prefs)">mredge_cortical_median_stable</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../MREdge/stats/mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>	% function mredge_rer(info, prefs);</li><li><a href="../MREdge/stats/mredge_springpot.html" class="code" title="function mredge_springpot(info, prefs)">mredge_springpot</a>	% function mredge_springpot(info, prefs);</li><li><a href="../MREdge/stats/mredge_springpot_stable_weighted.html" class="code" title="function mredge_springpot_stable_weighted(info, prefs)">mredge_springpot_stable_weighted</a>	% function mredge_springpot_stable_weighted(info, prefs);</li><li><a href="../MREdge/stats/mredge_stable_amplitudes.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs)">mredge_stable_amplitudes</a>	% function mredge_stable_amplitudes(info, prefs);</li><li><a href="../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function outputs = initialize_matlab_outputs</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_ft_to_end_nopar(info, prefs)</a>
+0002 <span class="comment">%% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% USAGE:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   calls inversion pipeline specified in prefs on data set specified in info.</span>
+0013 <span class="comment">%    no parallel processing to enable full step debugging.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% INPUTS:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0018 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% OUTPUTS:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   returns a structure containing outputs as specified by prefs</span>
+0023 
+0024 <span class="comment">% if no Temporal FT, some new routines need to be written</span>
+0025 
+0026 tic
+0027 <span class="keyword">if</span> prefs.temporal_ft == 1
+0028     display(<span class="string">'Temporal FT'</span>);
+0029     
+0030     <a href="mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>(info, prefs);
+0031     
+0032 <span class="keyword">else</span>
+0033     display(<span class="string">'MREdge ERROR: Not implemented without FT yet.'</span>);
+0034     <span class="keyword">return</span>
+0035     <span class="comment">%mredge_copy_no_ft(info);</span>
+0036 <span class="keyword">end</span>
+0037 <span class="comment">% z stats</span>
+0038 <span class="comment">% run once while noised, once after denoising</span>
+0039 <a href="../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>(info, prefs);
+0040 <span class="keyword">if</span> strcmp(prefs.denoise_strategy, <span class="string">'none'</span>) == 0
+0041     display(<span class="string">'Denoising'</span>);
+0042     
+0043     <a href="mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>(info, prefs);
+0044     
+0045 <span class="keyword">end</span>
+0046 <span class="keyword">if</span> strcmp(prefs.curl_strategy, <span class="string">'none'</span>) == 0
+0047     display(<span class="string">'Curl Decomposition'</span>);
+0048     
+0049     <a href="mredge_curl.html" class="code" title="function mredge_curl(info, prefs)">mredge_curl</a>(info, prefs);
+0050     
+0051 <span class="keyword">end</span>
+0052 <a href="../MREdge/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>(info, prefs);
+0053 <a href="../MREdge/stats/mredge_stable_amplitudes.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs)">mredge_stable_amplitudes</a>(info, prefs);
+0054 
+0055 <span class="keyword">if</span> strcmp(prefs.inversion_strategy, <span class="string">'none'</span>) == 0
+0056     display(<span class="string">'Wave Inversion'</span>);
+0057 
+0058     <span class="keyword">if</span> isfield(prefs, <span class="string">'compat'</span>)
+0059         <span class="keyword">if</span> strcmp(prefs.compat, <span class="string">'cisnmo'</span>) == 1
+0060             <a href="mredge_invert_compat_cisnmo.html" class="code" title="function mredge_compat_cisnmo(info, prefs)">mredge_invert_compat_cisnmo</a>(info, prefs);
+0061         <span class="keyword">end</span>
+0062     <span class="keyword">end</span>
+0063     <a href="mredge_invert.html" class="code" title="function mredge_invert(info, prefs, freq_indices)">mredge_invert</a>(info, prefs);
+0064 
+0065 <span class="keyword">end</span>
+0066 
+0067 mredge_stable_inversions(info, prefs, 1)
+0068 
+0069 <span class="keyword">if</span> prefs.outputs.rer == 1
+0070     <a href="../MREdge/stats/mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>(info, prefs);
+0071 <span class="keyword">end</span>
+0072 <span class="keyword">if</span> prefs.outputs.springpot == 1
+0073     <a href="../MREdge/stats/mredge_springpot.html" class="code" title="function mredge_springpot(info, prefs)">mredge_springpot</a>(info, prefs);
+0074     <span class="comment">%mredge_springpot_stable(info,prefs);</span>
+0075     <a href="../MREdge/stats/mredge_springpot_stable_weighted.html" class="code" title="function mredge_springpot_stable_weighted(info, prefs)">mredge_springpot_stable_weighted</a>(info, prefs);
+0076 <span class="keyword">end</span>
+0077 <a href="../MREdge/stats/mredge_cortical_median.html" class="code" title="function mredge_cortical_median(info, prefs)">mredge_cortical_median</a>(info, prefs);
+0078 <a href="../MREdge/stats/mredge_cortical_median_stable.html" class="code" title="function mredge_cortical_median_stable(info, prefs)">mredge_cortical_median_stable</a>(info, prefs);
+0079 <span class="keyword">if</span> prefs.brain_analysis == 1
+0080     <a href="../MREdge/neuro/mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>(info, prefs);
+0081     <a href="../MREdge/neuro/mredge_brain_analysis_stable.html" class="code" title="function mredge_brain_analysis_stable(info_mag, info_an, prefs)">mredge_brain_analysis_stable</a>(info, prefs);
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="comment">% set outputs</span>
+0085 <span class="comment">%{</span>
+0086 <span class="keyword">if</span> prefs.outputs.matlab.absg == 1
+0087     outputs.mag = mredge_load_absg;
+0088 <span class="keyword">end</span>
+0089 <span class="keyword">if</span> prefs.outputs.matlab.phi == 1
+0090     outputs.phi = mredge_load_phi;
+0091 <span class="keyword">end</span>
+0092 <span class="keyword">if</span> prefs.outputs.matlab.c == 1
+0093     outputs.c = mredge_load_c;
+0094 <span class="keyword">end</span>
+0095 <span class="keyword">if</span> prefs.outputs.matlab.a == 1
+0096     outputs.a = mredge_load_a;
+0097 <span class="keyword">end</span>
+0098 <span class="keyword">if</span> prefs.outputs.matlab.wavefield == 1
+0099     outputs.wavefield = mredge_load_wavefield;
+0100 <span class="keyword">end</span>
+0101 <span class="keyword">if</span> prefs.outputs.matlab.snr == 1
+0102     outputs.snr = mredge_load_snr;
+0103 <span class="keyword">end</span>
+0104 <span class="comment">%}</span>
+0105 toc
+0106 <span class="keyword">end</span>
+0107 
+0108 <a name="_sub1" href="#_subfunctions" class="code">function outputs = initialize_matlab_outputs</a>
+0109   
+0110   outputs.mag = [];
+0111   outputs.phi = [];
+0112   outputs.c = [];
+0113   outputs.a = [];
+0114   outputs.wavefield =[];
+0115   outputs.snr = [];
+0116   
+0117 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of afb2D_u</title>
+  <meta name="keywords" content="afb2D_u">
+  <meta name="description" content="2D Analysis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; afb2D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>afb2D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>2D Analysis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [lo, hi] = afb2D_u(x, j, af1, af2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Analysis Filter Bank
+
+ USAGE:
+   [lo, hi] = afb2D(x, af1, af2);
+ INPUT:
+   x - N by M matrix
+       1) M, N are both even
+       2) M &gt;= 2*length(af1)
+       3) N &gt;= 2*length(af2)
+   af1 - analysis filters for columns
+   af2 - analysis filters for rows
+ OUTPUT:
+    lo - lowpass subband
+    hi{1} - 'lohi' subband
+    hi{2} - 'hilo' subband
+    hi{3} - 'hihi' subband
+ EXAMPLE:
+   x = rand(32,64);
+   [af, sf] = farras;
+   [lo, hi] = afb2D(x, af, af);
+   y = sfb2D(lo, hi, sf, sf);
+   err = x - y;
+   max(max(abs(err)))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="afb2D_A_u.html" class="code" title="function [lo, hi] = afb2D_A_u(x, j, af, d)">afb2D_A_u</a>	2D Analysis Filter Bank</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/afb2D_A_u.html" class="code" title="function [lo, hi] = afb2D_A_u(x, j, af, d)">afb2D_A_u</a>	2D Analysis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/udwt2D.html" class="code" title="function w = udwt2D(x, J, h0, h1)">udwt2D</a>	Undecimated 2-D Discrete Wavelet Transform</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [lo, hi] = afb2D_u(x, j, af1, af2)</a>
+0002 
+0003 <span class="comment">% 2D Analysis Filter Bank</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   [lo, hi] = afb2D(x, af1, af2);</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - N by M matrix</span>
+0009 <span class="comment">%       1) M, N are both even</span>
+0010 <span class="comment">%       2) M &gt;= 2*length(af1)</span>
+0011 <span class="comment">%       3) N &gt;= 2*length(af2)</span>
+0012 <span class="comment">%   af1 - analysis filters for columns</span>
+0013 <span class="comment">%   af2 - analysis filters for rows</span>
+0014 <span class="comment">% OUTPUT:</span>
+0015 <span class="comment">%    lo - lowpass subband</span>
+0016 <span class="comment">%    hi{1} - 'lohi' subband</span>
+0017 <span class="comment">%    hi{2} - 'hilo' subband</span>
+0018 <span class="comment">%    hi{3} - 'hihi' subband</span>
+0019 <span class="comment">% EXAMPLE:</span>
+0020 <span class="comment">%   x = rand(32,64);</span>
+0021 <span class="comment">%   [af, sf] = farras;</span>
+0022 <span class="comment">%   [lo, hi] = afb2D(x, af, af);</span>
+0023 <span class="comment">%   y = sfb2D(lo, hi, sf, sf);</span>
+0024 <span class="comment">%   err = x - y;</span>
+0025 <span class="comment">%   max(max(abs(err)))</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0028 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0029 
+0030 <span class="comment">% filter along columns</span>
+0031 [L, H] = <a href="afb2D_A_u.html" class="code" title="function [lo, hi] = afb2D_A_u(x, j, af, d)">afb2D_A_u</a>(x, j, af1, 1);
+0032 
+0033 <span class="comment">% filter along rows</span>
+0034 [lo,    hi{1}] = <a href="afb2D_A_u.html" class="code" title="function [lo, hi] = afb2D_A_u(x, j, af, d)">afb2D_A_u</a>(L, j, af2, 2);
+0035 [hi{2}, hi{3}] = <a href="afb2D_A_u.html" class="code" title="function [lo, hi] = afb2D_A_u(x, j, af, d)">afb2D_A_u</a>(H, j, af2, 2);
+0036</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

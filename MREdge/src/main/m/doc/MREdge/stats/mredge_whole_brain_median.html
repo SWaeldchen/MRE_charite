@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_whole_brain_median</title>
+  <meta name="keywords" content="mredge_whole_brain_median">
+  <meta name="description" content="% function mredge_whole_brain_median(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_whole_brain_median.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_whole_brain_median
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_whole_brain_median(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_whole_brain_median(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_whole_brain_median(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Using the previously set T2 mask, calculates whole_brain values for a
+   parameter
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function whole_brain(info, prefs, param)</a></li><li><a href="#_sub2" class="code">function whole_brain_springpot(info, prefs)</a></li><li><a href="#_sub3" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a></li><li><a href="#_sub4" class="code">function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_whole_brain_median(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Using the previously set T2 mask, calculates whole_brain values for a</span>
+0012 <span class="comment">%   parameter</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function mredge_whole_brain_median(info, prefs)</a>
+0024 
+0025     <span class="keyword">if</span> prefs.outputs.absg == 1
+0026         <a href="#_sub1" class="code" title="subfunction whole_brain(info, prefs, param)">whole_brain</a>(info, prefs, <span class="string">'Abs_G'</span>);
+0027     <span class="keyword">end</span>
+0028     <span class="keyword">if</span> prefs.outputs.phi == 1
+0029         <a href="#_sub1" class="code" title="subfunction whole_brain(info, prefs, param)">whole_brain</a>(info, prefs, <span class="string">'Phi'</span>);
+0030     <span class="keyword">end</span>
+0031     <span class="keyword">if</span> prefs.outputs.absg == 1 &amp;&amp; prefs.outputs.phi == 1 &amp;&amp; prefs.outputs.springpot == 1
+0032         <a href="#_sub2" class="code" title="subfunction whole_brain_springpot(info, prefs)">whole_brain_springpot</a>(info, prefs);
+0033     <span class="keyword">end</span>
+0034     <span class="keyword">if</span> prefs.outputs.c == 1
+0035         <a href="#_sub1" class="code" title="subfunction whole_brain(info, prefs, param)">whole_brain</a>(info, prefs, <span class="string">'C'</span>);
+0036     <span class="keyword">end</span>
+0037     <span class="keyword">if</span> prefs.outputs.a == 1
+0038         <a href="#_sub1" class="code" title="subfunction whole_brain(info, prefs, param)">whole_brain</a>(info, prefs, <span class="string">'A'</span>);
+0039     <span class="keyword">end</span>
+0040     <span class="keyword">if</span> prefs.outputs.amplitude == 1
+0041         <a href="#_sub1" class="code" title="subfunction whole_brain(info, prefs, param)">whole_brain</a>(info, prefs, <span class="string">'Amp'</span>);
+0042     <span class="keyword">end</span>
+0043 <span class="keyword">end</span>
+0044 
+0045 <a name="_sub1" href="#_subfunctions" class="code">function whole_brain(info, prefs, param)</a>
+0046 
+0047     display([<span class="string">'Calculating Whole Brain Medians '</span>,param]);
+0048 
+0049     [PARAM_SUB, STATS_SUB] = <a href="#_sub3" class="code" title="subfunction [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)">set_dirs</a>(info, prefs, param);
+0050     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0051     <span class="comment">% evaluate all frequencies first</span>
+0052     param_path_zip = fullfile(PARAM_SUB, <span class="string">'ALL'</span>, NIF_EXT);
+0053     param_path_unzip = param_path_zip(1:end-3);
+0054     <span class="keyword">if</span> exist(param_path_zip, <span class="string">'file'</span>)
+0055         gunzip(param_path_zip);
+0056     <span class="keyword">end</span>
+0057     param_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_path_unzip);
+0058     param_img = param_vol.img;
+0059     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0060     whole_brain_masked = double(mask).*double(param_img);
+0061     whole_brain_masked(whole_brain_masked == 0) = nan;
+0062     param_whole_brain = median(whole_brain_masked(~isnan(whole_brain_masked)));
+0063     fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'whole_brain_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'w'</span>);
+0064     fprintf(fileID, <span class="string">'F, whole_brain Median \n'</span>);
+0065     fprintf(fileID, <span class="string">'MDEV, %1.4f \n'</span>, param_whole_brain);
+0066     save(fullfile(PARAM_SUB, <span class="string">'MDEV_whole_brain_image.mat'</span>), <span class="string">'whole_brain_masked'</span>);
+0067     <span class="comment">% rotate through individual frequencies</span>
+0068     <span class="keyword">for</span> f = info.driving_frequencies
+0069         display([num2str(f), <span class="string">'Hz'</span>]);
+0070         param_path_zip = fullfile(PARAM_SUB, num2str(f), [num2str(f), NIF_EXT]);
+0071          param_path_unzip = param_path_zip(1:end-3);
+0072         <span class="keyword">if</span> exist(param_path_zip, <span class="string">'file'</span>)
+0073             gunzip(param_path_zip);
+0074         <span class="keyword">end</span>
+0075         param_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_path_unzip);
+0076         param_img = param_vol.img;
+0077         whole_brain_masked = double(mask).*double(param_img);
+0078         whole_brain_masked(whole_brain_masked == 0) = nan;
+0079         param_whole_brain = median(whole_brain_masked(~isnan(whole_brain_masked)));
+0080         fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'whole_brain_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'a'</span>);
+0081         fprintf(fileID, <span class="string">'%d, %1.4f \n'</span>, f, param_whole_brain);
+0082     <span class="keyword">end</span>
+0083     fclose(<span class="string">'all'</span>);
+0084 
+0085 <span class="keyword">end</span> 
+0086 
+0087 <a name="_sub2" href="#_subfunctions" class="code">function whole_brain_springpot(info, prefs)</a>
+0088 
+0089     display([<span class="string">'whole_brain Medians, Springpot'</span>]);
+0090     MU_FILENAME = <span class="string">'mu.nii.gz'</span>;
+0091     ALPHA_FILENAME = <span class="string">'alpha.nii.gz'</span>;
+0092     RSS_FILENAME = <span class="string">'rss.nii.gz'</span>;
+0093     MU_MIN = 200;
+0094 
+0095     [SPRINGPOT_SUB, STATS_SUB] = <a href="#_sub4" class="code" title="subfunction [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)">set_dirs_springpot</a>(info, prefs);
+0096     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0097     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
+0098     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
+0099     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);
+0100     mu_path_unzip = mu_path_zip(1:end-3);
+0101     alpha_path_unzip = alpha_path_zip(1:end-3);
+0102     rss_path_unzip = rss_path_zip(1:end-3);
+0103     <span class="keyword">if</span> exist(mu_path_zip, <span class="string">'file'</span>)
+0104         gunzip(mu_path_zip);
+0105     <span class="keyword">end</span>
+0106     <span class="keyword">if</span> exist(alpha_path_zip, <span class="string">'file'</span>)
+0107         gunzip(alpha_path_zip);
+0108     <span class="keyword">end</span>
+0109     <span class="keyword">if</span> exist(rss_path_zip, <span class="string">'file'</span>)
+0110         gunzip(rss_path_zip);
+0111     <span class="keyword">end</span>
+0112     mu_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(mu_path_unzip);
+0113     mu_img = mu_vol.img;
+0114     alpha_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(alpha_path_unzip);
+0115     alpha_img = alpha_vol.img;    
+0116     rss_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(rss_path_unzip);
+0117     rss_img = rss_vol.img;        
+0118     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0119     mu_masked = double(mask).*double(mu_img);
+0120     alpha_masked = double(mask).*double(alpha_img);
+0121     rss_masked = double(mask).*double(rss_img);
+0122     mu_masked(mu_masked == 0) = nan;
+0123     alpha_masked(alpha_masked == 0) = nan;
+0124     rss_masked(rss_masked == 0) = nan;
+0125     mu_whole_brain = median(mu_masked(mu_masked &gt; MU_MIN));
+0126     alpha_whole_brain = median(alpha_masked(~isnan(alpha_masked)));
+0127     rss_whole_brain = median(rss_masked(~isnan(rss_masked)));
+0128     mu_ID = fopen(fullfile(STATS_SUB, <span class="string">'whole_brain_Mu.csv'</span>), <span class="string">'w'</span>);
+0129     alpha_ID = fopen(fullfile(STATS_SUB, <span class="string">'whole_brain_Alpha.csv'</span>), <span class="string">'w'</span>);
+0130     rss_ID = fopen(fullfile(STATS_SUB, <span class="string">'whole_brain_RSS.csv'</span>), <span class="string">'w'</span>);
+0131     fprintf(mu_ID, <span class="string">'whole_brain Median \n'</span>);
+0132     fprintf(mu_ID, <span class="string">'%1.4f \n'</span>, mu_whole_brain);
+0133     fprintf(alpha_ID, <span class="string">'whole_brain Median \n'</span>);
+0134     fprintf(alpha_ID, <span class="string">'%1.4f \n'</span>, alpha_whole_brain);
+0135     fprintf(rss_ID, <span class="string">'whole_brain Median \n'</span>);
+0136     fprintf(rss_ID, <span class="string">'%1.4f \n'</span>, rss_whole_brain);    
+0137     fclose(<span class="string">'all'</span>);
+0138 
+0139 <span class="keyword">end</span> 
+0140     
+0141 <a name="_sub3" href="#_subfunctions" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a>
+0142 
+0143     PARAM_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0144     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0145 <span class="keyword">end</span>
+0146 
+0147 <a name="_sub4" href="#_subfunctions" class="code">function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)</a>
+0148 
+0149     SPRINGPOT_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Springpot'</span>);
+0150     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0151 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

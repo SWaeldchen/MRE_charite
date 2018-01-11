@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_label_param_map</title>
+  <meta name="keywords" content="mredge_label_param_map">
+  <meta name="description" content="Labels paramater map results and produces statistics for brain anatomical regions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">neuro</a> &gt; mredge_label_param_map.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/neuro&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_label_param_map
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Labels paramater map results and produces statistics for brain anatomical regions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_label_param_map(info, prefs, param, freq_indices) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Labels paramater map results and produces statistics for brain anatomical regions
+ 
+ INPUTS:
+
+   info - an acquisition info structure created by make_acquisition_info
+   prefs - MREdge prefs struct
+   param - elasticity parameter
+   freq_indices - indices of driving frequencies
+
+ OUTPUTS:
+
+ none
+
+ SEE ALSO:
+
+   <a href="mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>, <a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>,
+   <a href="mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>, <a href="mredge_mni_to_label_space.html" class="code" title="function mredge_mni_to_label_space(info, prefs, param, freq_indices)">mredge_mni_to_label_space</a>
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ So that we can vouch for results,
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../../../../MREdge/src/main/m/file_ops/mredge_freq_indices_to_filename.html" class="code" title="function filename = mredge_freq_indices_to_filename(info, prefs, freq_indices)">mredge_freq_indices_to_filename</a>	Converts list of frequency indices to a consistent filename</li><li><a href="../../../../../MREdge/src/main/m/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>	Strips file extension from a nifti file, to allow alteration of filenames</li><li><a href="../../../../../MREdge/src/main/m/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>	Unzips nifti if it is zipped. For navigation between SPM, FSL and other packages</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>	Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_label_param_map(info, prefs, param, freq_indices)</a>
+0002 <span class="comment">% Labels paramater map results and produces statistics for brain anatomical regions</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created by make_acquisition_info</span>
+0007 <span class="comment">%   prefs - MREdge prefs struct</span>
+0008 <span class="comment">%   param - elasticity parameter</span>
+0009 <span class="comment">%   freq_indices - indices of driving frequencies</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% OUTPUTS:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% none</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% SEE ALSO:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   mredge_brain_analysis, mredge_avg_mag_to_mni,</span>
+0018 <span class="comment">%   mredge_coreg_param_to_mni, mredge_mni_to_label_space</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% Part of the MREdge software package</span>
+0021 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0022 <span class="comment">% So that we can vouch for results,</span>
+0023 <span class="comment">% this code is source-available but not open source.</span>
+0024 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0025 <span class="comment">% for permission to make modifications.</span>
+0026 <span class="comment">%</span>
+0027 PARAM_SUB =  <a href="../../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0028 STATS_SUB = <a href="../../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0029 tpm_image_path = fullfile(spm(<span class="string">'Dir'</span>), <span class="string">'tpm'</span>, <span class="string">'labels_Neuromorphometrics.nii'</span>);
+0030 
+0031 all_file = <a href="../../../../../MREdge/src/main/m/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>(fullfile(PARAM_SUB, [<span class="string">'rw'</span>, <a href="../../../../../MREdge/src/main/m/file_ops/mredge_freq_indices_to_filename.html" class="code" title="function filename = mredge_freq_indices_to_filename(info, prefs, freq_indices)">mredge_freq_indices_to_filename</a>(info,prefs,freq_indices)]));
+0032 <span class="keyword">if</span> strcmp(param, <span class="string">'phi'</span>)
+0033     noise_thresh = eps;
+0034 <span class="keyword">else</span>
+0035     noise_thresh = prefs.abs_g_noise_thresh;
+0036 <span class="keyword">end</span>
+0037 <a href="#_sub1" class="code" title="subfunction label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)">label_param_map</a>(STATS_SUB, param, tpm_image_path, all_file, noise_thresh, freq_indices);
+0038 
+0039 <span class="keyword">end</span>
+0040 
+0041 <a name="_sub1" href="#_subfunctions" class="code">function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)</a>
+0042  
+0043     param_coreg_vol = load_untouch_nii_eb(param_file_path);
+0044     param_img = param_coreg_vol.img;
+0045     labels_vol = load_untouch_nii_eb(tpm_image_path);
+0046     labels_img = labels_vol.img;
+0047     labels_file = importdata(<span class="string">'labels_Neuromorphometrics.xls'</span>);
+0048     label_nums = labels_file.data;
+0049     labels = labels_file.textdata(:,2);
+0050     freq_label = <a href="../../../../../MREdge/src/main/m/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>(filename);
+0051     label_stats_path = fullfile(STATS_SUB, [<span class="string">'brain_analysis_'</span>, param, <span class="string">'_'</span>, freq_label, <span class="string">'.csv'</span>]);
+0052     num_labels = numel(label_nums);
+0053     WM = <span class="string">'White Matter'</span>;
+0054     wm_path = fullfile(STATS_SUB, [<span class="string">'wm_stats_'</span>, param, <span class="string">'.csv'</span>]);
+0055       
+0056     <span class="keyword">for</span> n = 1:num_labels
+0057         label_num = label_nums(n);
+0058         label_voxels = labels_img == label_num;
+0059         param_label_voxels = param_img(label_voxels);
+0060         param_values = param_label_voxels(~isnan(param_label_voxels));
+0061         param_values = param_values(param_values &gt; noise_thresh);
+0062         stats(n).label = labels{n}; <span class="comment">%#ok&lt;*AGROW&gt;</span>
+0063         stats(n).num_voxels = numel(param_values);
+0064         stats(n).mean = mean(param_values);
+0065         stats(n).median = median(param_values);
+0066         stats(n).std = std(param_values);
+0067         stats(n).min = min(param_values);
+0068         stats(n).max = max(param_values);
+0069     <span class="keyword">end</span>
+0070  
+0071     label_fileID = fopen(label_stats_path, <span class="string">'a'</span>);
+0072     fprintf(label_fileID, <span class="string">'%s\n'</span>, <span class="string">'Label,NumVoxels,Mean,Median,Std,Min,Max'</span>);
+0073     wm_cat = [];
+0074     wm_voxnum_cat = [];
+0075     <span class="keyword">for</span> n = 1:numel(stats)
+0076         <span class="keyword">if</span> stats(n).num_voxels &gt; 0
+0077             fprintf(label_fileID, <span class="string">'%s,%d,%1.3f,%1.3f,%1.3f,%1.3f,%1.3f\n'</span>, stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
+0078             is_wm = strfind(stats(n).label,WM);
+0079             <span class="keyword">if</span> any(is_wm) &amp;&amp; stats(n).mean &gt; noise_thresh <span class="comment">% if this is white matter and not NaN</span>
+0080                 <span class="comment">% NOTE: thresholding is already accomplished above,</span>
+0081                 <span class="comment">% this only ensures removal of all-NaN regions</span>
+0082                 wm_cat = cat(1, wm_cat, stats(n).mean);
+0083                 wm_voxnum_cat = cat(1, wm_voxnum_cat, stats(n).num_voxels);
+0084             <span class="keyword">end</span>
+0085         <span class="keyword">end</span>
+0086     <span class="keyword">end</span>
+0087     <span class="keyword">if</span> nargin &lt; 6
+0088         label_fileID = fopen(wm_path, <span class="string">'w'</span>);
+0089         fprintf(label_fileID, <span class="string">'%s,%d,%1.3f,%1.3f,%d\n'</span>, <span class="string">'ALL'</span>, sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
+0090     <span class="keyword">else</span>
+0091         label_fileID = fopen(wm_path, <span class="string">'a'</span>);
+0092         fprintf(label_fileID, <span class="string">'%s,%d,%1.3f,%1.3f%d\n'</span>, num2str(f), sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
+0093     <span class="keyword">end</span>
+0094     fclose(<span class="string">'all'</span>);
+0095     
+0096  
+0097 <span class="keyword">end</span>
+0098         
+0099         
+0100 
+0101</pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

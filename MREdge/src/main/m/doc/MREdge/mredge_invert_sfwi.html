@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_invert_sfwi</title>
+  <meta name="keywords" content="mredge_invert_sfwi">
+  <meta name="description" content="% function mredge_invert_sfwi(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_invert_sfwi.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_invert_sfwi
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_invert_sfwi(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_invert_sfwi(info, prefs, freq_indices) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_invert_sfwi(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   create an elastogram of param using the SFWI approach
+
+   If you use this method cite
+
+   [To Come]
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+   param - name of MDEV-compatible parameter: 'absg', 'phi', 'c' or 'a'
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	% function mredge_analysis_path(info, subdir);</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/file_ops/mredge_freq_indices_to_filename.html" class="code" title="function filename = mredge_freq_indices_to_filename(info, prefs, freq_indices)">mredge_freq_indices_to_filename</a>	</li><li><a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>	% function mredge_get_ft_dirs(info, prefs);</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_invert.html" class="code" title="function mredge_invert(info, prefs)">mredge_invert</a>	% function mredge_invert(info, prefs);</li><li><a href="mredge_invert_sliding.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_invert_sliding(info, prefs, invert)">mredge_invert_sliding</a>	% function mredge_invert_sliding(info, prefs,invert);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIRS, SFWI_SUB] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_invert_sfwi(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   create an elastogram of param using the SFWI approach</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   If you use this method cite</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   [To Come]</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% INPUTS:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0020 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0021 <span class="comment">%   param - name of MDEV-compatible parameter: 'absg', 'phi', 'c' or 'a'</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% OUTPUTS:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   none</span>
+0026 
+0027 <a name="_sub0" href="#_subfunctions" class="code">function mredge_invert_sfwi(info, prefs, freq_indices)</a>
+0028     <span class="keyword">if</span> nargin == 2 || isempty(freq_indices)
+0029         freq_indices = 1:numel(info.driving_frequencies);
+0030     <span class="keyword">end</span>
+0031     [FT_DIRS, SFWI_SUB] =<a href="#_sub1" class="code" title="subfunction [FT_DIRS, SFWI_SUB] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0032     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0033     U = [];
+0034     <span class="keyword">for</span> f_ind = 1:numel(freq_indices)
+0035         f = info.driving_frequencies(f_ind);
+0036         U_f = [];
+0037         <span class="keyword">for</span> c = 1:3
+0038             <span class="keyword">for</span> d = 1:numel(FT_DIRS)
+0039                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0040                 wavefield_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0041                 wavefield_img = wavefield_vol.img;
+0042                 U_f = cat(4, U_f, wavefield_img);
+0043             <span class="keyword">end</span>
+0044         <span class="keyword">end</span>
+0045         U = cat(5, U, U_f);
+0046     <span class="keyword">end</span>
+0047     <span class="comment">%call inversion</span>
+0048     <span class="comment">%[g_sfwi, g_helm] = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing);</span>
+0049     <span class="keyword">if</span> strcmpi(prefs.gradient_strategy, <span class="string">'fd'</span>)
+0050         g_sfwi = sfwi_inversion(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
+0051     <span class="keyword">elseif</span> strcmpi(prefs.gradient_strategy, <span class="string">'lsq'</span>)
+0052         g_sfwi = sfwi_inversion_reg_grad(U, info.driving_frequencies(freq_indices), info.voxel_spacing, [1 2 3], 1);
+0053     <span class="keyword">end</span>
+0054         <span class="comment">% sfwi output - take last loaded volume as placeholder</span>
+0055     sfwi_set = {g_sfwi, SFWI_SUB};
+0056     <span class="comment">%helm_set = {g_helm, HELM_SUB};</span>
+0057     sets = {sfwi_set}; <span class="comment">%, helm_set};</span>
+0058     <span class="keyword">for</span> s = 1:numel(sets)
+0059         set = sets{s};
+0060         param_vol = wavefield_vol;
+0061         param_vol.hdr.dime.datatype = 64;
+0062         param_vol.img = set{1};
+0063         param_vol = update_nifti_dims(param_vol);
+0064         param_dir = set{2};
+0065         <span class="keyword">if</span> ~exist(param_dir, <span class="string">'dir'</span>)
+0066             mkdir(param_dir);
+0067         <span class="keyword">end</span>
+0068         param_path = fullfile(param_dir, <a href="../MREdge/file_ops/mredge_freq_indices_to_filename.html" class="code" title="function filename = mredge_freq_indices_to_filename(info, prefs, freq_indices)">mredge_freq_indices_to_filename</a>(info, prefs, freq_indices));
+0069            save_untouch_nii(param_vol, param_path);
+0070     <span class="keyword">end</span>
+0071 
+0072 <span class="keyword">end</span>
+0073     
+0074 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIRS, SFWI_SUB] = set_dirs(info, prefs)</a>
+0075     FT_DIRS = <a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>(info, prefs);
+0076     SFWI_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'SFWI'</span>);
+0077 <span class="keyword">end</span>
+0078</pre></div>
+<hr><address>Generated on Wed 03-Jan-2018 09:52:05 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

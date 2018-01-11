@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_3d_to_4d</title>
+  <meta name="keywords" content="mredge_3d_to_4d">
+  <meta name="description" content="Convert cell array of 3D nii files to single 4D nii file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_3d_to_4d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_3d_to_4d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Convert cell array of 3D nii files to single 4D nii file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_3d_to_4d(path_3d_array, path_4d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Convert cell array of 3D nii files to single 4D nii file. 
+
+ INPUTS:
+
+ path_array: array of paths of 3d objects
+ path_4d: path for saving 4d object
+
+ OUTPUTS:
+
+ none
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_save_4d_with_spm.html" class="code" title="function mredge_save_4d_with_spm(header, image, subdir, series, component)">mredge_save_4d_with_spm</a>	% function mredge_save_with_spm(path)</li><li><a href="../MREdge/file_ops/mredge_timeseries_to_4d.html" class="code" title="function mredge_timeseries_to_4d(subdir, series, component)">mredge_timeseries_to_4d</a>	% function mredge_timeseries_to_4d(cell_array, name_4d)</li><li><a href="mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>	Correct distortion, applied to the Fourier-transformed wavefield.</li><li><a href="mredge_distortion_correction_raw.html" class="code" title="function mredge_distortion_correction_raw(info)">mredge_distortion_correction_raw</a>	Performs distortion correction on raw MR signal data</li><li><a href="mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>	Performs motion correction using SPM. Requires SPM 12.</li><li><a href="mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_3d_to_4d(path_3d_array, path_4d)</a>
+0002 <span class="comment">% Convert cell array of 3D nii files to single 4D nii file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% path_array: array of paths of 3d objects</span>
+0007 <span class="comment">% path_4d: path for saving 4d object</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Part of the MREdge software package</span>
+0014 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0015 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0016 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0017 <span class="comment">%</span>
+0018 vol_4d = [];
+0019 
+0020 <span class="keyword">for</span> n = 1:numel(path_3d_array)
+0021   vol = load_untouch_nii(path_3d_array{n});
+0022   <span class="keyword">if</span> n == 1
+0023       vol_4d = vol;
+0024   <span class="keyword">else</span>
+0025       vol_4d.img = cat(4, vol_4d.img, vol.img);
+0026   <span class="keyword">end</span>
+0027 <span class="keyword">end</span>
+0028 
+0029 im_sz = size(vol_4d.img);
+0030 vol_4d.hdr.dime.dim(5) = im_sz(4);
+0031 vol_4d.hdr.dime.dim(1) = 4;
+0032 save_untouch_nii(vol_4d, path_4d);
+0033</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

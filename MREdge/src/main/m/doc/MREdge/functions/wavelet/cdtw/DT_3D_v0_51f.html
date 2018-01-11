@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_3D_v0_51f</title>
+  <meta name="keywords" content="DT_3D_v0_51f">
+  <meta name="description" content="Dualtree complex denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_3D_v0_51f.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_3D_v0_51f
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Dualtree complex denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = DT_3D_v0_51f(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Dualtree complex denoising 
+ with overlapping group sparsity thresholding</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="DT_SOFT.html" class="code" title="function y = DT_SOFT(x, T, J)">DT_SOFT</a>	</li><li><a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = DT_3D_v0_51f(x)</a>
+0002 
+0003 <span class="comment">% Dualtree complex denoising</span>
+0004 <span class="comment">% with overlapping group sparsity thresholding</span>
+0005 y = zeros(size(x));
+0006 
+0007 <span class="keyword">for</span> n = 1:size(x, 4)
+0008     
+0009     xr = real(x(:,:,:,n));
+0010     xi = imag(x(:,:,:,n));
+0011     
+0012     z_noise_r = z_noise_est(xr);
+0013     zfac_r = 2 + (1 + z_noise_r );
+0014     <span class="comment">%zfac_r = 3;</span>
+0015     <span class="comment">%display(['Z noise estimate real is ',num2str(z_noise_r), ' zfac is ', num2str(zfac_r)]);</span>
+0016     
+0017     z_noise_i = z_noise_est(xi);
+0018     zfac_i = 2 + (1 + z_noise_i );
+0019     <span class="comment">%zfac_i = 3;</span>
+0020     <span class="comment">%display(['Z noise estimate imag is ',num2str(z_noise_i), ' zfac is ', num2str(zfac_i)]);</span>
+0021   
+0022     sz = size(xr);
+0023 
+0024     [xr, order_vector] = <a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>(xr, zfac_r);
+0025     [xi, ~] = <a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>(xi, zfac_i);
+0026       
+0027     sigma_r_vec = [];
+0028     sigma_i_vec = [];
+0029     <span class="keyword">for</span> p = 1:size(xr,3)
+0030         slc_r = xr(:,:,p);
+0031         slc_i = xi(:,:,p);
+0032         slc_r(isnan(slc_r)) = 0;
+0033         slc_i(isnan(slc_i)) = 0;
+0034         sigma_r_vec = cat(1, sigma_r_vec, NLEstimate(middle_square(slc_r)));
+0035         sigma_i_vec = cat(1, sigma_i_vec, NLEstimate(middle_square(slc_i)));
+0036     <span class="keyword">end</span>
+0037    
+0038     sigma_r = mean(sigma_r_vec);
+0039     sigma_i = mean(sigma_i_vec);
+0040     
+0041     lambda_r = 5*(sigma_r);
+0042     lambda_i = 5*(sigma_i);
+0043 
+0044     <span class="comment">%lambda_r = sigma_r;</span>
+0045     <span class="comment">%lambda_i = sigma_i;</span>
+0046  
+0047  
+0048     sz2 = size(xr);
+0049     pwr2_y = nextpwr2(sz2(1));
+0050     pwr2_x = nextpwr2(sz2(2));
+0051     pwr2_z = nextpwr2(sz2(3));
+0052 
+0053     pwrmax = max(pwr2_y, max(pwr2_x, pwr2_z));
+0054     pad_vec = [pwrmax, pwrmax, pwrmax];
+0055     xr_pad = simplepad(xr, pad_vec);
+0056     xi_pad = simplepad(xi, pad_vec);
+0057 
+0058     k = [3 3 3];
+0059     shifts = 1;
+0060     xr_pad_spin = zeros(size(xr_pad));
+0061     xi_pad_spin = zeros(size(xi_pad));
+0062     <span class="keyword">for</span> xJig = 0:shifts-1
+0063         <span class="keyword">for</span> yJig = 0:shifts-1
+0064             <span class="keyword">for</span> zJig = 0:shifts-1
+0065                 display([num2str(xJig), <span class="string">' '</span>, num2str(yJig), <span class="string">' '</span>, num2str(zJig)]);
+0066                 <span class="comment">%xr_pad_temp = DT_OGS(circshift(xr_pad, [xJig yJig zJig]), k, lambda_r, 4);</span>
+0067                 <span class="comment">%xi_pad_temp = DT_OGS(circshift(xi_pad, [xJig yJig zJig]), k, lambda_i);</span>
+0068                 xr_pad_temp = <a href="DT_SOFT.html" class="code" title="function y = DT_SOFT(x, T, J)">DT_SOFT</a>(circshift(xr_pad, [xJig yJig zJig]), lambda_r);
+0069                 xi_pad_temp = <a href="DT_SOFT.html" class="code" title="function y = DT_SOFT(x, T, J)">DT_SOFT</a>(circshift(xi_pad, [xJig yJig zJig]), lambda_i);
+0070                 xr_pad_spin = xr_pad_spin + circshift(xr_pad_temp, [-xJig -yJig -zJig]);
+0071                 xi_pad_spin = xi_pad_spin + circshift(xi_pad_temp, [-xJig -yJig -zJig]);        
+0072             <span class="keyword">end</span>
+0073         <span class="keyword">end</span>
+0074     <span class="keyword">end</span>
+0075 
+0076     xr = xr_pad_spin(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0077     xi = xi_pad_spin(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0078 
+0079     firsts = find(order_vector==1);
+0080     index1 = firsts(1);
+0081     index2 = index1 + sz(3) - 1;
+0082     xr = xr(:,:,index1:index2);
+0083     xi = xi(:,:,index1:index2);
+0084 
+0085     y(:,:,:,n) = xr + 1i*xi;
+0086     
+0087     assignin(<span class="string">'base'</span>, <span class="string">'xr_pad'</span>, xr_pad);
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

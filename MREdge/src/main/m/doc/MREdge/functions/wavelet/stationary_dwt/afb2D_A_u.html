@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of afb2D_A_u</title>
+  <meta name="keywords" content="afb2D_A_u">
+  <meta name="description" content="2D Analysis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; afb2D_A_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>afb2D_A_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>2D Analysis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [lo, hi] = afb2D_A_u(x, j, af, d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Analysis Filter Bank
+ (along one dimension only)
+
+ [lo, hi] = afb2D_A(x, af, d);
+ INPUT:
+    x - NxM matrix, where min(N,M) &gt; 2*length(filter)
+           (N, M are even)
+    af - analysis filter for the columns
+    af(:, 1) - lowpass filter
+    af(:, 2) - highpass filter
+    d - dimension of filtering (d = 1 or 2)
+ OUTPUT:
+     lo, hi - lowpass, highpass subbands
+
+ % Example
+ x = rand(32,64);
+ [af, sf] = farras;
+ [lo, hi] = afb2D_A(x, af, 1);
+ y = sfb2D_A(lo, hi, sf, 1);
+ err = x - y;
+ max(max(abs(err)))</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/afb2D_u.html" class="code" title="function [lo, hi] = afb2D_u(x, j, af1, af2)">afb2D_u</a>	2D Analysis Filter Bank</li><li><a href="afb2D_u.html" class="code" title="function [lo, hi] = afb2D_u(x, j, af1, af2)">afb2D_u</a>	Undecimated 2D Analysis Filter Bank</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [lo, hi] = afb2D_A_u(x, j, af, d)</a>
+0002 
+0003 <span class="comment">% 2D Analysis Filter Bank</span>
+0004 <span class="comment">% (along one dimension only)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% [lo, hi] = afb2D_A(x, af, d);</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%    x - NxM matrix, where min(N,M) &gt; 2*length(filter)</span>
+0009 <span class="comment">%           (N, M are even)</span>
+0010 <span class="comment">%    af - analysis filter for the columns</span>
+0011 <span class="comment">%    af(:, 1) - lowpass filter</span>
+0012 <span class="comment">%    af(:, 2) - highpass filter</span>
+0013 <span class="comment">%    d - dimension of filtering (d = 1 or 2)</span>
+0014 <span class="comment">% OUTPUT:</span>
+0015 <span class="comment">%     lo, hi - lowpass, highpass subbands</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% % Example</span>
+0018 <span class="comment">% x = rand(32,64);</span>
+0019 <span class="comment">% [af, sf] = farras;</span>
+0020 <span class="comment">% [lo, hi] = afb2D_A(x, af, 1);</span>
+0021 <span class="comment">% y = sfb2D_A(lo, hi, sf, 1);</span>
+0022 <span class="comment">% err = x - y;</span>
+0023 <span class="comment">% max(max(abs(err)))</span>
+0024 
+0025 <span class="keyword">if</span> d == 2
+0026    x = x';
+0027 <span class="keyword">end</span>
+0028 
+0029 R = sqrt(2);
+0030 h0 = af(:,1)/R;
+0031 h1 = af(:,2)/R;
+0032 
+0033 N0 = length(h0);
+0034 N1 = length(h1);
+0035 
+0036 sz = size(x);
+0037 L = sz(1);
+0038 M = 2^(j-1);
+0039 lo = zeros(sz(1)+M*(N0-1),sz(2));
+0040 hi = zeros(sz(1)+M*(N1-1),sz(2));
+0041 
+0042 <span class="comment">% convolution</span>
+0043 
+0044 <span class="comment">% EB - make filtering matrix</span>
+0045 
+0046 
+0047 <span class="keyword">for</span> k = 0:N1-1
+0048     hi(M*k+(1:L),:) = hi(M*k+(1:L),:) + h1(k+1)*x;
+0049 <span class="keyword">end</span>
+0050 <span class="keyword">for</span> k = 0:N0-1
+0051     lo(M*k+(1:L),:) = lo(M*k+(1:L),:) + h0(k+1)*x;
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="keyword">if</span> d == 2
+0055    lo = lo';
+0056    hi = hi';
+0057 <span class="keyword">end</span>
+0058 
+0059</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

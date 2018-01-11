@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_invert_param_mdev_compat_cisnmo</title>
+  <meta name="keywords" content="mredge_invert_param_mdev_compat_cisnmo">
+  <meta name="description" content="% function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_invert_param_mdev_compat_cisnmo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_invert_param_mdev_compat_cisnmo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices)
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   create an elastogram of param using the MDEV approach
+
+   If you use this method cite
+
+   Braun, Jürgen, Jing Guo, Ralf Lützkendorf, Jörg Stadler, Sebastian
+   Papazoglou, Sebastian Hirsch, Ingolf Sack, and Johannes Bernarding.
+   &quot;High-resolution mechanical imaging of the human brain by
+   three-dimensional multifrequency magnetic resonance elastography at
+   7T.&quot; Neuroimage 90 (2014): 308-314.
+
+   and preferably also
+
+   Papazoglou, Sebastian, Sebastian Hirsch, Jürgen Braun, and Ingolf
+   Sack. &quot;Multifrequency inversion in magnetic resonance elastography.&quot;
+   Physics in medicine and biology 57, no. 8 (2012): 2329.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+   param - name of MDEV-compatible parameter: 'absg', 'phi', 'c' or 'a'
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	% function mredge_analysis_path(info, subdir);</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>	% function mredge_get_ft_dirs(info, prefs);</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs)</a></li><li><a href="#_sub2" class="code">function [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)</a></li><li><a href="#_sub3" class="code">function res = divide(param, num, denom)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices)</a>
+0002 <span class="comment">%% function mredge_invert_param_mdev_compat_cisnmo(info, prefs, param, frequencies, freq_indices)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% USAGE:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   create an elastogram of param using the MDEV approach</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   If you use this method cite</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Braun, Jürgen, Jing Guo, Ralf Lützkendorf, Jörg Stadler, Sebastian</span>
+0017 <span class="comment">%   Papazoglou, Sebastian Hirsch, Ingolf Sack, and Johannes Bernarding.</span>
+0018 <span class="comment">%   &quot;High-resolution mechanical imaging of the human brain by</span>
+0019 <span class="comment">%   three-dimensional multifrequency magnetic resonance elastography at</span>
+0020 <span class="comment">%   7T.&quot; Neuroimage 90 (2014): 308-314.</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   and preferably also</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Papazoglou, Sebastian, Sebastian Hirsch, Jürgen Braun, and Ingolf</span>
+0025 <span class="comment">%   Sack. &quot;Multifrequency inversion in magnetic resonance elastography.&quot;</span>
+0026 <span class="comment">%   Physics in medicine and biology 57, no. 8 (2012): 2329.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% INPUTS:</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0031 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0032 <span class="comment">%   param - name of MDEV-compatible parameter: 'absg', 'phi', 'c' or 'a'</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% OUTPUTS:</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   none</span>
+0037 
+0038 <span class="comment">% special_freq_set is for inverting selected combinations of</span>
+0039 <span class="comment">% frequencies, and individual results are skipped</span>
+0040 <span class="keyword">if</span> nargin &lt; 4
+0041     frequencies = info.driving_frequencies;
+0042     freq_indices = 1:numel(frequencies);
+0043     special_freq_set = 0;
+0044 <span class="keyword">else</span>
+0045     special_freq_set = 1;
+0046 <span class="keyword">end</span>
+0047 [FT_DIRS, PARAM_SUB] =<a href="#_sub2" class="code" title="subfunction [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)">set_dirs</a>(info, prefs, param);
+0048 NIF_EXT = <span class="string">'.nii.gz'</span>;
+0049 param_num_mdev = [];
+0050 param_denom_mdev = [];
+0051 <span class="keyword">for</span> f_ind = freq_indices
+0052     f = info.driving_frequencies(f_ind);
+0053     param_num_freq = [];
+0054     param_denom_freq = [];
+0055     <span class="keyword">for</span> c = 1:3
+0056         param_num_comp = [];
+0057         param_denom_comp = [];
+0058         <span class="keyword">for</span> d = 1:numel(FT_DIRS);
+0059             wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0060             wavefield_vol = load_untouch_nii(wavefield_path);
+0061             wavefield_img = wavefield_vol.img;
+0062             [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] = <a href="#_sub1" class="code" title="subfunction [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs)">get_param</a>(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs);
+0063         <span class="keyword">end</span>
+0064         <span class="comment">% outputs for component</span>
+0065         <span class="keyword">if</span> special_freq_set == 0
+0066             param_comp = wavefield_vol;
+0067             param_comp.img = <a href="#_sub3" class="code" title="subfunction res = divide(param, num, denom)">divide</a>(param, param_num_comp, param_denom_comp);
+0068             param_comp_dir = fullfile(PARAM_SUB, num2str(f), num2str(c));
+0069             <span class="keyword">if</span> ~exist(param_comp_dir, <span class="string">'dir'</span>)
+0070                 mkdir(param_comp_dir);
+0071             <span class="keyword">end</span>
+0072             param_comp_path = fullfile(param_comp_dir, <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0073             save_untouch_nii(param_comp, param_comp_path);
+0074         <span class="keyword">end</span>
+0075     <span class="keyword">end</span>
+0076     <span class="comment">% outputs for frequency</span>
+0077     <span class="keyword">if</span> special_freq_set == 0
+0078         param_freq = wavefield_vol;
+0079         param_freq.img = <a href="#_sub3" class="code" title="subfunction res = divide(param, num, denom)">divide</a>(param, param_num_freq, param_denom_freq);
+0080         param_freq.hdr.dime.datatype = 64;
+0081         param_freq_dir = fullfile(PARAM_SUB, num2str(f));
+0082         <span class="keyword">if</span> ~exist(param_freq_dir, <span class="string">'dir'</span>)
+0083             display(<span class="string">'MREdge ERROR: Frequency folder not found'</span>);
+0084             <span class="keyword">return</span>
+0085         <span class="keyword">end</span>
+0086         param_freq_path = fullfile(param_freq_dir, [num2str(f), NIF_EXT]);
+0087         save_untouch_nii(param_freq, param_freq_path);
+0088     <span class="keyword">end</span>
+0089 <span class="keyword">end</span>
+0090 <span class="comment">% mdev output</span>
+0091 param_mdev = wavefield_vol;
+0092 param_mdev.img = <a href="#_sub3" class="code" title="subfunction res = divide(param, num, denom)">divide</a>(param, param_num_mdev, param_denom_mdev);
+0093 param_mdev.hdr.dime.datatype = 64;
+0094 param_mdev_dir = fullfile(PARAM_SUB);
+0095 <span class="keyword">if</span> ~exist(param_mdev_dir, <span class="string">'dir'</span>)
+0096     display(<span class="string">'MREdge ERROR: Param folder not found'</span>);
+0097     <span class="keyword">return</span>
+0098 <span class="keyword">end</span>
+0099 <span class="keyword">if</span> special_freq_set == 0
+0100     param_mdev_path = fullfile(param_mdev_dir, <span class="string">'MDEV.nii.gz'</span>);
+0101 <span class="keyword">else</span> <span class="comment">% make file path unique to particular frequency combination</span>
+0102     filename = <span class="string">''</span>;
+0103     nfreqs = numel(frequencies);
+0104     <span class="keyword">for</span> n = 1:nfreqs
+0105         filename = [filename, num2str(frequencies(n))]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0106         <span class="keyword">if</span> n &lt; nfreqs
+0107             filename = [filename, <span class="string">'_'</span>]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0108         <span class="keyword">end</span>
+0109     <span class="keyword">end</span>
+0110     param_mdev_path = fullfile(param_mdev_dir, [filename, <span class="string">'.nii.gz'</span>]);
+0111 <span class="keyword">end</span>
+0112 save_untouch_nii(param_mdev, param_mdev_path);
+0113 
+0114 <span class="keyword">end</span>
+0115 
+0116 <a name="_sub1" href="#_subfunctions" class="code">function [param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, param_num_comp, param_denom_comp] =  get_param(param, param_num_mdev, param_denom_mdev, param_num_freq, param_denom_freq, wavefield_img, f, info, prefs)</a>
+0117 
+0118 OMEGA = 2*pi*f;
+0119 RHO = 1000;
+0120 
+0121 U = wavefield_img;
+0122 
+0123 pixel_spacing = info.voxel_spacing;
+0124 
+0125 <span class="keyword">if</span> strcmp(param, <span class="string">'Abs_G'</span>) == 1   
+0126         
+0127     tmpU = U;
+0128     <span class="keyword">for</span> k_filter = 1:size(U,3)
+0129         tmpU2(:,:,k_filter) = uh_filtspatio2d(tmpU(:,:,k_filter),[pixel_spacing(1); pixel_spacing(2)],100,1,0,5,<span class="string">'bwlow'</span>, 0);
+0130     <span class="keyword">end</span>
+0131     U = tmpU2;
+0132     
+0133     
+0134     [wx, wy]   = gradient(U,pixel_spacing(1),pixel_spacing(2),1);
+0135     [wxx, tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0136     [tmp, wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0137     DU = wxx + wyy;
+0138     
+0139     N = smooth3(U,<span class="string">'gaussian'</span>,[3 3 1]) - U;
+0140     [wx, wy]   = gradient(N,pixel_spacing(1),pixel_spacing(2),1);
+0141     [wxx, tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0142     [tmp, wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0143     DN = wxx + wyy;
+0144     
+0145     <span class="comment">%param_num_comp = RHO.*OMEGA.^2.*abs(U) - abs(N); % AF: wrong</span>
+0146     <span class="comment">%implementation ?</span>
+0147     param_num_comp = RHO.*OMEGA.^2.*(abs(U) - abs(N));
+0148     param_denom_comp = abs(DU) - abs(DN);
+0149     <span class="comment">%param_num_comp_mdev = RHO.*OMEGA.^2.*abs(U) - abs(N); % AF: wrong</span>
+0150     <span class="comment">%implementation ?</span>
+0151     param_num_comp_mdev = RHO.*OMEGA.^2.*(abs(U) - abs(N));
+0152     param_denom_comp_mdev = abs(DU) - abs(DN);
+0153     
+0154 <span class="keyword">elseif</span> strcmp(param, <span class="string">'Phi'</span>) == 1
+0155     
+0156     [wx, wy]   = gradient(U,pixel_spacing(1),pixel_spacing(2),1);
+0157     [wxx, tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0158     [tmp, wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0159     DU = wxx + wyy;
+0160     
+0161     N = smooth3(U,<span class="string">'gaussian'</span>,[3 3 1]) - U;
+0162     [wx, wy]   = gradient(N,pixel_spacing(1),pixel_spacing(2),1);
+0163     [wxx, tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0164     [tmp, wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0165     DN = wxx + wyy;
+0166     
+0167     param_num_comp_noise = real(N).*real(DN) + imag(N).*imag(DN);
+0168     param_denom_comp_noise = abs(N).*abs(DN);
+0169     
+0170     param_num_comp = real(U).*real(DU) + imag(U).*imag(DU);
+0171     param_denom_comp = abs(U).*abs(DU);
+0172     
+0173     param_num_comp = param_num_comp - param_num_comp_noise;
+0174     param_denom_comp = param_denom_comp - param_denom_comp_noise;
+0175     
+0176     param_num_comp_mdev_noise = real(N).*real(DN) + imag(N).*imag(DN);
+0177     param_denom_comp_mdev_noise = abs(N).*abs(DN);
+0178     
+0179     param_num_comp_mdev = real(U).*real(DU) + imag(U).*imag(DU);
+0180     param_denom_comp_mdev = abs(U).*abs(DU);
+0181     
+0182     param_num_comp_mdev = param_num_comp_mdev - param_num_comp_mdev_noise;
+0183     param_denom_comp_mdev = param_denom_comp_mdev - param_denom_comp_mdev_noise;
+0184     
+0185 <span class="keyword">else</span>
+0186     display(<span class="string">'MREdge ERROR: Inversion parameter not yet implemented.'</span>);
+0187 <span class="keyword">end</span>
+0188 
+0189 <span class="keyword">if</span> isempty(param_num_mdev)
+0190     param_num_mdev = param_num_comp_mdev;
+0191     param_denom_mdev = param_denom_comp_mdev;
+0192 <span class="keyword">else</span>
+0193     param_num_mdev = param_num_mdev + param_num_comp_mdev;
+0194     param_denom_mdev = param_denom_mdev + param_denom_comp_mdev;
+0195 <span class="keyword">end</span>
+0196 <span class="keyword">if</span> isempty(param_num_freq)
+0197     param_num_freq = param_num_comp;
+0198     param_denom_freq = param_denom_comp;
+0199 <span class="keyword">else</span>
+0200     param_num_freq = param_num_freq + param_num_comp;
+0201     param_denom_freq = param_denom_freq + param_denom_comp;
+0202 <span class="keyword">end</span>
+0203 
+0204 <span class="keyword">end</span>
+0205 
+0206 <a name="_sub2" href="#_subfunctions" class="code">function [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)</a>
+0207 FT_DIRS = <a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>(info, prefs);
+0208 PARAM_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0209 <span class="keyword">end</span>
+0210 
+0211 <a name="_sub3" href="#_subfunctions" class="code">function res = divide(param, num, denom)</a>
+0212 <span class="keyword">if</span> strcmp(param, <span class="string">'Abs_G'</span>) == 1
+0213     res = num ./ denom;
+0214 <span class="keyword">elseif</span> strcmp(param, <span class="string">'Phi'</span>) == 1
+0215     res = acos(-num./denom);
+0216 <span class="keyword">else</span>
+0217     display(<span class="string">'MREdge ERROR: Parameter '</span>, param,<span class="string">' not implemented.'</span>);
+0218 <span class="keyword">end</span>
+0219 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 03-Jan-2018 09:52:05 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

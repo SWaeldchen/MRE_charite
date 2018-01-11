@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dt_den_1d_stacktest</title>
+  <meta name="keywords" content="dt_den_1d_stacktest">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dt_den_1d_stacktest.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dt_den_1d_stacktest
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [U_den] = dt_den_1d_stacktest(U) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualtree.html" class="code" title="function w = dualtree(x, J, Faf, af)">dualtree</a>	Dual-tree Complex Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/idualtree.html" class="code" title="function y = idualtree(w, J, Fsf, sf)">idualtree</a>	Inverse Dual-tree Complex DWT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [U_den] = dt_den_1d_stacktest(U)</a>
+0002 tic
+0003 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0004 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0005 J = 1;
+0006 sz = size(U);
+0007 MAD = z_MAD(U);
+0008 U_den = zeros(ssz);
+0009 <span class="keyword">for</span> i=1:sz(1)
+0010     <span class="keyword">for</span> j =1:sz(2)
+0011         <span class="keyword">for</span> m = 1:sz(4)
+0012             <span class="keyword">for</span> n = 1:sz(5)
+0013                 z_line = U(i,j,:,m,n);
+0014                 w = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualtree.html" class="code" title="function w = dualtree(x, J, Faf, af)">dualtree</a>(z_line, J, Faf, af);
+0015                 a = w{1}{1};
+0016                 b = w{1}{2};
+0017                 C = a + 1i*b;
+0018                 <span class="comment">% soft thresh</span>
+0019                 T = 10*MAD(m, n);
+0020                 c = max(abs(C) - T, 0);
+0021                 c = c./(c+T) .* C;
+0022                 <span class="comment">%</span>
+0023                 w{1}{1} = real(c);
+0024                 w{1}{2} = imag(c);
+0025                 z_line_den = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/idualtree.html" class="code" title="function y = idualtree(w, J, Fsf, sf)">idualtree</a>(w, J, Fsf, sf);
+0026                 U_den(i,j,:,m,n) = z_line_den;
+0027             <span class="keyword">end</span>
+0028         <span class="keyword">end</span>
+0029     <span class="keyword">end</span>
+0030 <span class="keyword">end</span>
+0031 firsts = find(order_vector==1);
+0032 index1 = firsts(1);
+0033 index2 = index1 + sz(3) - 1;
+0034 U_den = U_den(:,:,index1:index2,:,:);
+0035 toc
+0036</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

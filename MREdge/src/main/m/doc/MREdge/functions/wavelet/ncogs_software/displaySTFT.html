@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of displaySTFT</title>
+  <meta name="keywords" content="displaySTFT">
+  <meta name="description" content="displaySTFT(X, fs, Nf, dBlim)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; displaySTFT.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>displaySTFT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>displaySTFT(X, fs, Nf, dBlim)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function displaySTFT(X, Fs, T, dBlim) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> displaySTFT(X, fs, Nf, dBlim)
+ Display the short-time Fourier transform coefficients X
+
+ INPUT
+   X: STFT coefficients (2D array)
+   Fs: sampling rate
+   T: duration of signal</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="Example2.html" class="code" title="">Example2</a>	% Group-sparse denoising by non-convex regularization: Speech denoising</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function displaySTFT(X, Fs, T, dBlim)</a>
+0002 
+0003 <span class="comment">% displaySTFT(X, fs, Nf, dBlim)</span>
+0004 <span class="comment">% Display the short-time Fourier transform coefficients X</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% INPUT</span>
+0007 <span class="comment">%   X: STFT coefficients (2D array)</span>
+0008 <span class="comment">%   Fs: sampling rate</span>
+0009 <span class="comment">%   T: duration of signal</span>
+0010 
+0011 [Nt, Nf] = size(X);
+0012 
+0013 XdB = 20 * log10( abs( X(1:round(Nt/2), :)) );
+0014 
+0015 <span class="keyword">if</span> nargin == 4
+0016     imagesc( [0 T], [0 Fs/2/1000],  XdB, dBlim);
+0017 <span class="keyword">else</span>
+0018     imagesc( [0 T], [0 Fs/2/1000],  XdB);
+0019 <span class="keyword">end</span>
+0020 
+0021 cm = colormap( <span class="string">'gray'</span> );
+0022 cm = cm(end:-1:1,:);
+0023 colormap(cm);
+0024 
+0025 axis xy
+0026 xlabel( <span class="string">'Time (seconds)'</span> )
+0027 ylabel( <span class="string">'Frequency (kHz)'</span> )
+0028 
+0029 xlim([0 T])
+0030 ylim([0 Fs/2/1000])
+0031 
+0032 
+0033 <span class="comment">% CB = colorbar;</span>
+0034 <span class="comment">% set(CB, 'ytick', (-50:10:0))</span>
+0035 
+0036 shg
+0037</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

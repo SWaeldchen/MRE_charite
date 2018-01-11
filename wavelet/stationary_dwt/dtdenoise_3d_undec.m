@@ -16,15 +16,19 @@ end
 [af, sf] = dualfilt1;
 
 for n = 1:n_vol
-        %disp(['------',num2str(n),'------'])
-        u_resh(:,:,:,n) = cdwt_den(real(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf, gain) + 1i*cdwt_den(imag(u_resh(:,:,:,n)), mask, J, Faf, af, Fsf, sf, gain);
+        u_n = u_resh(:,:,:,n);
+        [~, ~, sigma_n] = donoho_method_snr_multichannel(real(u_n), mask);
+        mask = logical(mask);
+        thresh = gain*bayesshrink_eb(real(u_n), mask, sigma_n);
+        u_resh(:,:,:,n) = cdwt_den(real(u_n), mask, J, Faf, af, Fsf, sf, thresh) + 1i*cdwt_den(imag(u_n), mask, J, Faf, af, Fsf, sf, thresh);
 end
 
 u = reshape(u_resh, size(u));
 
 end
 
-function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, gain)
+function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, thresh)
+%function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, gain)
     w = cplxdual3D_u(u, J, Faf, af);
     % loop thru scales
     for j = 1:J
@@ -37,13 +41,14 @@ function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, gain)
                     a = w{j}{1}{s1}{s2}{s3};
                     b = w{j}{2}{s1}{s2}{s3};
                     C = a + 1i*b;
-                    noise_est = gain*visushrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
+                    noise_est = bayesshrink_eb(abs(C), simplepad(mask, [size(C,1), size(C,2) , size(C,3)]));
                     %if j == 1
                     %    noise_est = 0.4;
                     %else
                     %    noise_est = 0.04;
                     %end
-                    C = soft(C, noise_est);
+                    C = soft(C, thresh);
+                    %C = soft(C, noise_est);
                     C(isnan(C)) = 0;
                     w{j}{1}{s1}{s2}{s3} = real(C);
                     w{j}{2}{s1}{s2}{s3} = imag(C);

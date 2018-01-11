@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dct_octave</title>
+  <meta name="keywords" content="dct_octave">
+  <meta name="description" content="dct_octave -- a Matlab-compatible modification of GNU Octave's dct. Created December 2016.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">functions</a> &gt; dct_octave.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/functions&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dct_octave
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>dct_octave -- a Matlab-compatible modification of GNU Octave's dct. Created December 2016.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = dct_octave (x, n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> dct_octave -- a Matlab-compatible modification of GNU Octave's dct. Created December 2016.
+ Below is the original documentation and copzright notice.
+
+ Copyright (C) 2001 Paul Kienzle &lt;pkienzle@users.sf.net&gt;
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 3 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>	y = dctn(x)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% dct_octave -- a Matlab-compatible modification of GNU Octave's dct. Created December 2016.</span>
+0002 <span class="comment">% Below is the original documentation and copzright notice.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Copyright (C) 2001 Paul Kienzle &lt;pkienzle@users.sf.net&gt;</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% This program is free software; you can redistribute it and/or modify it under</span>
+0007 <span class="comment">% the terms of the GNU General Public License as published by the Free Software</span>
+0008 <span class="comment">% Foundation; either version 3 of the License, or (at your option) any later</span>
+0009 <span class="comment">% version.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% This program is distributed in the hope that it will be useful, but WITHOUT</span>
+0012 <span class="comment">% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or</span>
+0013 <span class="comment">% FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more</span>
+0014 <span class="comment">% details.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% You should have received a copy of the GNU General Public License along with</span>
+0017 <span class="comment">% this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+0018 
+0019 <span class="comment">% -*- texinfo -*-</span>
+0020 <span class="comment">% @deftypefn  {Function File} {} dct (@var{x})</span>
+0021 <span class="comment">% @deftypefnx {Function File} {} dct (@var{x}, @var{n})</span>
+0022 <span class="comment">% Compute the discrete cosine transform of @var{x}.  If @var{n} is given,</span>
+0023 <span class="comment">% then @var{x} is padded or trimmed to length @var{n} before computing the</span>
+0024 <span class="comment">% transform.  If @var{x} is a matrix, compute the transform along the columns</span>
+0025 <span class="comment">% of the the matrix.  The transform is faster if @var{x} is real-valued and</span>
+0026 <span class="comment">% has even length.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% The discrete cosine transform @var{x} can be defined as follows:</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% @example</span>
+0031 <span class="comment">% @group</span>
+0032 <span class="comment">%               N-1</span>
+0033 <span class="comment">%   X[k] = w(k) sum x[n] cos (pi (2n+1) k / 2N ),  k = 0, ..., N-1</span>
+0034 <span class="comment">%               n=0</span>
+0035 <span class="comment">% @end group</span>
+0036 <span class="comment">% @end example</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% with w(0) = sqrt(1/N) and w(k) = sqrt(2/N), k = 1, ..., N-1.  There</span>
+0039 <span class="comment">% are other definitions with different scaling of X[k], but this form</span>
+0040 <span class="comment">% is common in image processing.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% @seealso{idct, dct2, idct2, dctmtx}</span>
+0043 <span class="comment">% @end deftypefn</span>
+0044 
+0045 <span class="comment">% From Discrete Cosine Transform notes by Brian Evans at UT Austin,</span>
+0046 <span class="comment">% http://www.ece.utexas.edu/~bevans/courses/ee381k/lectures/09_DCT/lecture9/</span>
+0047 <span class="comment">% the discrete cosine transform of x at k is as follows:</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%          N-1</span>
+0050 <span class="comment">%   X[k] = sum 2 x[n] cos (pi (2n+1) k / 2N )</span>
+0051 <span class="comment">%          n=0</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">% which can be computed using:</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%   y = [ x ; flipud (x) ]</span>
+0056 <span class="comment">%   Y = fft(y)</span>
+0057 <span class="comment">%   X = exp( -j pi [0:N-1] / 2N ) .* Y</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">% or for real, even length x</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%   y = [ even(x) ; flipud(odd(x)) ]</span>
+0062 <span class="comment">%   Y = fft(y)</span>
+0063 <span class="comment">%   X = 2 real { exp( -j pi [0:N-1] / 2N ) .* Y }</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">% Scaling the result by w(k)/2 will give us the desired output.</span>
+0066 
+0067 <a name="_sub0" href="#_subfunctions" class="code">function y = dct_octave (x, n)</a>
+0068 
+0069   <span class="keyword">if</span> (nargin &lt; 1 || nargin &gt; 2)
+0070     print_usage;
+0071   <span class="keyword">end</span>
+0072 
+0073   realx = isreal(x);
+0074   transpose = (size (x,1) == 1);
+0075 
+0076   <span class="keyword">if</span> transpose, x = x (:); <span class="keyword">end</span>
+0077   [nr, nc] = size (x);
+0078   <span class="keyword">if</span> nargin == 1
+0079     n = nr;
+0080   <span class="keyword">elseif</span> n &gt; nr
+0081     x = [ x ; zeros(n-nr,nc) ];
+0082   <span class="keyword">elseif</span> n &lt; nr
+0083     x (nr-n+1 : n, :) = [];
+0084   <span class="keyword">end</span>
+0085 
+0086   <span class="keyword">if</span> n == 1
+0087     w = 1/2;
+0088   <span class="keyword">else</span>
+0089     w = [ sqrt(1/4/n); sqrt(1/2/n)*exp((-1i*pi/2/n)*[1:n-1]') ] * ones (1, nc);
+0090   <span class="keyword">end</span>
+0091   <span class="keyword">if</span> ( realx &amp;&amp; rem (n, 2) == 0 )
+0092     y = fft ([ x(1:2:n,:) ; x(n:-2:1,:) ]);
+0093     y = 2 * real( w .* y );
+0094   <span class="keyword">else</span>
+0095     y = fft ([ x ; flipud(x) ]);
+0096     y = w .* y (1:n, :);
+0097     <span class="keyword">if</span> (realx) y = real (y); <span class="keyword">end</span>
+0098   <span class="keyword">end</span>
+0099   <span class="keyword">if</span> transpose, y = y.'; <span class="keyword">end</span>
+0100 
+0101 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:20:49 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of AntonB</title>
+  <meta name="keywords" content="AntonB">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; AntonB.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>AntonB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [af, sf] = AntonB </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="denoising_dtdwt.html" class="code" title="function y = denoising_dtdwt(x)">denoising_dtdwt</a>	Local Adaptive Image Denoising Algorithm</li><li><a href="normaliz_coefcalc_dual_tree.html" class="code" title="">normaliz_coefcalc_dual_tree</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [af, sf] = AntonB</a>
+0002 
+0003 
+0004 a0 = [
+0005    0
+0006    0.02674875741081
+0007   -0.01686411844287
+0008   -0.07822326652899
+0009    0.26686411844288
+0010    0.60294901823636
+0011    0.26686411844287
+0012   -0.07822326652899
+0013   -0.01686411844287
+0014    0.02674875741081
+0015    0
+0016    0    
+0017 ];
+0018 
+0019 a1 = [
+0020    0    
+0021    0
+0022    0
+0023    0.04563588155712
+0024   -0.02877176311425
+0025   -0.29563588155712
+0026    0.55754352622850
+0027   -0.29563588155713
+0028   -0.02877176311425
+0029    0.04563588155712
+0030    0
+0031    0    
+0032 ];
+0033 
+0034 s0 = [
+0035    0    
+0036    0
+0037    0
+0038   -0.04563588155712
+0039   -0.02877176311425
+0040    0.29563588155712
+0041    0.55754352622850
+0042    0.29563588155713
+0043   -0.02877176311425
+0044   -0.04563588155712
+0045    0
+0046    0    
+0047 ];
+0048 
+0049 s1 = [
+0050    0    
+0051    0.02674875741081
+0052    0.01686411844287
+0053   -0.07822326652899
+0054   -0.26686411844288
+0055    0.60294901823636
+0056   -0.26686411844287
+0057   -0.07822326652899
+0058    0.01686411844287
+0059    0.02674875741081
+0060    0
+0061    0     
+0062 ];
+0063 
+0064 s0 = 2*s0;
+0065 s1 = 2*s1;
+0066 
+0067 aa0 = [
+0068    0
+0069    0
+0070    0.02674875741081
+0071   -0.01686411844287
+0072   -0.07822326652899
+0073    0.26686411844288
+0074    0.60294901823636
+0075    0.26686411844287
+0076   -0.07822326652899
+0077   -0.01686411844287
+0078    0.02674875741081
+0079    0
+0080 ];
+0081 
+0082 aa1 = [
+0083    0 
+0084    0
+0085    0
+0086    0
+0087    0.04563588155712
+0088   -0.02877176311425
+0089   -0.29563588155712
+0090    0.55754352622850
+0091   -0.29563588155713
+0092   -0.02877176311425
+0093    0.04563588155712
+0094    0
+0095 
+0096 ];
+0097 
+0098 ss0 = [
+0099    0
+0100    0
+0101   -0.04563588155712
+0102   -0.02877176311425
+0103    0.29563588155712
+0104    0.55754352622850
+0105    0.29563588155713
+0106   -0.02877176311425
+0107   -0.04563588155712
+0108    0
+0109    0
+0110    0
+0111 ];
+0112 
+0113 ss1 = [
+0114    0.02674875741081
+0115    0.01686411844287
+0116   -0.07822326652899
+0117   -0.26686411844288
+0118    0.60294901823636
+0119   -0.26686411844287
+0120   -0.07822326652899
+0121    0.01686411844287
+0122    0.02674875741081
+0123    0
+0124 0
+0125 0
+0126 ];
+0127 
+0128 ss0 = 2*ss0;
+0129 ss1 = 2*ss1;
+0130 
+0131 
+0132 af{1} = [a0 a1];
+0133 
+0134 sf{1} = [s0 s1];
+0135 
+0136 af{2} = [aa0 aa1];
+0137 
+0138 sf{2} = [ss0 ss1];</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

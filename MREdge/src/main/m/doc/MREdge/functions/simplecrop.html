@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simplecrop</title>
+  <meta name="keywords" content="simplecrop">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; simplecrop.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>simplecrop
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function v = simplecrop(w, cropdims) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/cdwt_diff_2D.html" class="code" title="function [vdx, vdy] = cdwt_diff_2D(v,J)">cdwt_diff_2D</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../MREdge/functions/wavelet/cdtw/cdwt_diff_2D_stationary.html" class="code" title="function [vdx, vdy] = cdwt_diff_2D(v,J)">cdwt_diff_2D_stationary</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../MREdge/functions/wavelet/cdtw/cdwt_diff_3D.html" class="code" title="function [vdx, vdy, vdz] = cdwt_diff_3D(v,J)">cdwt_diff_3D</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/cdwt_diff_ogs_2D.html" class="code" title="function [vdx, vdy] = cdwt_diff_ogs_2D(v,J)">cdwt_diff_ogs_2D</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../MREdge/functions/wavelet/cdtw/cdwt_laplacian.html" class="code" title="function [x_lap] = cdwt_laplacian(x, J);">cdwt_laplacian</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_3d_mad_ogs_undec.html" class="code" title="function u_den = dtdenoise_3d_mad_ogs_undec(u, fac, J, mask)">dtdenoise_3d_mad_ogs_undec</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_3d_mad_ogs_undec_diff.html" class="code" title="function u_den, u_x, u_y, u_z] = dtdenoise_3d_mad_ogs_undec(u, fac)">dtdenoise_3d_mad_ogs_undec_diff</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_3d_mad_ogs_undec_log.html" class="code" title="function u_den = dtdenoise_3d_mad_ogs_undec_log(u, fac, J, mask, fileID, base1, base2)">dtdenoise_3d_mad_ogs_undec_log</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/cdtw/dtdenoise_3d_pca.html" class="code" title="function U_den3 = dtdenoise_3d_pca(U, fac)">dtdenoise_3d_pca</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/reverse_hard_thresh.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">reverse_hard_thresh</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/zden_3D_DWT.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">zden_3D_DWT</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_3d_asg.html" class="code" title="function u_den = dtdenoise_3d_asg(u, J, mask)">dtdenoise_3d_asg</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_3d_mad_ogs_undec.html" class="code" title="function u_den = dtdenoise_3d_mad_ogs_undec(u, fac, J, mask)">dtdenoise_3d_mad_ogs_undec</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_3d_mad_ogs_undec_diff.html" class="code" title="function u_den, u_x, u_y, u_z] = dtdenoise_3d_mad_ogs_undec(u, fac)">dtdenoise_3d_mad_ogs_undec_diff</a>	3D Dualtree complex denoising</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/wavelet_gradients_stationary.html" class="code" title="function [u_x, u_y, u_z] = wavelet_gradients_stationary(U, J, spacing)">wavelet_gradients_stationary</a>	</li><li><a href="zden_3D_DWT.html" class="code" title="function [u_den] = zden_3D_DWT(u, J, mask, cut)">zden_3D_DWT</a>	</li><li><a href="../../MREdge/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>	Returns median of masked values for a parameter map</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function v = simplecrop(w, cropdims)</a>
+0003     <span class="keyword">if</span> ndims(w) == 1
+0004         v = w(1:cropdims(1));
+0005     <span class="keyword">elseif</span> ndims(w) == 2
+0006         v = w(1:cropdims(1), 1:cropdims(2));
+0007     <span class="keyword">elseif</span> ndims(w) == 3
+0008         v = w(1:cropdims(1), 1:cropdims(2), 1:cropdims(3));
+0009     <span class="keyword">elseif</span> ndims(w) == 4
+0010         v = w(1:cropdims(1), 1:cropdims(2), 1:cropdims(3), 1:cropdims(4));
+0011     <span class="keyword">end</span>
+0012 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

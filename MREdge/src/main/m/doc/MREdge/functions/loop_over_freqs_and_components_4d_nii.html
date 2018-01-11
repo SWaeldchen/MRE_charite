@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loop_over_freqs_and_components_4d_nii</title>
+  <meta name="keywords" content="loop_over_freqs_and_components_4d_nii">
+  <meta name="description" content="loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; loop_over_freqs_and_components_4d_nii.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>loop_over_freqs_and_components_4d_nii
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [] = loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)
+ Loop over all frequencies and field components. Apply funcion handle fun
+ to every volume</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="get_components_numerical.html" class="code" title="function [comp_ind] = get_components_numerical(comp_order_str)">get_components_numerical</a>	comp_ind = get_components_numerical(component_order_string)</li><li><a href="load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_interpolate.html" class="code" title="function [] = mredge_interpolate(info, prefs)">mredge_interpolate</a>	% function mredge_interpolate(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [IN_DIR, OUT_DIR] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [] = loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</a>
+0002 <span class="comment">% loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</span>
+0003 <span class="comment">% Loop over all frequencies and field components. Apply funcion handle fun</span>
+0004 <span class="comment">% to every volume</span>
+0005 
+0006 
+0007 [IN_DIR, OUT_DIR] = <a href="#_sub1" class="code" title="subfunction [IN_DIR, OUT_DIR] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0008 NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0009 
+0010 comps = <a href="get_components_numerical.html" class="code" title="function [comp_ind] = get_components_numerical(comp_order_str)">get_components_numerical</a>(prefs.component_order);
+0011 
+0012 parfor f_num = 1:numel(info.driving_frequencies)
+0013     f = info.driving_frequencies(f_num);
+0014     disp([num2str(f), <span class="string">' Hz'</span>]);
+0015     <span class="keyword">for</span> q = 1:3
+0016         c = comps(q); <span class="comment">% c is the correct index of the component, i.e. 1-&gt;x, 1-&gt;y, 3-&gt;z</span>
+0017         display(num2str(c));
+0018         wavefield_path = fullfile(IN_DIR, num2str(f), num2str(c), <a href="../../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT)); <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0019         wavefield_vol = <a href="load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0020         wavefield_img = wavefield_vol.img;
+0021         <span class="comment">%resid_vol = wavefield_vol;</span>
+0022         
+0023         
+0024         wavefield_img = fun(wavefield_img);
+0025         
+0026         wavefield_vol.img = wavefield_img;
+0027         
+0028         <span class="comment">% prepare a 8-dim array representing the size of the image (in case</span>
+0029         <span class="comment">% it was changed).</span>
+0030         si = [3 size(wavefield_img)];
+0031         <span class="keyword">while</span> (length(si) &lt; 8)
+0032            si = [si 1]; 
+0033         <span class="keyword">end</span>
+0034         
+0035         wavefield_vol.hdr.dime.dim = si;
+0036         
+0037         wavefield_out_path = fullfile(OUT_DIR, num2str(f), num2str(c), <a href="../../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT)); <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0038         out_dir = fullfile(OUT_DIR, num2str(f), num2str(c));  <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0039         <span class="keyword">if</span> ~exist(out_dir, <span class="string">'dir'</span>)
+0040             mkdir(out_dir);
+0041         <span class="keyword">end</span>
+0042         save_untouch_nii(wavefield_vol, wavefield_out_path);
+0043 
+0044     <span class="keyword">end</span>
+0045 <span class="keyword">end</span>
+0046 
+0047 <a name="_sub1" href="#_subfunctions" class="code">function [IN_DIR, OUT_DIR] = set_dirs(info, prefs)</a>
+0048     IN_DIR = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,IN_DIR_descr);
+0049     OUT_DIR = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,OUT_DIR_descr);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="keyword">end</span>
+0053</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

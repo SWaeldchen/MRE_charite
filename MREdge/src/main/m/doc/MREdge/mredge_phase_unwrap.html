@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_phase_unwrap</title>
+  <meta name="keywords" content="mredge_phase_unwrap">
+  <meta name="description" content="Applies phase unwrapping methods.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_phase_unwrap.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_phase_unwrap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Applies phase unwrapping methods.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_phase_unwrap(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Applies phase unwrapping methods.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ NOTE:
+
+   Laplacian and RGA methods require the relevant Java .jar . PRELUDE 
+   method requires installation of FSL. PUMA requires installation of PUMA.
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>	Splits a 4D NIfTI into 3D images and passes the list of the 3d image paths. For FSL and SPM applications.</li><li><a href="../MREdge/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>	Unzips nifti if it is zipped. For navigation between SPM, FSL and other packages.</li><li><a href="../MREdge/file_ops/mredge_zip_if_unzip.html" class="code" title="function zip = mredge_zip_if_unzip(unzip)">mredge_zip_if_unzip</a>	% function zip = mredge_zip_if_unzip(unzip)</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../MREdge/functions/normalizeImage.html" class="code" title="function [ y ] = normalise( x )">normalizeImage</a>	</li><li><a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>	Convert cell array of 3D nii files to single 4D nii file.</li><li><a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li><li><a href="mredge_normalize_phase.html" class="code" title="function mredge_normalize_phase(info, prefs)">mredge_normalize_phase</a>	Normalizes phase data to [0, 2pi) .</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li><li><a href="mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function halve_values_and_save(path)</a></li><li><a href="#_sub2" class="code">function recenter_volumes(phase_dir, info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_phase_unwrap(info, prefs)</a>
+0002 <span class="comment">% Applies phase unwrapping methods.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0007 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% NOTE:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Laplacian and RGA methods require the relevant Java .jar . PRELUDE</span>
+0016 <span class="comment">%   method requires installation of FSL. PUMA requires installation of PUMA.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Part of the MREdge software package</span>
+0019 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0020 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0021 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0022 <span class="comment">%</span>
+0023 tic
+0024 disp(<span class="string">'Phase Unwrapping...'</span>)
+0025 <span class="comment">%if strcmpi(prefs.phase_unwrap, 'prelude')</span>
+0026 <span class="comment">%    mredge_normalize_phase_prelude(info,prefs);</span>
+0027 <span class="comment">%else</span>
+0028     <a href="mredge_normalize_phase.html" class="code" title="function mredge_normalize_phase(info, prefs)">mredge_normalize_phase</a>(info, prefs);
+0029 <span class="comment">%end</span>
+0030 <span class="keyword">for</span> s = 1:numel(info.ds.subdirs_comps_files)
+0031     subdir = info.ds.subdirs_comps_files(s);
+0032     vol_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+0033     vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(vol_path);
+0034     <span class="keyword">if</span> strcmp(prefs.phase_unwrap, <span class="string">'laplacian'</span>) || strcmp(prefs.phase_unwrap, <span class="string">'laplacian2d'</span>)
+0035         pu6d = com.ericbarnhill.magnitude.Unwrapper6D;
+0036         vol.img = pu6d.unwrap(vol.img, 0);
+0037         save_untouch_nii(vol, vol_path);
+0038     <span class="keyword">elseif</span> strcmp(prefs.phase_unwrap, <span class="string">'rga'</span>) == 1
+0039         rg4d = com.ericbarnhill.phaseTools.RG4D;
+0040         rg4d.setDifferencesFilePath(RGA_DIFFERENCES_FILE_PATH);
+0041         mask = <a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs);
+0042         vol_unmasked = <a href="../MREdge/functions/normalizeImage.html" class="code" title="function [ y ] = normalise( x )">normalizeImage</a>(double(vol.img));
+0043         vol_masked = zeros(size(vol.img));
+0044         <span class="keyword">for</span> n = 1:size(vol.img, 4)
+0045             vol_masked(:,:,:,n) = double(vol.img(:,:,:,n)) .* double(mask);
+0046         <span class="keyword">end</span>
+0047         vol_masked(vol_masked == 0) = nan;
+0048         vol_masked =  rga_progressive(vol_masked, rg4d); 
+0049         vol_masked(isnan(vol_masked)) = vol_unmasked(isnan(vol_masked));
+0050         vol.img = vol_masked;
+0051         save_untouch_nii(vol, vol_path);
+0052     <span class="keyword">elseif</span> strcmp(prefs.phase_unwrap, <span class="string">'prelude'</span>) == 1
+0053         MAG_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Magnitude'</span>);
+0054         NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0055         phase_dir = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+0056         avg_path = fullfile(MAG_SUB, [<span class="string">'Avg_Magnitude'</span>, NIF_EXT]);
+0057         path_list = <a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(phase_dir);
+0058         <span class="keyword">if</span> prefs.phase_unwrapping_settings.force_prelude_3d == 1
+0059             prelude_force_term = <span class="string">'f'</span>;
+0060         <span class="keyword">else</span>
+0061             prelude_force_term = <span class="string">'s'</span>;
+0062         <span class="keyword">end</span>
+0063         <span class="keyword">for</span> n = 1:numel(path_list)
+0064             path = path_list{n};
+0065             path = <a href="../MREdge/file_ops/mredge_zip_if_unzip.html" class="code" title="function zip = mredge_zip_if_unzip(unzip)">mredge_zip_if_unzip</a>(path);
+0066             <a href="#_sub1" class="code" title="subfunction halve_values_and_save(path)">halve_values_and_save</a>(path);
+0067             path_temp = path(1:end-4);
+0068             path_temp = [path_temp, <span class="string">'_temp'</span>, <span class="string">'.nii.gz'</span>]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0069             copyfile(path, path_temp);
+0070             prelude_command = [<span class="string">'fsl5.0-prelude -'</span>,prelude_force_term,<span class="string">'v -p '</span>,path,<span class="string">' -a '</span>,avg_path,<span class="string">' -o '</span>,path_temp]; <span class="comment">%#ok&lt;NASGU&gt;</span>
+0071             evalc(<span class="string">'system(prelude_command);'</span>);
+0072             copyfile(path_temp, path);
+0073             delete(path_temp);
+0074             <a href="../MREdge/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>(path);
+0075         <span class="keyword">end</span>
+0076         <a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(path_list, phase_dir);
+0077         <a href="#_sub2" class="code" title="subfunction recenter_volumes(phase_dir, info, prefs)">recenter_volumes</a>(phase_dir, info, prefs);
+0078     <span class="keyword">end</span>
+0079 <span class="keyword">end</span>
+0080 toc  
+0081 <span class="keyword">end</span>
+0082 
+0083 <a name="_sub1" href="#_subfunctions" class="code">function halve_values_and_save(path)</a>
+0084 
+0085 vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(path);
+0086 vol.img = vol.img ./ 2;
+0087 save_untouch_nii_eb(vol, path);
+0088 
+0089 <span class="keyword">end</span>
+0090 
+0091 <a name="_sub2" href="#_subfunctions" class="code">function recenter_volumes(phase_dir, info, prefs)</a>
+0092     mask = <a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info, prefs);
+0093     vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(phase_dir);
+0094     <span class="keyword">for</span> n = 1:size(vol.img,4)
+0095         vol3d = vol.img(:,:,:,n);
+0096         mn = mean(vol3d(logical(mask)));
+0097         mn_rd = round(mn/pi);
+0098         vol3d = vol3d - pi*mn_rd;
+0099         mn = mean(vol3d(logical(mask)));
+0100         vol.img(:,:,:,n) = vol3d;
+0101         <span class="comment">%fprintf('%s %d %0.2f, \n', 'volumetric mean for volume ',n, mn);</span>
+0102     <span class="keyword">end</span>
+0103     save_untouch_nii_eb(vol, phase_dir);
+0104 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

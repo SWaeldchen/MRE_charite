@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dct_eb</title>
+  <meta name="keywords" content="dct_eb">
+  <meta name="description" content="DCT  Discrete cosine transform.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; dct_eb.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>dct_eb
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>DCT  Discrete cosine transform.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function b=dct_eb(a,n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DCT  Discrete cosine transform.
+
+   Y = DCT(X) returns the discrete cosine transform of X.
+   The vector Y is the same size as X and contains the
+   discrete cosine transform coefficients.
+
+   Y = DCT(X,N) pads or truncates the vector X to length N 
+   before transforming.
+
+   If X is a matrix, the DCT operation is applied to each
+   column.  This transform can be inverted using IDCT.
+
+   % Example:
+   %   Find how many DCT coefficients represent 99% of the energy 
+   %   in a sequence.
+
+   x = (1:100) + 50*cos((1:100)*2*pi/40);  % Input Signal 
+   X = dct(x);                             % Discrete cosine transform
+   [XX,ind] = sort(abs(X)); ind = fliplr(ind);
+   num_coeff = 1;
+   while (norm([X(ind(1:num_coeff)) zeros(1,100-num_coeff)])/norm(X)&lt;.99)
+       num_coeff = num_coeff + 1;
+   end;
+   num_coeff                  
+
+   See also FFT, IFFT, IDCT.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function b=dct_eb(a,n)</a>
+0002 <span class="comment">%DCT  Discrete cosine transform.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   Y = DCT(X) returns the discrete cosine transform of X.</span>
+0005 <span class="comment">%   The vector Y is the same size as X and contains the</span>
+0006 <span class="comment">%   discrete cosine transform coefficients.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Y = DCT(X,N) pads or truncates the vector X to length N</span>
+0009 <span class="comment">%   before transforming.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   If X is a matrix, the DCT operation is applied to each</span>
+0012 <span class="comment">%   column.  This transform can be inverted using IDCT.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   % Example:</span>
+0015 <span class="comment">%   %   Find how many DCT coefficients represent 99% of the energy</span>
+0016 <span class="comment">%   %   in a sequence.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   x = (1:100) + 50*cos((1:100)*2*pi/40);  % Input Signal</span>
+0019 <span class="comment">%   X = dct(x);                             % Discrete cosine transform</span>
+0020 <span class="comment">%   [XX,ind] = sort(abs(X)); ind = fliplr(ind);</span>
+0021 <span class="comment">%   num_coeff = 1;</span>
+0022 <span class="comment">%   while (norm([X(ind(1:num_coeff)) zeros(1,100-num_coeff)])/norm(X)&lt;.99)</span>
+0023 <span class="comment">%       num_coeff = num_coeff + 1;</span>
+0024 <span class="comment">%   end;</span>
+0025 <span class="comment">%   num_coeff</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   See also FFT, IFFT, IDCT.</span>
+0028 
+0029 <span class="comment">%   Author(s): C. Thompson, 2-12-93</span>
+0030 <span class="comment">%              S. Eddins, 10-26-94, revised</span>
+0031 <span class="comment">%   Copyright 1988-2013 The MathWorks, Inc.</span>
+0032 
+0033 <span class="comment">%   References:</span>
+0034 <span class="comment">%   1) A. K. Jain, &quot;Fundamentals of Digital Image</span>
+0035 <span class="comment">%      Processing&quot;, pp. 150-153.</span>
+0036 <span class="comment">%   2) Wallace, &quot;The JPEG Still Picture Compression Standard&quot;,</span>
+0037 <span class="comment">%      Communications of the ACM, April 1991.</span>
+0038 
+0039 
+0040 <span class="comment">% checks if X is a valid numeric data input</span>
+0041 
+0042 
+0043 <span class="keyword">if</span> isempty(a)
+0044    b = [];
+0045    <span class="keyword">return</span>
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% If input is a vector, make it a column:</span>
+0049 do_trans = (size(a,1) == 1);
+0050 <span class="keyword">if</span> do_trans, a = a(:); <span class="keyword">end</span>
+0051 
+0052 <span class="keyword">if</span> nargin==1,
+0053   n = size(a,1);
+0054 <span class="keyword">end</span>
+0055 <span class="comment">% Cast to enforce precision rules</span>
+0056 
+0057 m = size(a,2);
+0058 
+0059 <span class="comment">% Pad or truncate input if necessary</span>
+0060 <span class="keyword">if</span> size(a,1)&lt;n,
+0061   aa = zeros(n,m,class(a)); <span class="comment">%#ok&lt;*ZEROLIKE&gt;</span>
+0062   aa(1:size(a,1),:) = a;
+0063 <span class="keyword">else</span>
+0064   aa = a(1:n,:);
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="comment">% Compute weights to multiply DFT coefficients</span>
+0068 ww = (exp(-1i*(0:n-1)*pi/(2*n))/sqrt(2*n)).';
+0069 <span class="keyword">if</span> (isa(a,<span class="string">'single'</span>))
+0070   <span class="comment">% Cast to enforce precision rules</span>
+0071   ww = single(ww);
+0072 <span class="keyword">end</span>
+0073 ww(1) = ww(1) / sqrt(2);
+0074 
+0075 <span class="keyword">if</span> rem(n,2)==1 || ~isreal(a), <span class="comment">% odd case</span>
+0076   <span class="comment">% Form intermediate even-symmetric matrix</span>
+0077   y = zeros(2*n,m,class(a));
+0078   y(1:n,:) = aa;
+0079   y(n+1:2*n,:) = flipud(aa);
+0080   
+0081   <span class="comment">% Compute the FFT and keep the appropriate portion:</span>
+0082   yy = fft(y);  
+0083   yy = yy(1:n,:);
+0084 
+0085 <span class="keyword">else</span> <span class="comment">% even case</span>
+0086   <span class="comment">% Re-order the elements of the columns of x</span>
+0087   y = [ aa(1:2:n,:); aa(n:-2:2,:) ];
+0088   yy = fft(y);  
+0089   ww = 2*ww;  <span class="comment">% Double the weights for even-length case</span>
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% Multiply FFT by weights:</span>
+0093 b = ww(:,ones(1,m)) .* yy;
+0094 
+0095 <span class="keyword">if</span> isreal(a)
+0096   b = real(b);
+0097 <span class="keyword">end</span>
+0098 <span class="keyword">if</span> do_trans
+0099   b = b.';
+0100 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

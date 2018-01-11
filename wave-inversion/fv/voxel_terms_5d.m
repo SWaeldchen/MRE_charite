@@ -7,7 +7,6 @@ else
     nf = sz(5);
 end
 for n = 1:nf
-    disp(n)
     [b(:,:,:,n,:) p(:,:,:,n,:) q(:,:,:,n,:)] = voxel_terms_eb_2(U(:,:,:,:,n), spacing); %#ok<AGROW,NCOMMA>
 end
         

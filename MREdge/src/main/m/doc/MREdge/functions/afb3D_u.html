@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of afb3D_u</title>
+  <meta name="keywords" content="afb3D_u">
+  <meta name="description" content="Undecimated 3D Analysis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; afb3D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>afb3D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Undecimated 3D Analysis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [lo, hi] = afb3D_u(x, j, af1, af2, af3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Undecimated 3D Analysis Filter Bank
+
+ USAGE:
+    [lo, hi] = afb3D(x, af1, af2, af3);
+ INPUT:
+    x - N1 by N2 by N3 array matrix, where
+        1) N1, N2, N3 all even
+        2) N1 &gt;= 2*length(af1)
+        3) N2 &gt;= 2*length(af2)
+        4) N3 &gt;= 2*length(af3)
+    afi - analysis filters for dimension i
+       afi(:, 1) - lowpass filter
+       afi(:, 2) - highpass filter
+ OUTPUT:
+    lo - lowpass subband
+    hi{d}, d = 1..7 - highpass subbands
+ EXAMPLE:
+    x = rand(32,64,16);
+    [af, sf] = farras;
+    [lo, hi] = afb3D(x, af, af, af);
+    y = sfb3D(lo, hi, sf, sf, sf);
+    err = x - y;
+    max(max(max(abs(err))))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="udwt3D.html" class="code" title="function w = udwt3D(x, J, h0, h1)">udwt3D</a>	Undecimated 3-D Discrete Wavelet Transform</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/cplxdual3D_u.html" class="code" title="function w = cplxdual3D_u(x, J, Faf, af)">cplxdual3D_u</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/dwt3D_u.html" class="code" title="function w = dwt3D_u(x, J, af)">dwt3D_u</a>	3-D Discrete Wavelet Transform</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/udwt3D.html" class="code" title="function w = udwt3D(x, J, h0, h1)">udwt3D</a>	Undecimated 3-D Discrete Wavelet Transform</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [lo, hi] = afb3D_A_u(x, j, af, d)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [lo, hi] = afb3D_u(x, j, af1, af2, af3)</a>
+0002 
+0003 <span class="comment">% Undecimated 3D Analysis Filter Bank</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%    [lo, hi] = afb3D(x, af1, af2, af3);</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%    x - N1 by N2 by N3 array matrix, where</span>
+0009 <span class="comment">%        1) N1, N2, N3 all even</span>
+0010 <span class="comment">%        2) N1 &gt;= 2*length(af1)</span>
+0011 <span class="comment">%        3) N2 &gt;= 2*length(af2)</span>
+0012 <span class="comment">%        4) N3 &gt;= 2*length(af3)</span>
+0013 <span class="comment">%    afi - analysis filters for dimension i</span>
+0014 <span class="comment">%       afi(:, 1) - lowpass filter</span>
+0015 <span class="comment">%       afi(:, 2) - highpass filter</span>
+0016 <span class="comment">% OUTPUT:</span>
+0017 <span class="comment">%    lo - lowpass subband</span>
+0018 <span class="comment">%    hi{d}, d = 1..7 - highpass subbands</span>
+0019 <span class="comment">% EXAMPLE:</span>
+0020 <span class="comment">%    x = rand(32,64,16);</span>
+0021 <span class="comment">%    [af, sf] = farras;</span>
+0022 <span class="comment">%    [lo, hi] = afb3D(x, af, af, af);</span>
+0023 <span class="comment">%    y = sfb3D(lo, hi, sf, sf, sf);</span>
+0024 <span class="comment">%    err = x - y;</span>
+0025 <span class="comment">%    max(max(max(abs(err))))</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0028 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0029 
+0030 <span class="keyword">if</span> nargin &lt; 3
+0031    af2 = af1;
+0032    af3 = af1;
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="comment">% filter along dimension 1</span>
+0036 [L, H] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(x, j, af1, 1);
+0037 
+0038 <span class="comment">% filter along dimension 2</span>
+0039 [LL, LH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(L, j, af2, 2);
+0040 [HL, HH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(H, j, af2, 2);
+0041 
+0042 <span class="comment">% filter along dimension 3</span>
+0043 [LLL, LLH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(LL, j, af3, 3);
+0044 [LHL, LHH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(LH, j, af3, 3);
+0045 [HLL, HLH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(HL, j, af3, 3);
+0046 [HHL, HHH] = <a href="#_sub1" class="code" title="subfunction [lo, hi] = afb3D_A_u(x, j, af, d)">afb3D_A_u</a>(HH, j, af3, 3);
+0047 
+0048 lo    = LLL;
+0049 hi{1} = LLH;
+0050 hi{2} = LHL;
+0051 hi{3} = LHH;
+0052 hi{4} = HLL;
+0053 hi{5} = HLH;
+0054 hi{6} = HHL;
+0055 hi{7} = HHH;
+0056 
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">% LOCAL FUNCTION</span>
+0060 
+0061 <a name="_sub1" href="#_subfunctions" class="code">function [lo, hi] = afb3D_A_u(x, j, af, d)</a>
+0062 
+0063 R = sqrt(2);
+0064 h0 = af(:, 1) / R;     <span class="comment">% lowpass filter</span>
+0065 h1 = af(:, 2) / R;     <span class="comment">% highpass filter</span>
+0066 N0 = length(h0);
+0067 N1 = length(h1);
+0068 <span class="comment">% permute dimensions of x so that dimension d is first.</span>
+0069 p = mod(d-1+[0:2], 3) + 1; <span class="comment">%#ok&lt;NBRAK&gt;</span>
+0070 x = permute(x, p);
+0071 
+0072 <span class="comment">% filter along dimension 1</span>
+0073 
+0074 sz = size(x);
+0075 L = sz(1);
+0076 M = 2^(j-1);
+0077 lo = zeros(sz(1)+M*(N0-1),sz(2),sz(3));
+0078 hi = zeros(sz(1)+M*(N1-1),sz(2),sz(3));
+0079 
+0080 <span class="keyword">for</span> k = 0:N1-1
+0081     hi(M*k+(1:L),:,:) = hi(M*k+(1:L),:,:) + h1(k+1)*x;
+0082 <span class="keyword">end</span>
+0083 <span class="keyword">for</span> k = 0:N0-1
+0084     lo(M*k+(1:L),:,:) = lo(M*k+(1:L),:,:) + h0(k+1)*x;
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">% permute dimensions of x (inverse permutation)</span>
+0088 lo = ipermute(lo, p);
+0089 hi = ipermute(hi, p);
+0090 
+0091 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

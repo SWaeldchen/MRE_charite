@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_dicom_data_table</title>
+  <meta name="keywords" content="mredge_dicom_data_table">
+  <meta name="description" content="% function data_table = mredge_dicom_data_table(info)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_dicom_data_table.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_dicom_data_table
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function data_table = mredge_dicom_data_table(info)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [data_table] = mredge_dicom_data_table(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function data_table = mredge_dicom_data_table(info)
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+ USAGE:
+
+ Creates table containing DICOM filenames, series numbers, and instance
+ numbers, to facilitate merging into 4D NIfTI structures
+
+ INPUTS:
+
+ info - an acquisition info structure created by make_acquisition_info
+
+ OUTPUTS:
+
+ data_table - a table with filenames, series numbers, and instance numbers</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_organize_acquisition_octave.html" class="code" title="function mredge_organize_acquisition_octave(info, prefs)">mredge_organize_acquisition_octave</a>	% function mredge_organize_acquisition_octave(info)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function data_table = mredge_dicom_data_table(info)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% USAGE:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Creates table containing DICOM filenames, series numbers, and instance</span>
+0011 <span class="comment">% numbers, to facilitate merging into 4D NIfTI structures</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% INPUTS:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% info - an acquisition info structure created by make_acquisition_info</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% OUTPUTS:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% data_table - a table with filenames, series numbers, and instance numbers</span>
+0020 
+0021 <span class="comment">%% collect series numbers</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function [data_table] = mredge_dicom_data_table(info)</a>
+0024 
+0025 <span class="comment">% assume we are in the directory by mredge_acquisition_info</span>
+0026 
+0027 <span class="comment">% make DICOM data table</span>
+0028 display(<span class="string">'Creating DICOM data table...'</span>);
+0029 file_names = dir(fullfile(info.path,[<span class="string">'*'</span>,info.file_extension]));
+0030 total_files = numel(file_names);
+0031 series_numbers = [];
+0032 instance_numbers = [];
+0033 dicom_file_names = [];
+0034 inc = 0;
+0035 <span class="keyword">for</span> k=1:total_files
+0036     inc = inc+1;
+0037     <span class="keyword">if</span> mod(inc, round(total_files/10)) == 0
+0038       display([num2str(round(inc / total_files * 100)), <span class="string">'% complete...'</span>])
+0039     <span class="keyword">end</span>
+0040     file_name = file_names(k).name;
+0041     <span class="keyword">if</span> isdicom(file_name)
+0042         slice_dicom_info = dicominfo(deblank(file_names(k).name));
+0043         series_number = slice_dicom_info.SeriesNumber;
+0044         series_numbers = cat(1, series_numbers, series_number);
+0045         instance_number = slice_dicom_info.InstanceNumber;
+0046         instance_numbers = cat(1, instance_numbers, instance_number);
+0047         dicom_file_names = char(dicom_file_names, fullfile(info.path, file_name));
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 dicom_file_names = dicom_file_names(2:<span class="keyword">end</span>,:);
+0051 data_table = {series_numbers, instance_numbers, dicom_file_names};</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

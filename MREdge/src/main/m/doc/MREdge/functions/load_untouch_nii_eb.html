@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of load_untouch_nii_eb</title>
+  <meta name="keywords" content="load_untouch_nii_eb">
+  <meta name="description" content="Load NIFTI or ANALYZE dataset, but not applying any appropriate affine">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; load_untouch_nii_eb.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>load_untouch_nii_eb
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">  Load NIFTI or ANALYZE dataset, but not applying any appropriate affine
+  geometric transform or voxel intensity scaling.
+
+  Although according to NIFTI website, all those header information are
+  supposed to be applied to the loaded NIFTI image, there are some
+  situations that people do want to leave the original NIFTI header and
+  data untouched. They will probably just use MATLAB to do certain image
+  processing regardless of image orientation, and to save data back with
+  the same NIfTI header.
+
+  Since this program is only served for those situations, please use it
+  together with &quot;save_untouch_nii.m&quot;, and do not use &quot;save_nii.m&quot; or
+  &quot;view_nii.m&quot; for the data that is loaded by &quot;load_untouch_nii.m&quot;. For
+  normal situation, you should use &quot;load_nii.m&quot; instead.
+  
+  Usage: nii = load_untouch_nii(filename, [img_idx], [dim5_idx], [dim6_idx], ...
+            [dim7_idx], [old_RGB], [slice_idx])
+  
+  filename  -     NIFTI or ANALYZE file name.
+  
+  img_idx (optional)  -  a numerical array of image volume indices.
+    Only the specified volumes will be loaded. All available image
+    volumes will be loaded, if it is default or empty.
+
+    The number of images scans can be obtained from get_nii_frame.m,
+    or simply: hdr.dime.dim(5).
+
+  dim5_idx (optional)  -  a numerical array of 5th dimension indices.
+    Only the specified range will be loaded. All available range
+    will be loaded, if it is default or empty.
+
+  dim6_idx (optional)  -  a numerical array of 6th dimension indices.
+    Only the specified range will be loaded. All available range
+    will be loaded, if it is default or empty.
+
+  dim7_idx (optional)  -  a numerical array of 7th dimension indices.
+    Only the specified range will be loaded. All available range
+    will be loaded, if it is default or empty.
+
+  old_RGB (optional)  -  a scale number to tell difference of new RGB24
+    from old RGB24. New RGB24 uses RGB triple sequentially for each
+    voxel, like [R1 G1 B1 R2 G2 B2 ...]. Analyze 6.0 from AnalyzeDirect
+    uses old RGB24, in a way like [R1 R2 ... G1 G2 ... B1 B2 ...] for
+    each slices. If the image that you view is garbled, try to set 
+    old_RGB variable to 1 and try again, because it could be in
+    old RGB24. It will be set to 0, if it is default or empty.
+
+  slice_idx (optional)  -  a numerical array of image slice indices.
+    Only the specified slices will be loaded. All available image
+    slices will be loaded, if it is default or empty.
+
+  Returned values:
+  
+  nii structure:
+
+    hdr -        struct with NIFTI header fields.
+
+    filetype -    Analyze format .hdr/.img (0); 
+            NIFTI .hdr/.img (1);
+            NIFTI .nii (2)
+
+    fileprefix -     NIFTI filename without extension.
+
+    machine -     machine string variable.
+
+    img -         3D (or 4D) matrix of NIFTI data.
+
+  - Jimmy Shen (jimmy@rotman-baycrest.on.ca)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_break_into_frequencies.html" class="code" title="function mredge_break_into_frequencies(series_number, subdir, info)">mredge_break_into_frequencies</a>	For acquisitions with the all_frequencies_one_series flag, partitions the time series by frequency</li><li><a href="../../MREdge/file_ops/mredge_fd_import.html" class="code" title="function mredge_fd_import(info)">mredge_fd_import</a>	</li><li><a href="../../MREdge/file_ops/mredge_get_placeholder_from_phase.html" class="code" title="function nifti_placeholder = mredge_get_placeholder_from_phase (info)">mredge_get_placeholder_from_phase</a>	</li><li><a href="../../MREdge/file_ops/mredge_load_FT_as_5d.html" class="code" title="function data_5d = mredge_load_FT_as_5d (info, prefs)">mredge_load_FT_as_5d</a>	Load Fourier-transformed wavefield into MATLAB.</li><li><a href="../../MREdge/file_ops/mredge_load_magnitude_as_6d.html" class="code" title="function data_6d = mredge_load_magnitude_as_6d (info)">mredge_load_magnitude_as_6d</a>	% function mredge_laplacian_snr(info, prefs)</li><li><a href="../../MREdge/file_ops/mredge_load_phase_as_6d.html" class="code" title="function data_6d = mredge_load_phase_as_6d (info)">mredge_load_phase_as_6d</a>	% function mredge_load_phase_as_6d(info, prefs)</li><li><a href="../../MREdge/file_ops/mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>	For acquisitions where each frequency has its own series number, rename each series to its corresponding frequency.</li><li><a href="../../MREdge/file_ops/mredge_save_5d_as_FT.html" class="code" title="function mredge_save_5d_as_FT (data_5d, info, prefs)">mredge_save_5d_as_FT</a>	</li><li><a href="../../MREdge/file_ops/mredge_sort_time_steps.html" class="code" title="function mredge_sort_time_steps(info, prefs)">mredge_sort_time_steps</a>	</li><li><a href="../../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>	Splits a 4D NIfTI into 3D images and passes the list of the 3d image paths. For FSL and SPM applications.</li><li><a href="loop_over_freqs_and_components_4d_nii.html" class="code" title="function [] = loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)">loop_over_freqs_and_components_4d_nii</a>	loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</li><li><a href="../../MREdge/mredge_aniso_diff.html" class="code" title="function mredge_aniso_diff(info, prefs)">mredge_aniso_diff</a>	% function mredge_aniso_diff(info, prefs);</li><li><a href="../../MREdge/mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>	Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</li><li><a href="../../MREdge/mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>	Applies highpass and lowpass butterworth filters if they are set in prefs</li><li><a href="../../MREdge/mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>	Denoise Fourier-transformed wavefield.</li><li><a href="../../MREdge/mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_denoise_raw.html" class="code" title="function mredge_denoise_raw(info, prefs)">mredge_denoise_raw</a>	Denoises raw complex data prior to phase unwrapping</li><li><a href="../../MREdge/mredge_ft2double.html" class="code" title="function mredge_ft2double(info,prefs)">mredge_ft2double</a>	% function mredge_ft2double(info,prefs);</li><li><a href="../../MREdge/mredge_gaussian.html" class="code" title="function mredge_aniso_diff(info, prefs)">mredge_gaussian</a>	% function mredge_gaussian(info, prefs);</li><li><a href="../../MREdge/mredge_invert.html" class="code" title="function mredge_invert(info, prefs, freq_indices)">mredge_invert</a>	Wave inversion of preprocessed MRE data</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li><li><a href="../../MREdge/mredge_mag2double.html" class="code" title="function mredge_mag2double(info)">mredge_mag2double</a>	Converts values in magnitude NIfTI objects to double type, to avoid type conflicts.</li><li><a href="../../MREdge/mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>	Performs motion correction using SPM. Requires SPM 12.</li><li><a href="../../MREdge/mredge_normalize_phase.html" class="code" title="function mredge_normalize_phase(info, prefs)">mredge_normalize_phase</a>	Normalizes phase data to [0, 2pi) .</li><li><a href="../../MREdge/mredge_normalize_phase_prelude.html" class="code" title="function mredge_normalize_phase_prelude(info, prefs)">mredge_normalize_phase_prelude</a>	% function mredge_normalize_phase(info, prefs);</li><li><a href="../../MREdge/mredge_phase2double.html" class="code" title="function mredge_phase2double(info)">mredge_phase2double</a>	Converts values in phase NIfTI objects to double type, to avoid type conflicts.</li><li><a href="../../MREdge/mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li><li><a href="../../MREdge/mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>	Converts phase and magnitude data to real and imaginary data for processing of complex MR signal</li><li><a href="../../MREdge/mredge_raw_denoise.html" class="code" title="function mredge_raw_denoise(info, prefs)">mredge_raw_denoise</a>	</li><li><a href="../../MREdge/mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>	Numerical divergence removal of the wave field</li><li><a href="../../MREdge/mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>	Removes interslice phase discontinuities.</li><li><a href="../../MREdge/mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>	Converts real and imagianry data to phase and magnitude</li><li><a href="../../MREdge/mredge_slice_align.html" class="code" title="function mredge_slice_align(info, prefs)">mredge_slice_align</a>	Dejitters slices using adaptation of Nikolova et al 2001 dejitter algorithm</li><li><a href="../../MREdge/mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>	Temporally Fourier-transforms the complex wave field.</li><li><a href="../../MREdge/mredge_zden.html" class="code" title="function mredge_zden(info, prefs)">mredge_zden</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/neuro/mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>	Co-registers magnitude image to MNI space. The deformation map is then used to co-register all elasticity maps.</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>	Coregisters a parameter map to MNI space using the deformation map from the averaged magnitude.</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni_sliding.html" class="code" title="function mredge_coreg_param_to_mni_sliding(info_an, prefs, param)">mredge_coreg_param_to_mni_sliding</a>	% function coreg_param_to_mni_sliding(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map.html" class="code" title="function mredge_label_param_map(info, prefs, param, freq_indices)">mredge_label_param_map</a>	Labels paramater map results and produces statistics for brain anatomical regions.</li><li><a href="../../MREdge/neuro/mredge_label_param_map_sliding.html" class="code" title="function mredge_label_param_map_sliding(info_an, prefs, param)">mredge_label_param_map_sliding</a>	% function stats = mredge_label_param_map_sliding(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map_springpot.html" class="code" title="function mredge_label_param_map_springpot(info, prefs)">mredge_label_param_map_springpot</a>	% function stats = mredge_label_param_map(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map_stable.html" class="code" title="function mredge_label_param_map_stable(info_mag, info_an, prefs, param)">mredge_label_param_map_stable</a>	% function stats = mredge_label_param_map_stable(info, param)</li><li><a href="../../MREdge/stats/mredge_amp_wave_snr.html" class="code" title="function mredge_amp_wave_snr(info, prefs)">mredge_amp_wave_snr</a>	% function mredge_amp_guided_wave_to_noise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>	Creates summed amplitude images</li><li><a href="../../MREdge/stats/mredge_amplitudes_sliding.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_amplitudes_sliding(info, prefs)">mredge_amplitudes_sliding</a>	% function mredge_stable_amplitudes(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_average.html" class="code" title="function mredge_cortical_average(info, prefs)">mredge_cortical_average</a>	% function mredge_cortical_average(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_median.html" class="code" title="function mredge_cortical_median(info, prefs)">mredge_cortical_median</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_median_stable.html" class="code" title="function mredge_cortical_median_stable(info, prefs)">mredge_cortical_median_stable</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_displacement_snr.html" class="code" title="function mredge_displacement_snr(info, prefs)">mredge_displacement_snr</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_displacement_snr_stable.html" class="code" title="function mredge_displacement_snr_stable(info, prefs)">mredge_displacement_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_laplacian_snr.html" class="code" title="function mredge_laplacian_snr(info, prefs, label)">mredge_laplacian_snr</a>	% function mredge_laplacian_snr(info, prefs)</li><li><a href="../../MREdge/stats/mredge_laplacian_snr_stable.html" class="code" title="function mredge_laplacian_snr_stable(info, prefs)">mredge_laplacian_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>	Returns median of masked values for a parameter map</li><li><a href="../../MREdge/stats/mredge_oss.html" class="code" title="function mredge_oss(info, prefs, label)">mredge_oss</a>	% function mredge_oss(info, prefs);</li><li><a href="../../MREdge/stats/mredge_psf.html" class="code" title="function mredge_psf(info, prefs)">mredge_psf</a>	% function mredge_psf(info);</li><li><a href="../../MREdge/stats/mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>	% function mredge_rer(info, prefs);</li><li><a href="../../MREdge/stats/mredge_snr.html" class="code" title="function mredge_snr(info, prefs)">mredge_snr</a>	Calculates SNR maps and records SNR values in stats folder.</li><li><a href="../../MREdge/stats/mredge_springpot.html" class="code" title="function mredge_springpot(info, prefs)">mredge_springpot</a>	% function mredge_springpot(info, prefs);</li><li><a href="../../MREdge/stats/mredge_springpot_stable.html" class="code" title="function mredge_springpot_stable(info, prefs)">mredge_springpot_stable</a>	% function mredge_springpot_stable(info, prefs);</li><li><a href="../../MREdge/stats/mredge_springpot_stable_weighted.html" class="code" title="function mredge_springpot_stable_weighted(info, prefs)">mredge_springpot_stable_weighted</a>	% function mredge_springpot_stable_weighted(info, prefs);</li><li><a href="../../MREdge/stats/mredge_stable_amplitudes.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs)">mredge_stable_amplitudes</a>	% function mredge_stable_amplitudes(info, prefs);</li><li><a href="../../MREdge/stats/mredge_whole_brain_median.html" class="code" title="function mredge_whole_brain_median(info, prefs)">mredge_whole_brain_median</a>	% function mredge_whole_brain_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_z_discontinuities.html" class="code" title="function mredge_z_discontinuities(info, prefs)">mredge_z_discontinuities</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%  Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</span>
+0002 <span class="comment">%  geometric transform or voxel intensity scaling.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%  Although according to NIFTI website, all those header information are</span>
+0005 <span class="comment">%  supposed to be applied to the loaded NIFTI image, there are some</span>
+0006 <span class="comment">%  situations that people do want to leave the original NIFTI header and</span>
+0007 <span class="comment">%  data untouched. They will probably just use MATLAB to do certain image</span>
+0008 <span class="comment">%  processing regardless of image orientation, and to save data back with</span>
+0009 <span class="comment">%  the same NIfTI header.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  Since this program is only served for those situations, please use it</span>
+0012 <span class="comment">%  together with &quot;save_untouch_nii.m&quot;, and do not use &quot;save_nii.m&quot; or</span>
+0013 <span class="comment">%  &quot;view_nii.m&quot; for the data that is loaded by &quot;load_untouch_nii.m&quot;. For</span>
+0014 <span class="comment">%  normal situation, you should use &quot;load_nii.m&quot; instead.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  Usage: nii = load_untouch_nii(filename, [img_idx], [dim5_idx], [dim6_idx], ...</span>
+0017 <span class="comment">%            [dim7_idx], [old_RGB], [slice_idx])</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%  filename  -     NIFTI or ANALYZE file name.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%  img_idx (optional)  -  a numerical array of image volume indices.</span>
+0022 <span class="comment">%    Only the specified volumes will be loaded. All available image</span>
+0023 <span class="comment">%    volumes will be loaded, if it is default or empty.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%    The number of images scans can be obtained from get_nii_frame.m,</span>
+0026 <span class="comment">%    or simply: hdr.dime.dim(5).</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  dim5_idx (optional)  -  a numerical array of 5th dimension indices.</span>
+0029 <span class="comment">%    Only the specified range will be loaded. All available range</span>
+0030 <span class="comment">%    will be loaded, if it is default or empty.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  dim6_idx (optional)  -  a numerical array of 6th dimension indices.</span>
+0033 <span class="comment">%    Only the specified range will be loaded. All available range</span>
+0034 <span class="comment">%    will be loaded, if it is default or empty.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%  dim7_idx (optional)  -  a numerical array of 7th dimension indices.</span>
+0037 <span class="comment">%    Only the specified range will be loaded. All available range</span>
+0038 <span class="comment">%    will be loaded, if it is default or empty.</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%  old_RGB (optional)  -  a scale number to tell difference of new RGB24</span>
+0041 <span class="comment">%    from old RGB24. New RGB24 uses RGB triple sequentially for each</span>
+0042 <span class="comment">%    voxel, like [R1 G1 B1 R2 G2 B2 ...]. Analyze 6.0 from AnalyzeDirect</span>
+0043 <span class="comment">%    uses old RGB24, in a way like [R1 R2 ... G1 G2 ... B1 B2 ...] for</span>
+0044 <span class="comment">%    each slices. If the image that you view is garbled, try to set</span>
+0045 <span class="comment">%    old_RGB variable to 1 and try again, because it could be in</span>
+0046 <span class="comment">%    old RGB24. It will be set to 0, if it is default or empty.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%  slice_idx (optional)  -  a numerical array of image slice indices.</span>
+0049 <span class="comment">%    Only the specified slices will be loaded. All available image</span>
+0050 <span class="comment">%    slices will be loaded, if it is default or empty.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%  Returned values:</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%  nii structure:</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%    hdr -        struct with NIFTI header fields.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%    filetype -    Analyze format .hdr/.img (0);</span>
+0059 <span class="comment">%            NIFTI .hdr/.img (1);</span>
+0060 <span class="comment">%            NIFTI .nii (2)</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">%    fileprefix -     NIFTI filename without extension.</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%    machine -     machine string variable.</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%    img -         3D (or 4D) matrix of NIFTI data.</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">%  - Jimmy Shen (jimmy@rotman-baycrest.on.ca)</span>
+0069 <span class="comment">%</span>
+0070 <a name="_sub0" href="#_subfunctions" class="code">function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx, </a><span class="keyword">...</span>
+0071             old_RGB, slice_idx)
+0072             
+0073    <span class="keyword">if</span> nargin == 1
+0074     img_idx = [];
+0075     dim5_idx = [];
+0076     dim6_idx = [];
+0077     dim7_idx = [];
+0078     old_RGB = [];
+0079     slice_idx = [];
+0080    <span class="keyword">end</span>
+0081     
+0082    <span class="keyword">if</span> ~exist(<span class="string">'filename'</span>,<span class="string">'var'</span>)
+0083       error(<span class="string">'Usage: nii = load_untouch_nii(filename, [img_idx], [dim5_idx], [dim6_idx], [dim7_idx], [old_RGB], [slice_idx])'</span>);
+0084    <span class="keyword">end</span>
+0085    
+0086    <span class="keyword">if</span> ~exist(<span class="string">'img_idx'</span>,<span class="string">'var'</span>) | isempty(img_idx)
+0087       img_idx = [];
+0088    <span class="keyword">end</span>
+0089 
+0090    <span class="keyword">if</span> ~exist(<span class="string">'dim5_idx'</span>,<span class="string">'var'</span>) | isempty(dim5_idx)
+0091       dim5_idx = [];
+0092    <span class="keyword">end</span>
+0093 
+0094    <span class="keyword">if</span> ~exist(<span class="string">'dim6_idx'</span>,<span class="string">'var'</span>) | isempty(dim6_idx)
+0095       dim6_idx = [];
+0096    <span class="keyword">end</span>
+0097 
+0098    <span class="keyword">if</span> ~exist(<span class="string">'dim7_idx'</span>,<span class="string">'var'</span>) | isempty(dim7_idx)
+0099       dim7_idx = [];
+0100    <span class="keyword">end</span>
+0101 
+0102    <span class="keyword">if</span> ~exist(<span class="string">'old_RGB'</span>,<span class="string">'var'</span>) | isempty(old_RGB)
+0103       old_RGB = 0;
+0104    <span class="keyword">end</span>
+0105 
+0106    <span class="keyword">if</span> ~exist(<span class="string">'slice_idx'</span>,<span class="string">'var'</span>) | isempty(slice_idx)
+0107       slice_idx = [];
+0108    <span class="keyword">end</span>
+0109 
+0110 
+0111    v = version;
+0112 
+0113    <span class="comment">%  Check file extension. If .gz, unpack it into temp folder</span>
+0114    <span class="comment">%</span>
+0115    <span class="keyword">if</span> length(filename) &gt; 2 &amp; strcmp(filename(end-2:end), <span class="string">'.gz'</span>)
+0116 
+0117       <span class="keyword">if</span> ~strcmp(filename(end-6:end), <span class="string">'.img.gz'</span>) &amp; <span class="keyword">...</span>
+0118      ~strcmp(filename(end-6:end), <span class="string">'.hdr.gz'</span>) &amp; <span class="keyword">...</span>
+0119      ~strcmp(filename(end-6:end), <span class="string">'.nii.gz'</span>)
+0120 
+0121          error(<span class="string">'Please check filename.'</span>);
+0122       <span class="keyword">end</span>
+0123 
+0124       <span class="comment">%{</span>
+0125       <span class="keyword">if</span> str2num(v(1:3)) &lt; 7.1 | ~usejava(<span class="string">'jvm'</span>)
+0126          error(<span class="string">'Please use MATLAB 7.1 (with java) and above, or run gunzip outside MATLAB.'</span>);
+0127 
+0128       <span class="keyword">elseif</span> strcmp(filename(end-6:end), <span class="string">'.img.gz'</span>)
+0129       <span class="comment">%}</span>
+0130       <span class="keyword">if</span> strcmp(filename(end-6:end), <span class="string">'.img.gz'</span>)
+0131          filename1 = filename;
+0132          filename2 = filename;
+0133          filename2(end-6:end) = <span class="string">''</span>;
+0134          filename2 = [filename2, <span class="string">'.hdr.gz'</span>];
+0135 
+0136          tmpDir = tempname;
+0137          mkdir(tmpDir);
+0138          gzFileName = filename;
+0139 
+0140          filename1 = gunzip(filename1, tmpDir);
+0141          filename2 = gunzip(filename2, tmpDir);
+0142          filename = char(filename1);    <span class="comment">% convert from cell to string</span>
+0143       <span class="keyword">elseif</span> strcmp(filename(end-6:end), <span class="string">'.hdr.gz'</span>)
+0144          filename1 = filename;
+0145          filename2 = filename;
+0146          filename2(end-6:end) = <span class="string">''</span>;
+0147          filename2 = [filename2, <span class="string">'.img.gz'</span>];
+0148 
+0149          tmpDir = tempname;
+0150          mkdir(tmpDir);
+0151          gzFileName = filename;
+0152 
+0153          filename1 = gunzip(filename1, tmpDir);
+0154          filename2 = gunzip(filename2, tmpDir);
+0155          filename = char(filename1);    <span class="comment">% convert from cell to string</span>
+0156       <span class="keyword">elseif</span> strcmp(filename(end-6:end), <span class="string">'.nii.gz'</span>)
+0157          tmpDir = tempname;
+0158          mkdir(tmpDir);
+0159          gzFileName = filename;
+0160          filename = gunzip(filename, tmpDir);
+0161          filename = char(filename);    <span class="comment">% convert from cell to string</span>
+0162       <span class="keyword">end</span>
+0163    <span class="keyword">end</span>
+0164 
+0165    <span class="comment">%  Read the dataset header</span>
+0166    <span class="comment">%</span>
+0167    [nii.hdr,nii.filetype,nii.fileprefix,nii.machine] = load_nii_hdr(filename);
+0168 
+0169    <span class="keyword">if</span> nii.filetype == 0
+0170       nii.hdr = load_untouch0_nii_hdr(nii.fileprefix,nii.machine);
+0171       nii.ext = [];
+0172    <span class="keyword">else</span>
+0173       nii.hdr = load_untouch_nii_hdr(nii.fileprefix,nii.machine,nii.filetype);
+0174 
+0175       <span class="comment">%  Read the header extension</span>
+0176       <span class="comment">%</span>
+0177       nii.ext = load_nii_ext(filename);
+0178    <span class="keyword">end</span>
+0179 
+0180    <span class="comment">%  Read the dataset body</span>
+0181    <span class="comment">%</span>
+0182    [nii.img,nii.hdr] = load_untouch_nii_img(nii.hdr,nii.filetype,nii.fileprefix, <span class="keyword">...</span>
+0183         nii.machine,img_idx,dim5_idx,dim6_idx,dim7_idx,old_RGB,slice_idx);
+0184 
+0185    <span class="comment">%  Perform some of sform/qform transform</span>
+0186    <span class="comment">%</span>
+0187 <span class="comment">%   nii = xform_nii(nii, tolerance, preferredForm);</span>
+0188 
+0189    nii.untouch = 1;
+0190 
+0191 
+0192    <span class="comment">%  Clean up after gunzip</span>
+0193    <span class="comment">%</span>
+0194    <span class="keyword">if</span> exist(<span class="string">'gzFileName'</span>, <span class="string">'var'</span>)
+0195 
+0196       <span class="comment">%  fix fileprefix so it doesn't point to temp location</span>
+0197       <span class="comment">%</span>
+0198       nii.fileprefix = gzFileName(1:end-7);
+0199       rmdir(tmpDir,<span class="string">'s'</span>);
+0200    <span class="keyword">end</span>
+0201 
+0202 
+0203    <span class="keyword">return</span>                    <span class="comment">% load_untouch_nii</span>
+0204</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

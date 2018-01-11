@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dualtree3D</title>
+  <meta name="keywords" content="dualtree3D">
+  <meta name="description" content="3D Dual-Tree Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; dualtree3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dualtree3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>3D Dual-Tree Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function w = dualtree3D(x, J, Faf, af) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 3D Dual-Tree Discrete Wavelet Transform
+
+ USAGE:
+   w = dualtree3D(x, J, Faf, af)
+ INPUT:
+   x - 3-D array
+   J - number of stages
+   Faf - first stage filters
+   af - filters for remaining stages
+ OUPUT:
+   w{j}{i}{d} - wavelet coefficients
+        j = 1..J, i = 1..4, d = 1..7
+   w{J+1}{i} - lowpass coefficients
+        i = 1..4
+ EXAMPLE:
+   x = rand(64,64,64);
+   J = 3;
+   [Faf, Fsf] = FSfarras;
+   [af, sf] = dualfilt1;
+   w = dualtree3D(x, J, Faf, af);
+   y = idualtree3D(w, J, Fsf, sf);
+   err = x - y;
+   max(max(max(abs(err))))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="afb3D.html" class="code" title="function [lo, hi] = afb3D(x, af1, af2, af3)">afb3D</a>	3D Analysis Filter Bank</li><li><a href="pm4.html" class="code" title="function [u, v, q, r] = pm4(a, b, c, d)">pm4</a>	[u, v, q, r] = pm4(a, b, c, d);</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dualtree3D_plots.html" class="code" title="">dualtree3D_plots</a>	dualtree3D_plots</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = dualtree3D(x, J, Faf, af)</a>
+0002 
+0003 <span class="comment">% 3D Dual-Tree Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   w = dualtree3D(x, J, Faf, af)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - 3-D array</span>
+0009 <span class="comment">%   J - number of stages</span>
+0010 <span class="comment">%   Faf - first stage filters</span>
+0011 <span class="comment">%   af - filters for remaining stages</span>
+0012 <span class="comment">% OUPUT:</span>
+0013 <span class="comment">%   w{j}{i}{d} - wavelet coefficients</span>
+0014 <span class="comment">%        j = 1..J, i = 1..4, d = 1..7</span>
+0015 <span class="comment">%   w{J+1}{i} - lowpass coefficients</span>
+0016 <span class="comment">%        i = 1..4</span>
+0017 <span class="comment">% EXAMPLE:</span>
+0018 <span class="comment">%   x = rand(64,64,64);</span>
+0019 <span class="comment">%   J = 3;</span>
+0020 <span class="comment">%   [Faf, Fsf] = FSfarras;</span>
+0021 <span class="comment">%   [af, sf] = dualfilt1;</span>
+0022 <span class="comment">%   w = dualtree3D(x, J, Faf, af);</span>
+0023 <span class="comment">%   y = idualtree3D(w, J, Fsf, sf);</span>
+0024 <span class="comment">%   err = x - y;</span>
+0025 <span class="comment">%   max(max(max(abs(err))))</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0028 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0029 
+0030 
+0031 <span class="comment">% normalization</span>
+0032 x = x/2;
+0033 
+0034 M = [
+0035     1 1 1
+0036     2 2 1
+0037     2 1 2
+0038     1 2 2
+0039 ];
+0040 
+0041 <span class="keyword">for</span> i = 1:4
+0042     f1 = M(i,1);
+0043     f2 = M(i,2);
+0044     f3 = M(i,3);
+0045     [xi w{1}{i}] = <a href="afb3D.html" class="code" title="function [lo, hi] = afb3D(x, af1, af2, af3)">afb3D</a>(x, Faf{f1}, Faf{f2}, Faf{f3});
+0046     <span class="keyword">for</span> k = 2:J
+0047         [xi w{k}{i}] = <a href="afb3D.html" class="code" title="function [lo, hi] = afb3D(x, af1, af2, af3)">afb3D</a>(xi, af{f1}, af{f2}, af{f3});
+0048     <span class="keyword">end</span>
+0049     w{J+1}{i} = xi;
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="keyword">for</span> k = 1:J
+0053     <span class="keyword">for</span> m = 1:7
+0054         [w{k}{1}{m} w{k}{2}{m} w{k}{3}{m} w{k}{4}{m}] = <span class="keyword">...</span>
+0055             <a href="pm4.html" class="code" title="function [u, v, q, r] = pm4(a, b, c, d)">pm4</a>(w{k}{1}{m}, w{k}{2}{m}, w{k}{3}{m}, w{k}{4}{m});
+0056     <span class="keyword">end</span>
+0057 <span class="keyword">end</span>
+0058 
+0059</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

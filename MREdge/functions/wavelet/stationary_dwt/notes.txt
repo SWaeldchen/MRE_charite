@@ -1,9 +1,0 @@
-
-These programs do not use the MATLAB 'upfirdn' command.
-
-These programs use linear convolution.  The boundaries of the signals are not circularly or symmetrically extended. 
-Linear convolution implicitly uses zeros outside the signal boundaries.
-
-The low-pass signal in the synthesis channel will be longer than (or equal in length to) the high-pass signal because of the iteration on the low-pass channel.  Therefore, we truncate the signal down in length to match the high-pass channel.
-
-

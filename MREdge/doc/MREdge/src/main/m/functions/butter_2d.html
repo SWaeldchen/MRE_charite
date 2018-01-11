@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of butter_2d</title>
+  <meta name="keywords" content="butter_2d">
+  <meta name="description" content="y = butter_2d(ord, cut, x)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">functions</a> &gt; butter_2d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/functions&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>butter_2d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>y = butter_2d(ord, cut, x)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [y, filt] = butter_2d(ord, cut, x, hi) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> y = butter_2d(ord, cut, x)
+ Part of the MCNIT: M-code Complex and Nd Imaging Toolbox
+ (c) Eric Barnhill 2016 All Rights Reserved.
+
+ DESCRIPTION:
+
+ 2 dimensional Butterworth filtering of nd and complex objects.
+
+ INPUTS:
+
+ ord - filter order
+
+ cut - normalized frequency cut-off (between 0 and 1);
+
+ x - 2 or higher dimensional object
+
+ hi - set to 1 for hipass instead of lowpass
+
+ OUTPUTS:
+
+ y - object interpolated along three dimensions
+ filt - copy of the k space filter</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>	y = reshape(x,d)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/src/main/m/mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>	Applies highpass and lowpass butterworth filters if they are set in prefs</li><li><a href="../../../../../MREdge/src/main/m/mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>	Numerical divergence removal of the wave field</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [y_slc, filt] = filt_slc(ord, cut, x_slc, hi)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [y, filt] = butter_2d(ord, cut, x, hi)</a>
+0002 <span class="comment">% y = butter_2d(ord, cut, x)</span>
+0003 <span class="comment">% Part of the MCNIT: M-code Complex and Nd Imaging Toolbox</span>
+0004 <span class="comment">% (c) Eric Barnhill 2016 All Rights Reserved.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% DESCRIPTION:</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% 2 dimensional Butterworth filtering of nd and complex objects.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% INPUTS:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% ord - filter order</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% cut - normalized frequency cut-off (between 0 and 1);</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% x - 2 or higher dimensional object</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% hi - set to 1 for hipass instead of lowpass</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% OUTPUTS:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% y - object interpolated along three dimensions</span>
+0023 <span class="comment">% filt - copy of the k space filter</span>
+0024 
+0025 <span class="keyword">if</span> nargin &lt; 4
+0026     hi = 0;
+0027 <span class="keyword">end</span>
+0028 <span class="keyword">if</span> nargin &lt; 3 || cut &lt;= 0 || cut &gt; 1 || ndims(x) &lt; 2
+0029     disp(<span class="string">'MCNIT error: butter_2d must have 2+d data, cutoff between 0 and 1, and parameters for order and cutoff'</span>);
+0030 <span class="keyword">end</span>
+0031 
+0032 sz = size(x);
+0033 [x_resh, n_slcs] = <a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(x, 3);
+0034 
+0035 <span class="keyword">for</span> n = 1:n_slcs
+0036     [x_resh(:,:,n), filt] = <a href="#_sub1" class="code" title="subfunction [y_slc, filt] = filt_slc(ord, cut, x_slc, hi)">filt_slc</a>(ord, cut, x_resh(:,:,n), hi);
+0037 <span class="keyword">end</span>
+0038 
+0039 y = reshape(x_resh, sz);
+0040 
+0041 <span class="keyword">end</span>
+0042 
+0043 <a name="_sub1" href="#_subfunctions" class="code">function [y_slc, filt] = filt_slc(ord, cut, x_slc, hi)</a>
+0044     sz = size(x_slc);
+0045     mids = floor(sz/2)+1;
+0046     [x, y] = meshgrid( (1:sz(2)) - mids(2), (1:sz(1)) - mids(1) );
+0047     w = sqrt(x.^2 + y.^2);
+0048     w = w ./ max(w(:));
+0049     w = w / cut;
+0050     filt = sqrt(1 ./ (1 + w.^(2*ord)));
+0051     <span class="keyword">if</span> hi == 1
+0052         filt = 1 - filt;
+0053     <span class="keyword">end</span>
+0054     x_ft = fftshift(fft2(x_slc));
+0055     x_filt = x_ft .* filt;
+0056     y_slc = ifft2(ifftshift(x_filt));
+0057 <span class="keyword">end</span>    
+0058     
+0059</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:20:49 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

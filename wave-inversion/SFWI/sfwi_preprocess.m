@@ -3,7 +3,7 @@ function U = sfwi_preprocess(U, unwrap, ft, den_meth, mask, CUT)
 % (c) Eric Barnhill 2016. All Rights Reserved.
 % For private use only.
 
-DEN_LEVELS = 3;
+DEN_LEVELS = 2;
 Z_DEN_LEVELS = 2;
 K_LEVELS = [1 1 1];
 ORD = 4;
@@ -110,6 +110,74 @@ elseif den_meth == 4 % OGS THRESHOLD
         U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac_3d, DEN_LEVELS, mask);
         U(:,:,:,:,m) = butter_3d(ORD, CUT, U(:,:,:,:,m), 1);
         U(:,:,:,:,m) = butter_3d(4, 0.4, U(:,:,:,:,m));
+    end
+elseif den_meth == 5 % LINEAR THRESHOLD No BUTTER
+    if ft > 0
+        disp('FT');
+        U_ft = fft(U, [], 4);
+        U = squeeze(U_ft(:,:,:,2,:,:));
+        assignin('base', 'U_FT', U);
+    end
+    sz = size(U);
+    if numel(sz) < 5
+        d5 = 1;
+    else
+        d5 = sz(5);
+        
+    end
+    U = dejitter_phase_mask(U, logical(mask), 0.5, 256);
+    disp('Denoise');
+    parfor m = 1:d5
+        tic
+        U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
+        U(:,:,:,:,m) = dtdenoise_3d_undec(U(:,:,:,:,m), DEN_LEVELS, mask);
+        toc
+        %U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac, DEN_LEVELS, mask);
+    end
+elseif den_meth == 6 % LOW PASS
+    if ft > 0
+        disp('FT');
+        U_ft = fft(U, [], 4);
+        U = squeeze(U_ft(:,:,:,2,:,:));
+        assignin('base', 'U_FT', U);
+    end
+    sz = size(U);
+    if numel(sz) < 5
+        d5 = 1;
+    else
+        d5 = sz(5);
+        
+    end
+    %U = dejitter_phase_mask(U, logical(mask), 0.5, 256);
+    disp('Denoise');
+    parfor m = 1:d5
+        tic
+        U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
+        U(:,:,:,:,m) = butter_3d(ORD, CUT, U(:,:,:,:,m), 1);
+        U(:,:,:,:,m) = butter_3d(4, 0.2, U(:,:,:,:,m));
+    end
+elseif den_meth == 7 % LINEAR THRESHOLD NO DEJITTER
+    if ft > 0
+        disp('FT');
+        U_ft = fft(U, [], 4);
+        U = squeeze(U_ft(:,:,:,2,:,:));
+        assignin('base', 'U_FT', U);
+    end
+    sz = size(U);
+    if numel(sz) < 5
+        d5 = 1;
+    else
+        d5 = sz(5);
+        
+    end
+    disp('Denoise');
+    parfor m = 1:d5
+        tic
+        U(:,:,:,:,m) = zden_3D_DWT(U(:,:,:,:,m), Z_DEN_LEVELS, mask);
+        U(:,:,:,:,m) = dtdenoise_3d_undec(U(:,:,:,:,m), DEN_LEVELS, mask, 0.5);
+        U(:,:,:,:,m) = butter_3d(ORD, CUT, U(:,:,:,:,m), 1);
+        toc
+        %U(:,:,:,:,m) = dtdenoise_3d_mad_ogs_undec(U(:,:,:,:,m), den_fac, DEN_LEVELS, mask);
     end
 end
 toc

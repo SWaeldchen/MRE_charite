@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_denoise_nopar</title>
+  <meta name="keywords" content="mredge_denoise_nopar">
+  <meta name="description" content="% function mredge_denoise_nopar(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_denoise_nopar.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_denoise_nopar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_denoise_nopar(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_denoise_nopar(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_denoise_nopar(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Denoise the complex wave field, without parallel processing. 
+    Good for step debugging.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../MREdge/functions/wavelet/cdtw/dtdenoise_xy_pca_mad.html" class="code" title="function U_den = dtdenoise_xy_pca_mad(U, fac, J, is_complex)">dtdenoise_xy_pca_mad</a>	</li><li><a href="../MREdge/functions/wavelet/cdtw/dtdenoise_xy_pca_mad_amp.html" class="code" title="function U_den = dtdenoise_xy_pca_mad_amp(U, amp, fac, n_spins, is_complex)">dtdenoise_xy_pca_mad_amp</a>	</li><li><a href="../MREdge/functions/wavelet/cdtw/dtdenoise_z_auto_noise_est.html" class="code" title="function [U_den] = dtdenoise_z_auto_noise_est(U, J, strategy, is_complex)">dtdenoise_z_auto_noise_est</a>	</li><li><a href="mredge_convert_norm_thresh_to_wpm.html" class="code" title="function wpm = mredge_convert_norm_thresh_to_wpm(thresh, voxel_spacing, h, w)">mredge_convert_norm_thresh_to_wpm</a>	% function mredge_convert_norm_thresh_to_wpm(thresh, voxel_spacing, h, w);</li><li><a href="mredge_denoise_3d.html" class="code" title="function y = mredge_denoise_3d(x)">mredge_denoise_3d</a>	% function y = mredge_denoise_3d(x, info, prefs)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_ft_to_end_nopar.html" class="code" title="function mredge_ft_to_end_nopar(info, prefs)">mredge_ft_to_end_nopar</a>	% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIRS, RESID_DIRS] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_denoise_nopar(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Denoise the complex wave field, without parallel processing.</span>
+0012 <span class="comment">%    Good for step debugging.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function mredge_denoise_nopar(info, prefs)</a>
+0024 
+0025     [FT_DIRS, RESID_DIRS] = <a href="#_sub1" class="code" title="subfunction [FT_DIRS, RESID_DIRS] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0026     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0027     <span class="keyword">for</span> n = 1:numel(RESID_DIRS)
+0028         <span class="keyword">if</span> ~exist(RESID_DIRS{n}, <span class="string">'dir'</span>)
+0029             mkdir(RESID_DIRS{n});
+0030         <span class="keyword">end</span>
+0031     <span class="keyword">end</span>
+0032 
+0033     <span class="keyword">for</span> d = 1:numel(FT_DIRS);
+0034         <span class="keyword">for</span> f_num = 1:numel(info.driving_frequencies)
+0035             f = info.driving_frequencies(f_num); <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0036             display([num2str(f), <span class="string">' Hz'</span>]);
+0037             <span class="keyword">for</span> c = 1:3
+0038                 display(num2str(c));
+0039                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT)); <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0040                 wavefield_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0041                 wavefield_img = wavefield_vol.img;
+0042                 resid_vol = wavefield_vol;
+0043                 <span class="keyword">if</span> strcmp(prefs.denoise_strategy, <span class="string">'z_xy'</span>) == 1 <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0044                     wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/dtdenoise_z_auto_noise_est.html" class="code" title="function [U_den] = dtdenoise_z_auto_noise_est(U, J, strategy, is_complex)">dtdenoise_z_auto_noise_est</a>(wavefield_img, prefs.denoise_settings.z_level, prefs.denoise_settings.z_thresh_factor);
+0045                     wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/dtdenoise_xy_pca_mad.html" class="code" title="function U_den = dtdenoise_xy_pca_mad(U, fac, J, is_complex)">dtdenoise_xy_pca_mad</a>(wavefield_img, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_num_spins);
+0046                 <span class="keyword">elseif</span> strcmp(prefs.denoise_strategy, <span class="string">'z_xy_ampguided'</span>) == 1 <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0047                     amp = abs(wavefield_img);
+0048                     wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/dtdenoise_z_auto_noise_est.html" class="code" title="function [U_den] = dtdenoise_z_auto_noise_est(U, J, strategy, is_complex)">dtdenoise_z_auto_noise_est</a>(wavefield_img, prefs.denoise_settings.z_level, prefs.denoise_settings.z_thresh_factor);
+0049                     wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/dtdenoise_xy_pca_mad_amp.html" class="code" title="function U_den = dtdenoise_xy_pca_mad_amp(U, amp, fac, n_spins, is_complex)">dtdenoise_xy_pca_mad_amp</a>(wavefield_img, amp, prefs.denoise_settings.xy_thresh_factor, prefs.denoise_settings.xy_num_spins);
+0050                 <span class="keyword">elseif</span> strcmp(prefs.denoise_strategy, <span class="string">'lowpass'</span>) == 1
+0051                     <span class="keyword">if</span> prefs.lowpass_settings.dimensions == 2
+0052                         <span class="keyword">if</span> strcmp(prefs.lowpass_settings.cutoff_unit, <span class="string">'norm'</span>) == 1
+0053                             wpm = <a href="mredge_convert_norm_thresh_to_wpm.html" class="code" title="function wpm = mredge_convert_norm_thresh_to_wpm(thresh, voxel_spacing, h, w)">mredge_convert_norm_thresh_to_wpm</a>(prefs.lowpass_settings.cutoff, info.voxel_spacing(1), size(wavefield_img, 1), size(wavefield_img, 2));
+0054                         <span class="keyword">elseif</span> strcmp(prefs.lowpass_settings.cutoff_unit, <span class="string">'wpm'</span>) == 1
+0055                             disp(<span class="string">'wpm'</span>);
+0056                             wpm = prefs.lowpass_settings.cutoff;
+0057                         <span class="keyword">else</span>
+0058                             display(<span class="string">'MREdge ERROR: Lowpass denoise settings not compatible.'</span>);
+0059                         <span class="keyword">end</span>
+0060                         <span class="keyword">for</span> z=1:size(wavefield_img,3)
+0061                            wavefield_img(:,:,z) = uh_filtspatio2d(wavefield_img(:,:,z),[info.voxel_spacing(1); info.voxel_spacing(2)],prefs.lowpass_settings.cutoff,1,0,5, <span class="string">'bwlow'</span>, 0);
+0062                         <span class="keyword">end</span>
+0063                     <span class="keyword">end</span>
+0064                 <span class="keyword">elseif</span> strcmp(prefs.denoise_strategy, <span class="string">'3d'</span>) == 1
+0065                     wavefield_img = <a href="mredge_denoise_3d.html" class="code" title="function y = mredge_denoise_3d(x)">mredge_denoise_3d</a>(wavefield_img);
+0066                 <span class="keyword">end</span>
+0067                 wavefield_vol.img = wavefield_img;
+0068                 resid_vol.img = resid_vol.img - wavefield_img;
+0069                 save_untouch_nii(wavefield_vol, wavefield_path);
+0070                 resid_dir = fullfile(RESID_DIRS{d}, num2str(f), num2str(c));  <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0071                 <span class="keyword">if</span> ~exist(resid_dir, <span class="string">'dir'</span>)
+0072                     mkdir(resid_dir);
+0073                 <span class="keyword">end</span>
+0074                 resid_path = fullfile(resid_dir, <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0075                 save_untouch_nii(resid_vol, resid_path);
+0076             <span class="keyword">end</span>
+0077         <span class="keyword">end</span>
+0078     <span class="keyword">end</span>
+0079     
+0080 
+0081 <span class="keyword">end</span>
+0082 
+0083 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIRS, RESID_DIRS] = set_dirs(info, prefs)</a>
+0084     <span class="keyword">if</span> strcmp(prefs.phase_unwrap, <span class="string">'gradient'</span>) == 1;
+0085         FT_X = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'FT_X'</span>);
+0086         FT_Y = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'FT_Y'</span>);
+0087         FT_DIRS = cell(2,1);
+0088         FT_DIRS{1} = FT_X;
+0089         FT_DIRS{2} = FT_Y;
+0090         RESID_X = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'DENOISE_RESID_X'</span>);
+0091         RESID_Y = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'DENOISE_RESID_Y'</span>);
+0092         RESID_DIRS = cell(2,1);
+0093         RESID_DIRS{1} = RESID_X;
+0094         RESID_DIRS{2} = RESID_Y;
+0095     <span class="keyword">else</span>
+0096         FT_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'FT'</span>);
+0097         FT_DIRS = cell(1,1);
+0098         FT_DIRS{1} = FT_SUB;
+0099         RESID_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'DENOISE_RESID'</span>);
+0100         RESID_DIRS = cell(1,1);
+0101         RESID_DIRS{1} = RESID_SUB;
+0102     <span class="keyword">end</span>
+0103 <span class="keyword">end</span>
+0104 
+0105</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

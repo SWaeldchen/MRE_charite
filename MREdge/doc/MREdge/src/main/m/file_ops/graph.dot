@@ -1,0 +1,46 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  mredge_break_into_frequencies -> mredge_filename;
+  mredge_combine_ft -> mredge_analysis_path;
+  mredge_dicom_to_nifti -> mredge_fd_import;
+  mredge_fd_import -> mredge_analysis_path;
+  mredge_load_FT_as_5d -> mredge_analysis_path;
+  mredge_load_amplitudes -> mredge_analysis_path;
+  mredge_load_amplitudes -> mredge_dir;
+  mredge_load_elastograms -> mredge_analysis_path;
+  mredge_load_elastograms -> mredge_dir;
+  mredge_load_magnitude_as_6d -> mredge_filename;
+  mredge_load_phase_as_6d -> mredge_filename;
+  mredge_organize_acquisition -> mredge_break_into_frequencies;
+  mredge_organize_acquisition -> mredge_rename_by_frequency;
+  mredge_rename_by_frequency -> mredge_filename;
+  mredge_save_5d_as_FT -> mredge_filename;
+  mredge_split_4d -> mredge_remove_nifti_extension;
+  mredge_split_ft -> mredge_analysis_path;
+  mredge_split_ft -> mredge_mkdir;
+
+  mredge_analysis_path [URL="mredge_analysis_path.html"];
+  mredge_break_into_frequencies [URL="mredge_break_into_frequencies.html"];
+  mredge_clean_acquisition_folder [URL="mredge_clean_acquisition_folder.html"];
+  mredge_combine_ft [URL="mredge_combine_ft.html"];
+  mredge_dicom_to_nifti [URL="mredge_dicom_to_nifti.html"];
+  mredge_dir [URL="mredge_dir.html"];
+  mredge_fd_import [URL="mredge_fd_import.html"];
+  mredge_filename [URL="mredge_filename.html"];
+  mredge_freq_indices_to_filename [URL="mredge_freq_indices_to_filename.html"];
+  mredge_load_FT_as_5d [URL="mredge_load_FT_as_5d.html"];
+  mredge_load_amplitudes [URL="mredge_load_amplitudes.html"];
+  mredge_load_elastograms [URL="mredge_load_elastograms.html"];
+  mredge_load_magnitude_as_6d [URL="mredge_load_magnitude_as_6d.html"];
+  mredge_load_phase_as_6d [URL="mredge_load_phase_as_6d.html"];
+  mredge_mkdir [URL="mredge_mkdir.html"];
+  mredge_organize_acquisition [URL="mredge_organize_acquisition.html"];
+  mredge_remove_nifti_extension [URL="mredge_remove_nifti_extension.html"];
+  mredge_rename_by_frequency [URL="mredge_rename_by_frequency.html"];
+  mredge_save_5d_as_FT [URL="mredge_save_5d_as_FT.html"];
+  mredge_split_4d [URL="mredge_split_4d.html"];
+  mredge_split_ft [URL="mredge_split_ft.html"];
+  mredge_timeseries_to_4d [URL="mredge_timeseries_to_4d.html"];
+  mredge_unzip_if_zip [URL="mredge_unzip_if_zip.html"];
+  mredge_zip_if_unzip [URL="mredge_zip_if_unzip.html"];
+}

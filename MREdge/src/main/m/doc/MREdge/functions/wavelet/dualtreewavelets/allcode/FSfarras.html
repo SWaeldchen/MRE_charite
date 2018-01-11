@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of FSfarras</title>
+  <meta name="keywords" content="FSfarras">
+  <meta name="description" content="Farras filters organized for the dual-tree">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; FSfarras.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>FSfarras
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Farras filters organized for the dual-tree</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [af, sf] = FSfarras </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Farras filters organized for the dual-tree
+ complex DWT.
+
+ USAGE:
+    [af, sf] = FSfarras
+ OUTPUT:
+    af{i}, i = 1,2 - analysis filters for tree i
+    sf{i}, i = 1,2 - synthesis filters for tree i
+ See farras, dualtree, dualfilt1.
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_2D_DESTRIPE.html" class="code" title="function [y, w] = DT_2D_DESTRIPE(x, T, J)">DT_2D_DESTRIPE</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_2D_snr.html" class="code" title="function y = DT_2D_snr(x, snr, J)">DT_2D_snr</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_2D_u.html" class="code" title="function y = DT_2D_u(x, T, J, meth)">DT_2D_u</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_HARD.html" class="code" title="function y = DT_HARD(x, T)">DT_HARD</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_NNG.html" class="code" title="function y = DT_NNG(x, T)">DT_NNG</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_OGS_2D.html" class="code" title="function [y, w] = DT_SOFT_2D(x, T, J)">DT_OGS_2D</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u.html" class="code" title="function [u_den] = DT_OGS_u(u, K, fac, J, mask)">DT_OGS_u</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u_diff.html" class="code" title="function [u_den, u_x, u_y, u_z] = DT_OGS_u(u, K, lambda, J)">DT_OGS_u_diff</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u_log.html" class="code" title="function [u_den] = DT_OGS_u_log(u, K, fac, J, mask, fileID, base1, base2)">DT_OGS_u_log</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_SOFT.html" class="code" title="function y = DT_SOFT(x, T, J)">DT_SOFT</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_SOFT_2D.html" class="code" title="function [y, w] = DT_SOFT_2D(x, T, J)">DT_SOFT_2D</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_SOFT_2D_ampguided.html" class="code" title="function [y, w] = DT_SOFT_2D_ampguided(x, amp, T, J)">DT_SOFT_2D_ampguided</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_SOFT_2D_killring.html" class="code" title="function [y, w] = DT_SOFT_2D_killring(x, T, J)">DT_SOFT_2D_killring</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/DT_diff.html" class="code" title="function [gradX, gradY] = DT_diff(x, J)">DT_diff</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdtw_consensus_coefficients.html" class="code" title="function [v_thresh, w_sum] = cdtw_consensus_coefficients(v, T);">cdtw_consensus_coefficients</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdtw_spectra.html" class="code" title="">cdtw_spectra</a>	demo script to view spectra of CDTW components</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdtw_spectra_stationary.html" class="code" title="">cdtw_spectra_stationary</a>	demo script to view spectra of CDTW components</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdtw_spectra_stationary_real.html" class="code" title="">cdtw_spectra_stationary_real</a>	demo script to view spectra of CDTW components</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_diff.html" class="code" title="function [vdx, vdy, vdz] = cdwt_diff(v,J)">cdwt_diff</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_diff_2D.html" class="code" title="function [vdx, vdy] = cdwt_diff_2D(v,J)">cdwt_diff_2D</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_diff_2D_stationary.html" class="code" title="function [vdx, vdy] = cdwt_diff_2D(v,J)">cdwt_diff_2D_stationary</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_diff_3D.html" class="code" title="function [vdx, vdy, vdz] = cdwt_diff_3D(v,J)">cdwt_diff_3D</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_diff_ogs_2D.html" class="code" title="function [vdx, vdy] = cdwt_diff_ogs_2D(v,J)">cdwt_diff_ogs_2D</a>	if 2d, needless to say Z is rubbish</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/cdwt_laplacian.html" class="code" title="function [x_lap] = cdwt_laplacian(x, J);">cdwt_laplacian</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dt_den_1d.html" class="code" title="function [U_den] = dt_den_1d(U, T)">dt_den_1d</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dt_den_1d_stacktest.html" class="code" title="function [U_den] = dt_den_1d_stacktest(U)">dt_den_1d_stacktest</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dt_time_test.html" class="code" title="">dt_time_test</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dtdenoise_3d_pca.html" class="code" title="function U_den3 = dtdenoise_3d_pca(U, fac)">dtdenoise_3d_pca</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z_auto_noise_est_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_auto_noise_est_nocrop(U, fac, J)">dtdenoise_z_auto_noise_est_nocrop</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>	</li><li><a href="collect_dt_filters.html" class="code" title="function [filters, montage, spectra] = collect_dt_filters(dim)">collect_dt_filters</a>	</li><li><a href="cplxdual2D_plots.html" class="code" title="">cplxdual2D_plots</a>	cplxdual2D_plots</li><li><a href="cplxdual2Dinterp.html" class="code" title="function w = cplxdual2Dinterp(x)">cplxdual2Dinterp</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="cplxdual3D_interp.html" class="code" title="function w = cplxdual3D_interp(x)">cplxdual3D_interp</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="cplxdual3D_plots.html" class="code" title="">cplxdual3D_plots</a>	cplxdual3D_plots</li><li><a href="denC2D.html" class="code" title="function y = denC2D(x,T);">denC2D</a>	% Example</li><li><a href="denR2D.html" class="code" title="function y = denR2D(x,T);">denR2D</a>	% Example</li><li><a href="dualtree2D_plots.html" class="code" title="">dualtree2D_plots</a>	dualtree2D_plots</li><li><a href="dualtree3D_plots.html" class="code" title="">dualtree3D_plots</a>	dualtree3D_plots</li><li><a href="dualtree_eg1.html" class="code" title="">dualtree_eg1</a>	</li><li><a href="wavelet_dering_cdwt.html" class="code" title="function y = wavelet_dering_cdwt(x, thresh, J)">wavelet_dering_cdwt</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/denC3D_EB_OGS.html" class="code" title="function y = denC3D_EB_OGS(x, K, lam)">denC3D_EB_OGS</a>	% Example</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/denC3D_EB_OGS_java.html" class="code" title="function y = denC3D_EB_OGS_java(x)">denC3D_EB_OGS_java</a>	% Example</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/denC3D_EB_nng.html" class="code" title="function y = denC3D_EB_nng(x, T)">denC3D_EB_nng</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/denC3D_EB_soft.html" class="code" title="function y = denC3D_EB_OGS(x, T)">denC3D_EB_soft</a>	% Example</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/DT_ASG_u.html" class="code" title="function [u_den] = DT_ASG_u(u, J, mask, amp)">DT_ASG_u</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/DT_OGS_u.html" class="code" title="function [u_den] = DT_OGS_u(u, K, lambda, J)">DT_OGS_u</a>	Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_2d_undec.html" class="code" title="function u = dtdenoise_2d_undec(u, J, mask)">dtdenoise_2d_undec</a>	2D Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_2d_undec_guides.html" class="code" title="function [u, guides] = dtdenoise_2d_undec_guides(u, J, mask)">dtdenoise_2d_undec_guides</a>	3D Dualtree complex denoising</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/testing.html" class="code" title="">testing</a>	% TESTING MODULE</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [af, sf] = FSfarras</a>
+0002 
+0003 <span class="comment">% Farras filters organized for the dual-tree</span>
+0004 <span class="comment">% complex DWT.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% USAGE:</span>
+0007 <span class="comment">%    [af, sf] = FSfarras</span>
+0008 <span class="comment">% OUTPUT:</span>
+0009 <span class="comment">%    af{i}, i = 1,2 - analysis filters for tree i</span>
+0010 <span class="comment">%    sf{i}, i = 1,2 - synthesis filters for tree i</span>
+0011 <span class="comment">% See farras, dualtree, dualfilt1.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0014 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0015 
+0016 af{1} = [
+0017                   0                  0
+0018   -0.08838834764832  -0.01122679215254
+0019    0.08838834764832   0.01122679215254
+0020    0.69587998903400   0.08838834764832
+0021    0.69587998903400   0.08838834764832
+0022    0.08838834764832  -0.69587998903400
+0023   -0.08838834764832   0.69587998903400
+0024    0.01122679215254  -0.08838834764832
+0025    0.01122679215254  -0.08838834764832
+0026                   0                  0
+0027  ];
+0028    
+0029 sf{1} = af{1}(end:-1:1, :);
+0030 
+0031 af{2} = [
+0032    0.01122679215254                  0
+0033    0.01122679215254                  0
+0034   -0.08838834764832  -0.08838834764832
+0035    0.08838834764832  -0.08838834764832
+0036    0.69587998903400   0.69587998903400
+0037    0.69587998903400  -0.69587998903400
+0038    0.08838834764832   0.08838834764832
+0039   -0.08838834764832   0.08838834764832
+0040                   0   0.01122679215254
+0041                   0  -0.01122679215254
+0042 ];
+0043 
+0044 sf{2} = af{2}(end:-1:1, :);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

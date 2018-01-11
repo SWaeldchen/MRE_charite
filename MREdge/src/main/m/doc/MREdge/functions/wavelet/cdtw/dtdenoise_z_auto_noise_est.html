@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_z_auto_noise_est</title>
+  <meta name="keywords" content="dtdenoise_z_auto_noise_est">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dtdenoise_z_auto_noise_est.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_z_auto_noise_est
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [U_den] = dtdenoise_z_auto_noise_est(U, J, strategy, is_complex) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [U_den] = dtdenoise_z_auto_noise_est(U, J, strategy, is_complex)</a>
+0002 <span class="keyword">if</span> nargin &lt; 4
+0003     <span class="keyword">if</span> nargin &lt; 3
+0004         <span class="keyword">if</span> nargin &lt; 2
+0005             J = 1;
+0006         <span class="keyword">end</span>
+0007         strategy = <span class="string">'w1'</span>;
+0008     <span class="keyword">end</span>
+0009     is_complex = 1;
+0010 <span class="keyword">end</span>
+0011 U_den = zeros(size(U));
+0012 <span class="keyword">if</span> numel(size(U)) &lt; 4
+0013     d4 = 1;
+0014 <span class="keyword">else</span>
+0015     d4 = size(U,4);
+0016 <span class="keyword">end</span>
+0017 
+0018 <span class="keyword">for</span> n = 1:d4
+0019 
+0020     xr = real(U(:,:,:,n));
+0021     xi = imag(U(:,:,:,n));
+0022     
+0023     <span class="keyword">for</span> p = 1:size(xr, 3);
+0024       mc_xr = middle_circle(xr(:,:,p));
+0025       mc_xi = middle_circle(xi(:,:,p));
+0026       xr(:,:,p) = xr(:,:,p) - mean(mc_xr(~isnan(mc_xr)));
+0027       xi(:,:,p) = xi(:,:,p) - mean(mc_xi(~isnan(mc_xi)));
+0028     <span class="keyword">end</span>
+0029     
+0030     
+0031     z_noise_r = z_noise_est(xr);
+0032     <span class="keyword">if</span> strcmp(strategy, <span class="string">'w1'</span>) == 1
+0033         zfac = 2 + (1 + z_noise_r*2 );
+0034     <span class="keyword">elseif</span> strcmp(strategy, <span class="string">'w2'</span>) == 1
+0035         zfac = 2 + (1 + z_noise_r*2 )^2;
+0036     <span class="keyword">elseif</span> strcmp(strategy, <span class="string">'const'</span>) == 1
+0037         zfac = 3;
+0038     <span class="keyword">elseif</span> strcmp(strategy, <span class="string">'w3'</span>) == 1
+0039         zfac = 3 + (1 + z_noise_r*3 )^2;
+0040     <span class="keyword">end</span>
+0041   
+0042     sz = size(xr);
+0043 
+0044     xr = <a href="dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>(xr, zfac, J);
+0045     <span class="keyword">if</span> is_complex == 1
+0046         xi = <a href="dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>(xi, zfac, J);
+0047         U_den(:,:,:,n) = xr + 1i*xi;
+0048     <span class="keyword">else</span>
+0049         U_den(:,:,:,n) = xr;
+0050     <span class="keyword">end</span>
+0051 <span class="keyword">end</span>    
+0052 
+0053</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

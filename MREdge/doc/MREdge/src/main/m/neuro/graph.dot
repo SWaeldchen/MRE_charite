@@ -1,0 +1,13 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  mredge_brain_analysis -> mredge_avg_mag_to_mni;
+  mredge_brain_analysis -> mredge_coreg_param_to_mni;
+  mredge_brain_analysis -> mredge_label_param_map;
+  mredge_brain_analysis -> mredge_mni_to_label_space;
+
+  mredge_avg_mag_to_mni [URL="mredge_avg_mag_to_mni.html"];
+  mredge_brain_analysis [URL="mredge_brain_analysis.html"];
+  mredge_coreg_param_to_mni [URL="mredge_coreg_param_to_mni.html"];
+  mredge_label_param_map [URL="mredge_label_param_map.html"];
+  mredge_mni_to_label_space [URL="mredge_mni_to_label_space.html"];
+}

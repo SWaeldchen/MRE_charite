@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of find_lam</title>
+  <meta name="keywords" content="find_lam">
+  <meta name="description" content="lam0 = find_lam( s, pen, realcompl, K1, K2, Nit)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; find_lam.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>find_lam
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>lam0 = find_lam( s, pen, realcompl, K1, K2, Nit)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function lam0 = find_lam( s, pen, realcompl, K1, K2, Nit) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> lam0 = find_lam( s, pen, realcompl, K1, K2, Nit)
+
+ Provides the lam for a given desired output standard deviation
+ for 25 iterations of OGS.
+
+ Input:
+        s : desired std
+        pen = 'abs', 'log', 'atan'
+        realcompl = 'real', 'complex'
+        K1, K2: group size
+ Output: 
+        lam0: estimated lambda
+
+ Po-Yu Chen and Ivan Selesnick
+ August 2013</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="Example2.html" class="code" title="">Example2</a>	% Group-sparse denoising by non-convex regularization: Speech denoising</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function lam0 = find_lam( s, pen, realcompl, K1, K2, Nit)</a>
+0002 
+0003 <span class="comment">% lam0 = find_lam( s, pen, realcompl, K1, K2, Nit)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Provides the lam for a given desired output standard deviation</span>
+0006 <span class="comment">% for 25 iterations of OGS.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%        s : desired std</span>
+0010 <span class="comment">%        pen = 'abs', 'log', 'atan'</span>
+0011 <span class="comment">%        realcompl = 'real', 'complex'</span>
+0012 <span class="comment">%        K1, K2: group size</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%        lam0: estimated lambda</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Po-Yu Chen and Ivan Selesnick</span>
+0017 <span class="comment">% August 2013</span>
+0018 
+0019 <span class="comment">% K1_v = [1 1 1 1 1 2 2 2 2 3 3 3 4 4 5 2];</span>
+0020 <span class="comment">% K2_v = [1 2 3 4 5 2 3 4 5 3 4 5 4 5 5 8];</span>
+0021 
+0022 <span class="keyword">if</span> K1 &gt; K2
+0023     temp = K1;
+0024     K1 = K2;
+0025     K2 = temp;
+0026 <span class="keyword">end</span>
+0027 
+0028 
+0029 <span class="keyword">if</span>     (K1 == 1 &amp;&amp; K2 == 1)
+0030     i = 1;
+0031 <span class="keyword">elseif</span> (K1 == 1 &amp;&amp; K2 == 2)
+0032     i = 2;
+0033 <span class="keyword">elseif</span> (K1 == 1 &amp;&amp; K2 == 3)
+0034     i = 3;
+0035 <span class="keyword">elseif</span> (K1 == 1 &amp;&amp; K2 == 4)
+0036     i = 4;
+0037 <span class="keyword">elseif</span> (K1 == 1 &amp;&amp; K2 == 5)
+0038     i = 5;
+0039 <span class="keyword">elseif</span> (K1 == 2 &amp;&amp; K2 == 2)
+0040     i = 6;
+0041 <span class="keyword">elseif</span> (K1 == 2 &amp;&amp; K2 == 3)
+0042     i = 7;
+0043 <span class="keyword">elseif</span> (K1 == 2 &amp;&amp; K2 == 4)
+0044     i = 8;
+0045 <span class="keyword">elseif</span> (K1 == 2 &amp;&amp; K2 == 5)
+0046     i = 9;
+0047 <span class="keyword">elseif</span> (K1 == 3 &amp;&amp; K2 == 3)
+0048     i = 10;
+0049 <span class="keyword">elseif</span> (K1 == 3 &amp;&amp; K2 == 4)
+0050     i = 11;
+0051 <span class="keyword">elseif</span> (K1 == 3 &amp;&amp; K2 == 5)
+0052     i = 12;
+0053 <span class="keyword">elseif</span> (K1 == 4 &amp;&amp; K2 == 4)
+0054     i = 13;
+0055 <span class="keyword">elseif</span> (K1 == 4 &amp;&amp; K2 == 5)
+0056     i = 14;
+0057 <span class="keyword">elseif</span> (K1 == 5 &amp;&amp; K2 == 5)
+0058     i = 15;
+0059 <span class="keyword">elseif</span> (K1 == 2 &amp;&amp; K2 == 8)
+0060     i = 16;
+0061 <span class="keyword">else</span>
+0062     fprintf(<span class="string">'No data'</span>)
+0063     <span class="keyword">return</span>
+0064 <span class="keyword">end</span>
+0065 
+0066 Nit = 25;
+0067 
+0068 <span class="comment">% txt_lam = sprintf('./lambda_data/lam_%s_%s_Nit_%2d.txt', pen, realcompl, Nit);</span>
+0069 <span class="comment">% txt_std = sprintf('./lambda_data/std_%s_%s_Nit_%2d.txt', pen, realcompl, Nit);</span>
+0070 
+0071 txt_lam = sprintf(<span class="string">'lambda_data/lam_%s_%s_Nit_%2d.txt'</span>, pen, realcompl, Nit);
+0072 txt_std = sprintf(<span class="string">'lambda_data/std_%s_%s_Nit_%2d.txt'</span>, pen, realcompl, Nit);
+0073 
+0074 Lam = load(txt_lam);
+0075 lam = Lam(:, 3:end);
+0076 
+0077 STD = load(txt_std);
+0078 std_v = STD(:, 3:end);    
+0079     
+0080 
+0081 <span class="keyword">if</span> s &lt; min(std_v(i, :))
+0082     x1 = lam(i, end-1);
+0083     x2 = lam(i, end);
+0084     z1 = log(std_v(i, end-1));
+0085     z2 = log(std_v(i, end));
+0086     m = (x2-x1)/(z2-z1);
+0087     lam0 = x1 + m*(log(s)-z1);
+0088     lam_v1 = [lam(i, :) lam0];
+0089     std_v1 = [std_v(i, :) s];
+0090 <span class="keyword">else</span>
+0091     lam0 = interp1(log(std_v(i, :)), lam(i, :), log(s));
+0092     lam_v1 = lam(i, :);
+0093     std_v1 = std_v(i, :);
+0094 <span class="keyword">end</span>
+0095 
+0096 
+0097 <span class="comment">% figure</span>
+0098 
+0099 h = semilogx(std_v1, lam_v1, <span class="string">'sk'</span>, s, lam0, <span class="string">'ro'</span>, std_v1, lam_v1, <span class="string">'k'</span>);
+0100 
+0101 <span class="comment">% semilogx(std_v1, lam_v1, '.-k', s, lam0, 'ro');</span>
+0102 
+0103 legend(<span class="string">'Samples'</span>, <span class="string">'Interpolation'</span>);
+0104 xlabel(<span class="string">'Standard deviation'</span>)
+0105 ylabel(<span class="string">'\lambda'</span>)
+0106 xlim(std_v1([end 1]).* [0.7 1.3]);
+0107 
+0108 shg
+0109 
+0110 
+0111</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

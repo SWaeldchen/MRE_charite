@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of udwt</title>
+  <meta name="keywords" content="udwt">
+  <meta name="description" content="Undecimated Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; udwt.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>udwt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Undecimated Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w = udwt(x, J, h0, h1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Undecimated Discrete Wavelet Transform
+
+ INPUT
+   x  : input signal
+   J  : number of stages
+   h0 : low-pass analysis filter
+   h1 : high-pass analysis filter
+
+ OUTPUT
+   w  : cell array of wavelet coefficients
+
+ EXAMPLE 
+  [h0, h1, g0, g1] = daubf(3);
+  N = 20;
+  x = rand(1,N);
+  J = 3;
+  w = udwt(x, J, h0, h1);
+  y = iudwt(w,  J, g0, g1);
+  err = x - y(1:N);
+  max(abs(err))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>	</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="udwt_example.html" class="code" title="">udwt_example</a>	CONSTRUCT FILTERS</li><li><a href="udwt_example_2.html" class="code" title="">udwt_example_2</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = udwt(x, J, h0, h1)</a>
+0002 
+0003 <span class="comment">% Undecimated Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%   x  : input signal</span>
+0007 <span class="comment">%   J  : number of stages</span>
+0008 <span class="comment">%   h0 : low-pass analysis filter</span>
+0009 <span class="comment">%   h1 : high-pass analysis filter</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% OUTPUT</span>
+0012 <span class="comment">%   w  : cell array of wavelet coefficients</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% EXAMPLE</span>
+0015 <span class="comment">%  [h0, h1, g0, g1] = daubf(3);</span>
+0016 <span class="comment">%  N = 20;</span>
+0017 <span class="comment">%  x = rand(1,N);</span>
+0018 <span class="comment">%  J = 3;</span>
+0019 <span class="comment">%  w = udwt(x, J, h0, h1);</span>
+0020 <span class="comment">%  y = iudwt(w,  J, g0, g1);</span>
+0021 <span class="comment">%  err = x - y(1:N);</span>
+0022 <span class="comment">%  max(abs(err))</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0025 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0026 
+0027 R = sqrt(2);
+0028 h0 = h0/R;
+0029 <span class="keyword">if</span> size(h0, 1) == 1
+0030     h0 = permute(h0, [2 1]);
+0031 <span class="keyword">end</span>
+0032 <span class="keyword">if</span> size(h1, 1) == 1
+0033     h1 = permute(h1, [2 1]);
+0034 <span class="keyword">end</span>
+0035 h1 = h1/R;
+0036 
+0037 N0 = length(h0);
+0038 N1 = length(h1);
+0039 
+0040 isrow = 0;
+0041 <span class="keyword">if</span> size(x,1) == 1
+0042     x = permute(x, [2 1]);
+0043     isrow = 1;
+0044 <span class="keyword">end</span>
+0045 
+0046 w = cell(1,J);
+0047 <span class="keyword">for</span> j = 1:J
+0048 
+0049     L = length(x);
+0050     M = 2^(j-1);
+0051     lo = zeros(L+M*(N0-1),1);
+0052     hi = zeros(L+M*(N1-1),1);
+0053 
+0054     <span class="comment">% convolution:</span>
+0055     <span class="keyword">for</span> k = 0:N1-1
+0056         hi(M*k+(1:L)) = hi(M*k+(1:L)) + h1(k+1)*x;
+0057     <span class="keyword">end</span>
+0058     <span class="keyword">for</span> k = 0:N0-1
+0059         lo(M*k+(1:L)) = lo(M*k+(1:L)) + h0(k+1)*x;
+0060     <span class="keyword">end</span>
+0061 
+0062     w{j} = hi;
+0063     x = lo;
+0064 <span class="keyword">end</span>
+0065 w{J+1} = x;
+0066 
+0067 
+0068 
+0069 
+0070</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

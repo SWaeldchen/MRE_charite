@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sfb3D</title>
+  <meta name="keywords" content="sfb3D">
+  <meta name="description" content="3D Synthesis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; sfb3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>sfb3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>3D Synthesis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = sfb3D(lo, hi, sf1, sf2, sf3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 3D Synthesis Filter Bank
+
+ USAGE:
+   y = sfb3D(lo, hi, sf1, sf2, sf3);
+ INPUT:
+   lo, hi - lowpass subbands
+   sfi - synthesis filters for dimension i
+ OUPUT:
+   y - output array
+ See afb3D
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="cshift3D.html" class="code" title="function y = cshift3D(x, m, d)">cshift3D</a>	3D Circular Shift</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>	Inverse 3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="idualtree3D.html" class="code" title="function y = idualtree3D(w, J, Fsf, sf)">idualtree3D</a>	Inverse 3D Dual-Tree Discrete Wavelet Transform</li><li><a href="idwt3D.html" class="code" title="function y = idwt3D(w, J, sf)">idwt3D</a>	Inverse 3-D Discrete Wavelet Transform</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function y = sfb3D_A(lo, hi, sf, d)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = sfb3D(lo, hi, sf1, sf2, sf3)</a>
+0002 
+0003 <span class="comment">% 3D Synthesis Filter Bank</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   y = sfb3D(lo, hi, sf1, sf2, sf3);</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   lo, hi - lowpass subbands</span>
+0009 <span class="comment">%   sfi - synthesis filters for dimension i</span>
+0010 <span class="comment">% OUPUT:</span>
+0011 <span class="comment">%   y - output array</span>
+0012 <span class="comment">% See afb3D</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0015 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0016 
+0017 <span class="keyword">if</span> nargin &lt; 4
+0018    sf2 = sf1;
+0019    sf3 = sf1;
+0020 <span class="keyword">end</span>
+0021 
+0022 LLL = lo;
+0023 LLH = hi{1};
+0024 LHL = hi{2};
+0025 LHH = hi{3};
+0026 HLL = hi{4};
+0027 HLH = hi{5};
+0028 HHL = hi{6};
+0029 HHH = hi{7};
+0030 
+0031 <span class="comment">% filter along dimension 3</span>
+0032 LL = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(LLL, LLH, sf3, 3);
+0033 LH = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(LHL, LHH, sf3, 3);
+0034 HL = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(HLL, HLH, sf3, 3);
+0035 HH = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(HHL, HHH, sf3, 3);
+0036 
+0037 <span class="comment">% filter along dimension 2</span>
+0038 L = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(LL, LH, sf2, 2);
+0039 H = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(HL, HH, sf2, 2);
+0040 
+0041 <span class="comment">% filter along dimension 1</span>
+0042 y = <a href="#_sub1" class="code" title="subfunction y = sfb3D_A(lo, hi, sf, d)">sfb3D_A</a>(L, H, sf1, 1);
+0043 
+0044 
+0045 <span class="comment">% LOCAL FUNCTION</span>
+0046 
+0047 <a name="_sub1" href="#_subfunctions" class="code">function y = sfb3D_A(lo, hi, sf, d)</a>
+0048 
+0049 <span class="comment">% 3D Synthesis Filter Bank</span>
+0050 <span class="comment">% (along single dimension only)</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% y = sfb3D_A(lo, hi, sf, d);</span>
+0053 <span class="comment">% sf - synthesis filters</span>
+0054 <span class="comment">% d  - dimension of filtering</span>
+0055 <span class="comment">% see afb2D_A</span>
+0056 
+0057 lpf = sf(:, 1);     <span class="comment">% lowpass filter</span>
+0058 hpf = sf(:, 2);     <span class="comment">% highpass filter</span>
+0059 
+0060 <span class="comment">% permute dimensions of lo and hi so that dimension d is first.</span>
+0061 p = mod(d-1+[0:2], 3) + 1;
+0062 lo = permute(lo, p);
+0063 hi = permute(hi, p);
+0064 
+0065 [N1, N2, N3] = size(lo);
+0066 N = 2*N1;
+0067 L = length(sf);
+0068 y = zeros(N+L-2, N2, N3);
+0069 
+0070 <span class="keyword">for</span> k = 1:N3
+0071    y(:, :, k) = upfirdn(lo(:, :, k), lpf, 2, 1) + upfirdn(hi(:, :, k), hpf, 2, 1);
+0072 <span class="keyword">end</span>
+0073 y(1:L-2, :, :) = y(1:L-2, :, :) + y(N+[1:L-2], :, :);
+0074 y = y(1:N, :, :);
+0075 y = <a href="cshift3D.html" class="code" title="function y = cshift3D(x, m, d)">cshift3D</a>(y, 1-L/2, 1);
+0076 
+0077 <span class="comment">% permute dimensions of y (inverse permutation)</span>
+0078 y = ipermute(y, p);
+0079 
+0080</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

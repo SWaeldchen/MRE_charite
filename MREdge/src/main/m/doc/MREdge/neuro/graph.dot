@@ -1,0 +1,35 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  mredge_brain_analysis -> mredge_avg_mag_to_mni;
+  mredge_brain_analysis -> mredge_coreg_param_to_mni;
+  mredge_brain_analysis -> mredge_label_param_map;
+  mredge_brain_analysis -> mredge_mni_to_label_space;
+  mredge_brain_analysis_sliding -> mredge_avg_mag_to_mni;
+  mredge_brain_analysis_sliding -> mredge_coreg_param_to_mni_sliding;
+  mredge_brain_analysis_sliding -> mredge_label_param_map_sliding;
+  mredge_brain_analysis_sliding -> mredge_mni_to_label_space_sliding;
+  mredge_brain_analysis_stable -> mredge_avg_mag_to_mni;
+  mredge_brain_analysis_stable -> mredge_coreg_param_to_mni_stable;
+  mredge_brain_analysis_stable -> mredge_label_param_map_stable;
+  mredge_brain_analysis_stable -> mredge_mni_to_label_space_stable;
+
+  mredge_avg_mag_to_mni [URL="mredge_avg_mag_to_mni.html"];
+  mredge_brain_analysis [URL="mredge_brain_analysis.html"];
+  mredge_brain_analysis_sliding [URL="mredge_brain_analysis_sliding.html"];
+  mredge_brain_analysis_stable [URL="mredge_brain_analysis_stable.html"];
+  mredge_coreg_param_to_mni [URL="mredge_coreg_param_to_mni.html"];
+  mredge_coreg_param_to_mni_sliding [URL="mredge_coreg_param_to_mni_sliding.html"];
+  mredge_coreg_param_to_mni_springpot [URL="mredge_coreg_param_to_mni_springpot.html"];
+  mredge_coreg_param_to_mni_stable [URL="mredge_coreg_param_to_mni_stable.html"];
+  mredge_label_param_map [URL="mredge_label_param_map.html"];
+  mredge_label_param_map_sliding [URL="mredge_label_param_map_sliding.html"];
+  mredge_label_param_map_springpot [URL="mredge_label_param_map_springpot.html"];
+  mredge_label_param_map_stable [URL="mredge_label_param_map_stable.html"];
+  mredge_labels_to_mni_space [URL="mredge_labels_to_mni_space.html"];
+  mredge_load_amplitudes [URL="mredge_load_amplitudes.html"];
+  mredge_mni_labels_to_native_space [URL="mredge_mni_labels_to_native_space.html"];
+  mredge_mni_to_label_space [URL="mredge_mni_to_label_space.html"];
+  mredge_mni_to_label_space_sliding [URL="mredge_mni_to_label_space_sliding.html"];
+  mredge_mni_to_label_space_springpot [URL="mredge_mni_to_label_space_springpot.html"];
+  mredge_mni_to_label_space_stable [URL="mredge_mni_to_label_space_stable.html"];
+}

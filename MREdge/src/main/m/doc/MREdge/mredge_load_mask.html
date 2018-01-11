@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_load_mask</title>
+  <meta name="keywords" content="mredge_load_mask">
+  <meta name="description" content="Loads the anatomical mask image and returns as a 3D object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_load_mask.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_load_mask
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Loads the anatomical mask image and returns as a 3D object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mask = mredge_load_mask(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Loads the anatomical mask image and returns as a 3D object
+
+ INPUTS:
+
+ info - an acquisition info structure created with make_acquisition_info
+ prefs - preferences file created with mredge_prefs
+
+ OUTPUTS:
+
+ none
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>	Applies highpass and lowpass butterworth filters if they are set in prefs</li><li><a href="mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>	Denoise Fourier-transformed wavefield.</li><li><a href="mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li><li><a href="mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>	Removes interslice phase discontinuities.</li><li><a href="mredge_zden.html" class="code" title="function mredge_zden(info, prefs)">mredge_zden</a>	% function mredge_denoise(info, prefs);</li><li><a href="../MREdge/stats/mredge_amp_wave_snr.html" class="code" title="function mredge_amp_wave_snr(info, prefs)">mredge_amp_wave_snr</a>	% function mredge_amp_guided_wave_to_noise(info, prefs);</li><li><a href="../MREdge/stats/mredge_cortical_average.html" class="code" title="function mredge_cortical_average(info, prefs)">mredge_cortical_average</a>	% function mredge_cortical_average(info, prefs);</li><li><a href="../MREdge/stats/mredge_cortical_median.html" class="code" title="function mredge_cortical_median(info, prefs)">mredge_cortical_median</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../MREdge/stats/mredge_cortical_median_stable.html" class="code" title="function mredge_cortical_median_stable(info, prefs)">mredge_cortical_median_stable</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../MREdge/stats/mredge_displacement_snr.html" class="code" title="function mredge_displacement_snr(info, prefs)">mredge_displacement_snr</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../MREdge/stats/mredge_displacement_snr_stable.html" class="code" title="function mredge_displacement_snr_stable(info, prefs)">mredge_displacement_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../MREdge/stats/mredge_laplacian_snr.html" class="code" title="function mredge_laplacian_snr(info, prefs, label)">mredge_laplacian_snr</a>	% function mredge_laplacian_snr(info, prefs)</li><li><a href="../MREdge/stats/mredge_laplacian_snr_stable.html" class="code" title="function mredge_laplacian_snr_stable(info, prefs)">mredge_laplacian_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../MREdge/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>	Returns median of masked values for a parameter map</li><li><a href="../MREdge/stats/mredge_oss.html" class="code" title="function mredge_oss(info, prefs, label)">mredge_oss</a>	% function mredge_oss(info, prefs);</li><li><a href="../MREdge/stats/mredge_psf.html" class="code" title="function mredge_psf(info, prefs)">mredge_psf</a>	% function mredge_psf(info);</li><li><a href="../MREdge/stats/mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>	% function mredge_rer(info, prefs);</li><li><a href="../MREdge/stats/mredge_snr.html" class="code" title="function mredge_snr(info, prefs)">mredge_snr</a>	Calculates SNR maps and records SNR values in stats folder.</li><li><a href="../MREdge/stats/mredge_snr_stable.html" class="code" title="function mredge_snr_stable(info, prefs)">mredge_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../MREdge/stats/mredge_springpot.html" class="code" title="function mredge_springpot(info, prefs)">mredge_springpot</a>	% function mredge_springpot(info, prefs);</li><li><a href="../MREdge/stats/mredge_springpot_stable.html" class="code" title="function mredge_springpot_stable(info, prefs)">mredge_springpot_stable</a>	% function mredge_springpot_stable(info, prefs);</li><li><a href="../MREdge/stats/mredge_springpot_stable_weighted.html" class="code" title="function mredge_springpot_stable_weighted(info, prefs)">mredge_springpot_stable_weighted</a>	% function mredge_springpot_stable_weighted(info, prefs);</li><li><a href="../MREdge/stats/mredge_whole_brain_median.html" class="code" title="function mredge_whole_brain_median(info, prefs)">mredge_whole_brain_median</a>	% function mredge_whole_brain_median(info, prefs);</li><li><a href="../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mask = mredge_load_mask(info, prefs)</a>
+0002 <span class="comment">% Loads the anatomical mask image and returns as a 3D object</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">% prefs - preferences file created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Part of the MREdge software package</span>
+0014 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0015 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0016 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0017 <span class="comment">%</span>
+0018 
+0019 mask_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(fullfile(<a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'magnitude'</span>), <span class="string">'magnitude_mask.nii'</span>));
+0020 mask = mask_vol.img;</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

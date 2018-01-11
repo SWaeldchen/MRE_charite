@@ -12,7 +12,7 @@ if nargin < 5
     end
 end
 
-if unique(spacing) > 1 & iso == 1
+if unique(spacing) > 1 && iso == 1
    disp('Laplacian image ERROR: with isotropic spacing, laplacian must be separable not isotropic');
    return;
 end
@@ -29,7 +29,7 @@ end
 
 c = get_kernel(ndims, ord, iso);
 
-if iso
+dif iso
     U_laplacian = convn(U, c{1}, 'same') ./ spacing(1)^2;
 else
     U_lap_1 = convn(U, c{1}, 'same') ./ spacing(1)^2;

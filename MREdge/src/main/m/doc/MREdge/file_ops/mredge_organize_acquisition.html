@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_organize_acquisition</title>
+  <meta name="keywords" content="mredge_organize_acquisition">
+  <meta name="description" content="Creates nested folder structure for NIfTI files">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_organize_acquisition.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_organize_acquisition
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Creates nested folder structure for NIfTI files</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_organize_acquisition(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Creates nested folder structure for NIfTI files
+
+ INPUTS:
+
+   info - an acquisition info structure created by make_acquisition_info
+
+ OUTPUTS:
+
+   none
+
+ SEE ALSO:
+
+   mredge, <a href="mredge_dicom_to_nifti.html" class="code" title="function mredge_dicom_to_nifti(info)">mredge_dicom_to_nifti</a>
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+% process each series</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_break_into_frequencies.html" class="code" title="function mredge_break_into_frequencies(series_number, subdir, info)">mredge_break_into_frequencies</a>	For acquisitions with the all_frequencies_one_series flag, partitions the time series by frequency</li><li><a href="mredge_create_analysis_folder.html" class="code" title="function mredge_create_analysis_folder(info, prefs)">mredge_create_analysis_folder</a>	If analysis folder does not exist, create it.</li><li><a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>	For acquisitions where each frequency has its own series number, rename each series to its corresponding frequency.</li><li><a href="../../MREdge/mredge_mag2double.html" class="code" title="function mredge_mag2double(info)">mredge_mag2double</a>	Converts values in magnitude NIfTI objects to double type, to avoid type conflicts.</li><li><a href="../../MREdge/mredge_phase2double.html" class="code" title="function mredge_phase2double(info)">mredge_phase2double</a>	Converts values in phase NIfTI objects to double type, to avoid type conflicts.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_organize_acquisition(info)</a>
+0002 <span class="comment">% Creates nested folder structure for NIfTI files</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created by make_acquisition_info</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% OUTPUTS:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   none</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% SEE ALSO:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   mredge, mredge_dicom_to_nifti</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Part of the MREdge software package</span>
+0017 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0018 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0019 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%% process each series</span>
+0022 NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0023 
+0024 <span class="keyword">for</span> d = 1:numel(info.ds.logical)
+0025     <span class="keyword">if</span> info.ds.logical(d) 
+0026         dirpath = fullfile(info.ds.list{d});
+0027         <span class="keyword">if</span> ~exist(dirpath, <span class="string">'dir'</span>)
+0028             mkdir(dirpath);
+0029         <span class="keyword">end</span>
+0030         series_nums = info.ds.series_nums{d};
+0031         <span class="keyword">for</span> series_num = series_nums
+0032             movefile(fullfile(info.path, [num2str(series_num), NIF_EXT]), dirpath);
+0033         <span class="keyword">end</span>
+0034     <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036     
+0037 <span class="keyword">if</span> info.all_freqs_one_series == 1
+0038     <a href="mredge_break_into_frequencies.html" class="code" title="function mredge_break_into_frequencies(series_number, subdir, info)">mredge_break_into_frequencies</a>(info.phase(1), info.ds.list(info.ds.enum.phase), info);
+0039     <a href="mredge_break_into_frequencies.html" class="code" title="function mredge_break_into_frequencies(series_number, subdir, info)">mredge_break_into_frequencies</a>(info.magnitude(1), info.ds.list(info.ds.enum.magnitude), info);
+0040 <span class="keyword">else</span>
+0041     <a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>(info.ds.list(info.ds.enum.phase), info.phase, info);
+0042     <a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>(info.ds.list(info.ds.enum.magnitude), info.magnitude, info);
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% convert all NIfTI files to double data type</span>
+0046 <a href="../../MREdge/mredge_phase2double.html" class="code" title="function mredge_phase2double(info)">mredge_phase2double</a>(info);
+0047 <a href="../../MREdge/mredge_mag2double.html" class="code" title="function mredge_mag2double(info)">mredge_mag2double</a>(info);
+0048 delete(fullfile(info.path, <span class="string">'*.nii'</span>));
+0049 
+0050 <a href="mredge_create_analysis_folder.html" class="code" title="function mredge_create_analysis_folder(info, prefs)">mredge_create_analysis_folder</a>(info, prefs);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

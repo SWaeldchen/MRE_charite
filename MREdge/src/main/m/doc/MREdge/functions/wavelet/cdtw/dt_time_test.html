@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dt_time_test</title>
+  <meta name="keywords" content="dt_time_test">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dt_time_test.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dt_time_test
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualtree.html" class="code" title="function w = dualtree(x, J, Faf, af)">dualtree</a>	Dual-tree Complex Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/idualtree.html" class="code" title="function y = idualtree(w, J, Fsf, sf)">idualtree</a>	Inverse Dual-tree Complex DWT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 v = sinVec(1024, 256);
+0002 [Faf Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0003 [af sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0004 a = now;
+0005 <span class="keyword">for</span> n = 1:100
+0006     w = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/idualtree.html" class="code" title="function y = idualtree(w, J, Fsf, sf)">idualtree</a>(<a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualtree.html" class="code" title="function w = dualtree(x, J, Faf, af)">dualtree</a>(v, 3, Faf, af), 3, Fsf, sf);
+0007 <span class="keyword">end</span>
+0008 b = (now-a)*100000;
+0009 aa = now;
+0010 <span class="keyword">for</span> n = 1:100
+0011     ww = dt.inverse(dt.forward(v, 3), 3);
+0012 <span class="keyword">end</span>
+0013 bb = (now-aa)*100000;
+0014 display(<span class="string">'Elapsed Time'</span>);
+0015 display([<span class="string">'Matlab '</span>, num2str(b),<span class="string">'s Java '</span>,num2str(bb),<span class="string">'s'</span>]);
+0016 diff = w-ww';
+0017 display([<span class="string">'Max error: '</span>, num2str(max(diff))]);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_label_param_map_sliding</title>
+  <meta name="keywords" content="mredge_label_param_map_sliding">
+  <meta name="description" content="% function stats = mredge_label_param_map_sliding(info, param)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">neuro</a> &gt; mredge_label_param_map_sliding.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/neuro&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_label_param_map_sliding
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function stats = mredge_label_param_map_sliding(info, param)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_label_param_map_sliding(info_an, prefs, param) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function stats = mredge_label_param_map_sliding(info, param)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_brain_analysis_sliding.html" class="code" title="function mredge_brain_analysis_sliding(info_mag, info_an, prefs)">mredge_brain_analysis_sliding</a>	% function mredge_brain_analysis_sliding(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info_an, prefs, param)</a></li><li><a href="#_sub2" class="code">function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function stats = mredge_label_param_map_sliding(info, param)</span>
+0002 
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Applies label volume to parameter map. Returns statistics for each</span>
+0012 <span class="comment">% labelled anatomical region.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% info - an acquisition info structure created by make_acquisition_info</span>
+0017 <span class="comment">% param - Name of elasticity parameter: 'absg', 'phi', 'c', 'a'</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% none</span>
+0022 
+0023 <span class="comment">%%</span>
+0024 <a name="_sub0" href="#_subfunctions" class="code">function mredge_label_param_map_sliding(info_an, prefs, param)</a>
+0025 
+0026     [PARAM_SUB, STATS_SUB] = <a href="#_sub1" class="code" title="subfunction [PARAM_SUB, STATS_SUB] = set_dirs(info_an, prefs, param)">set_dirs</a>(info_an, prefs, param);
+0027     tpm_image_path = fullfile(spm(<span class="string">'Dir'</span>), <span class="string">'tpm'</span>, <span class="string">'labels_Neuromorphometrics.nii'</span>);
+0028     ABSG_NOISE_THRESH = prefs.abs_g_noise_thresh;
+0029     
+0030     <span class="keyword">if</span> strcmp(param, <span class="string">'Abs_G'</span>) || strcmp(param, <span class="string">'SFWI'</span>) || strcmp(param, <span class="string">'HELM'</span>)
+0031         noise_thresh = ABSG_NOISE_THRESH;
+0032     <span class="keyword">else</span>
+0033         noise_thresh = eps;
+0034     <span class="keyword">end</span>
+0035 
+0036     [stable_filenames, stable_frequencies] = mredge_invert_sliding(info_an, prefs, 0);
+0037     <span class="keyword">for</span> f = 1:numel(stable_frequencies)
+0038         disp([<span class="string">'Label Param Map: '</span>,num2str(stable_frequencies(f)), <span class="string">'Hz'</span>]);
+0039         tic
+0040         freq_file = fullfile(PARAM_SUB, [<span class="string">'rw'</span>, stable_filenames{f}]);
+0041         <a href="#_sub2" class="code" title="subfunction label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)">label_param_map</a>(STATS_SUB, param, tpm_image_path, freq_file, noise_thresh, f);
+0042         toc
+0043     <span class="keyword">end</span>
+0044        
+0045 <span class="keyword">end</span>
+0046 
+0047 <a name="_sub1" href="#_subfunctions" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info_an, prefs, param)</a>
+0048 
+0049     PARAM_SUB =  <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info_an, prefs, param);
+0050     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info_an, prefs, <span class="string">'stats'</span>);
+0051 
+0052 <span class="keyword">end</span>
+0053 
+0054 <a name="_sub2" href="#_subfunctions" class="code">function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)</a>
+0055  
+0056     param_coreg_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_file_path);
+0057     param_img = param_coreg_vol.img;
+0058     labels_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(tpm_image_path);
+0059     labels_img = labels_vol.img;
+0060     labels_file = importdata(<span class="string">'labels_Neuromorphometrics.xls'</span>);
+0061     label_nums = labels_file.data;
+0062     labels = labels_file.textdata(:,2);
+0063     label_stats_path = fullfile(STATS_SUB, [<span class="string">'label_stats_stable_'</span>, param, <span class="string">'.csv'</span>]);
+0064     num_labels = numel(label_nums);
+0065     WM = <span class="string">'White Matter'</span>;
+0066     wm_sum = 0;
+0067     wm_tally = 0;
+0068     wm_path = fullfile(STATS_SUB, [<span class="string">'wm_stats_stable_'</span>, param, <span class="string">'.csv'</span>]);
+0069       
+0070     <span class="keyword">for</span> n = 1:num_labels
+0071         label_num = label_nums(n);
+0072         label_voxels = labels_img == label_num;
+0073         param_label_voxels = param_img(label_voxels);
+0074         param_values = param_label_voxels(~isnan(param_label_voxels));
+0075         param_values = param_values(param_values &gt; noise_thresh);
+0076         stats(n).label = labels{n}; <span class="comment">%#ok&lt;*AGROW&gt;</span>
+0077         stats(n).num_voxels = numel(param_values);
+0078         stats(n).mean = mean(param_values);
+0079         stats(n).median = median(param_values);
+0080         stats(n).std = std(param_values);
+0081         stats(n).min = min(param_values);
+0082         stats(n).max = max(param_values);
+0083     <span class="keyword">end</span>
+0084     
+0085     <span class="keyword">if</span> nargin &lt; 6
+0086         label_fileID = fopen(label_stats_path, <span class="string">'w'</span>);
+0087         fprintf(label_fileID, <span class="string">'MDEV \n'</span>);
+0088     <span class="keyword">else</span>
+0089         label_fileID = fopen(label_stats_path, <span class="string">'a'</span>);
+0090         fprintf(label_fileID, <span class="string">'%.3d \n'</span>, f);
+0091     <span class="keyword">end</span>
+0092     fprintf(label_fileID, <span class="string">'%s\n'</span>, <span class="string">'Label,NumVoxels,Mean,Median,Std,Min,Max'</span>);
+0093     <span class="keyword">for</span> n = 1:numel(stats)
+0094         <span class="keyword">if</span> stats(n).num_voxels &gt; 0
+0095             fprintf(label_fileID, <span class="string">'%s,%d,%1.3f,%1.3f,%1.3f,%1.3f,%1.3f\n'</span>, stats(n).label, stats(n).num_voxels, stats(n).mean, stats(n).median, stats(n).std, stats(n).min, stats(n).max);
+0096             is_wm = strfind(stats(n).label,WM);
+0097             <span class="keyword">if</span> any(is_wm) &amp;&amp; stats(n).mean &gt; noise_thresh <span class="comment">% if this is white matter and not NaN</span>
+0098                 wm_sum = wm_sum + stats(n).mean;
+0099                 wm_tally = wm_tally + 1;
+0100             <span class="keyword">end</span>
+0101         <span class="keyword">end</span>
+0102     <span class="keyword">end</span>
+0103     <span class="keyword">if</span> nargin &lt; 6
+0104         label_fileID = fopen(wm_path, <span class="string">'w'</span>);
+0105         fprintf(label_fileID, <span class="string">'%s,%1.3f\n'</span>, <span class="string">'ALL'</span>, wm_sum/wm_tally);
+0106     <span class="keyword">else</span>
+0107         label_fileID = fopen(wm_path, <span class="string">'a'</span>);
+0108         fprintf(label_fileID, <span class="string">'%s,%d,%1.3f\n'</span>, num2str(f), wm_tally, wm_sum/wm_tally);
+0109     <span class="keyword">end</span>
+0110     fclose(<span class="string">'all'</span>);
+0111     
+0112  
+0113 <span class="keyword">end</span>
+0114         
+0115         
+0116 
+0117</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

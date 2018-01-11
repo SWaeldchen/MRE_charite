@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_z_xy_noise</title>
+  <meta name="keywords" content="mredge_z_xy_noise">
+  <meta name="description" content="% function mredge_denoise(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_z_xy_noise.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_z_xy_noise
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_denoise(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_z_xy_noise(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_denoise(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Deonise the complex wave field.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="../../MREdge/functions/signal_power.html" class="code" title="function p = signal_power(signal, mask)">signal_power</a>	</li><li><a href="../../MREdge/mredge_compact_laplacian.html" class="code" title="function U_laplacian = mredge_compact_laplacian(U, spacing, lap_dims)">mredge_compact_laplacian</a>	</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_ft_to_end.html" class="code" title="function mredge_ft_to_end(info, prefs)">mredge_ft_to_end</a>	% function [outputs] = mredge_ft_to_end(info, prefs);</li><li><a href="../../MREdge/mredge_ft_to_end_nopar.html" class="code" title="function mredge_ft_to_end_nopar(info, prefs)">mredge_ft_to_end_nopar</a>	% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIRS, STATS_SUB] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_denoise(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Deonise the complex wave field.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% INPUTS:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0016 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% OUTPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   none</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function mredge_z_xy_noise(info, prefs)</a>
+0023 
+0024     [FT_DIRS, STATS_SUB] =<a href="#_sub1" class="code" title="subfunction [FT_DIRS, STATS_SUB] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0025     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0026     z_noise_filepath = fullfile(STATS_SUB, <span class="string">'noise_est_z.csv'</span>);
+0027     xy_noise_filepath = fullfile(STATS_SUB, <span class="string">'noise_est_xy.csv'</span>);
+0028     lap_noise_filepath = fullfile(STATS_SUB, <span class="string">'noise_est_lap.csv'</span>);
+0029     z_noise_ID = fopen(z_noise_filepath, <span class="string">'w'</span>);
+0030     xy_noise_ID = fopen(xy_noise_filepath, <span class="string">'w'</span>);
+0031     lap_noise_ID = fopen(lap_noise_filepath, <span class="string">'w'</span>);
+0032     fprintf(z_noise_ID, <span class="string">'F.C, Z Noise Est \n'</span>);
+0033     fprintf(xy_noise_ID, <span class="string">'F.C, XY Noise Est \n'</span>);
+0034     fprintf(lap_noise_ID, <span class="string">'F.C, Laplacian Noise Est \n'</span>);
+0035     <span class="keyword">for</span> d = 1:numel(FT_DIRS);
+0036         <span class="keyword">for</span> f = info.driving_frequencies
+0037             display([num2str(f), <span class="string">' Hz'</span>]);
+0038             z_noise = zeros(3,1);
+0039             xy_noise = zeros(3,1);
+0040             lap_noise = zeros(3,1);
+0041             <span class="keyword">for</span> c = 1:3
+0042                 display(num2str(c));
+0043                 mask = <a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info, prefs);
+0044                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), <a href="../../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0045                 wavefield_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0046                 wavefield_img = wavefield_vol.img;
+0047                 z_noise(c) = z_noise_est(real(wavefield_img));
+0048                 noise = <a href="../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(wavefield_img, mask);
+0049                 xy_noise(c) = noise ./ <a href="../../MREdge/functions/signal_power.html" class="code" title="function p = signal_power(signal, mask)">signal_power</a>(wavefield_img, mask);
+0050                 lap_noise(c) = noise ./ <a href="../../MREdge/functions/signal_power.html" class="code" title="function p = signal_power(signal, mask)">signal_power</a>(<a href="../../MREdge/mredge_compact_laplacian.html" class="code" title="function U_laplacian = mredge_compact_laplacian(U, spacing, lap_dims)">mredge_compact_laplacian</a>(wavefield_img, [1 1 1], 3), mask);
+0051             <span class="keyword">end</span>
+0052             z_noise_ID = fopen(z_noise_filepath, <span class="string">'a'</span>);
+0053             xy_noise_ID = fopen(xy_noise_filepath, <span class="string">'a'</span>);
+0054             lap_noise_ID = fopen(lap_noise_filepath, <span class="string">'a'</span>);
+0055             fprintf(z_noise_ID, <span class="string">'%d, %1.3f \n'</span>, f, norm(z_noise));
+0056             fprintf(xy_noise_ID, <span class="string">'%d, %1.3f \n'</span>, f, norm(xy_noise));
+0057             fprintf(lap_noise_ID, <span class="string">'%d, %1.3f\n'</span>, f, norm(lap_noise));
+0058             fclose(<span class="string">'all'</span>);
+0059         <span class="keyword">end</span>
+0060     <span class="keyword">end</span>
+0061 <span class="keyword">end</span>
+0062 
+0063 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIRS, STATS_SUB] = set_dirs(info, prefs)</a>
+0064     <span class="keyword">if</span> strcmp(prefs.phase_unwrap, <span class="string">'gradient'</span>) == 1;
+0065         FT_X = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'FT X'</span>);
+0066         FT_Y = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'FT Y'</span>);
+0067         FT_DIRS = cell(2,1);
+0068         FT_DIRS{1} = FT_X;
+0069         FT_DIRS{2} = FT_Y;
+0070     <span class="keyword">else</span>
+0071         FT_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'FT'</span>);
+0072         FT_DIRS = cell(1,1);
+0073         FT_DIRS{1} = FT_SUB;
+0074     <span class="keyword">end</span>
+0075     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0076 <span class="keyword">end</span>
+0077 
+0078</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

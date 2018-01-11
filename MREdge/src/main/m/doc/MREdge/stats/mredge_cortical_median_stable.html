@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_cortical_median_stable</title>
+  <meta name="keywords" content="mredge_cortical_median_stable">
+  <meta name="description" content="% function mredge_cortical_median(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_cortical_median_stable.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_cortical_median_stable
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_cortical_median(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_cortical_median_stable(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_cortical_median(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Using the previously set T2 mask, calculates cortical values for a
+   parameter
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_ft_to_end.html" class="code" title="function mredge_ft_to_end(info, prefs)">mredge_ft_to_end</a>	% function [outputs] = mredge_ft_to_end(info, prefs);</li><li><a href="../../MREdge/mredge_ft_to_end_nopar.html" class="code" title="function mredge_ft_to_end_nopar(info, prefs)">mredge_ft_to_end_nopar</a>	% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function cortex_stable(info, prefs, param)</a></li><li><a href="#_sub2" class="code">function cortex_stable_springpot(info, prefs)</a></li><li><a href="#_sub3" class="code">function cortex_stable_springpot_weighted(info, prefs)</a></li><li><a href="#_sub4" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a></li><li><a href="#_sub5" class="code">function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_cortical_median(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Using the previously set T2 mask, calculates cortical values for a</span>
+0012 <span class="comment">%   parameter</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function mredge_cortical_median_stable(info, prefs)</a>
+0024 
+0025     <span class="keyword">if</span> prefs.outputs.absg == 1
+0026         <a href="#_sub1" class="code" title="subfunction cortex_stable(info, prefs, param)">cortex_stable</a>(info, prefs, <span class="string">'Abs_G'</span>);
+0027     <span class="keyword">end</span>
+0028     <span class="keyword">if</span> prefs.outputs.phi == 1
+0029         <a href="#_sub1" class="code" title="subfunction cortex_stable(info, prefs, param)">cortex_stable</a>(info, prefs, <span class="string">'Phi'</span>);
+0030     <span class="keyword">end</span>
+0031     <span class="keyword">if</span> prefs.outputs.absg == 1 &amp;&amp; prefs.outputs.phi == 1 &amp;&amp; prefs.outputs.springpot == 1
+0032         <a href="#_sub2" class="code" title="subfunction cortex_stable_springpot(info, prefs)">cortex_stable_springpot</a>(info, prefs);
+0033         <a href="#_sub3" class="code" title="subfunction cortex_stable_springpot_weighted(info, prefs)">cortex_stable_springpot_weighted</a>(info, prefs);
+0034     <span class="keyword">end</span>
+0035     <span class="keyword">if</span> prefs.outputs.c == 1
+0036         <a href="#_sub1" class="code" title="subfunction cortex_stable(info, prefs, param)">cortex_stable</a>(info, prefs, <span class="string">'C'</span>);
+0037     <span class="keyword">end</span>
+0038     <span class="keyword">if</span> prefs.outputs.a == 1
+0039         <a href="#_sub1" class="code" title="subfunction cortex_stable(info, prefs, param)">cortex_stable</a>(info, prefs, <span class="string">'A'</span>);
+0040     <span class="keyword">end</span>
+0041 <span class="keyword">end</span>
+0042 
+0043 <a name="_sub1" href="#_subfunctions" class="code">function cortex_stable(info, prefs, param)</a>
+0044 
+0045     display([<span class="string">'Cortical Medians, Stable Inversions '</span>,param]);
+0046 
+0047     [PARAM_SUB, STATS_SUB] = <a href="#_sub4" class="code" title="subfunction [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)">set_dirs</a>(info, prefs, param);
+0048     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0049     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0050     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 1);
+0051     fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'cortex_stable_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'w'</span>);
+0052     fprintf(fileID, <span class="string">'F, Cortical Median \n'</span>);
+0053     fclose(fileID);
+0054     <span class="keyword">for</span> f = 1:numel(stable_frequencies)
+0055         display([num2str(stable_frequencies(f)), <span class="string">'Hz'</span>]);
+0056         param_path_zip = fullfile(PARAM_SUB, stable_filenames{f});
+0057         param_path_unzip = param_path_zip(1:end-3);
+0058         <span class="keyword">if</span> exist(param_path_zip, <span class="string">'file'</span>)
+0059             gunzip(param_path_zip);
+0060         <span class="keyword">end</span>
+0061         param_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(param_path_unzip);
+0062         param_img = param_vol.img;
+0063         cortex_masked = double(mask).*double(param_img);
+0064         cortex_masked(cortex_masked == 0) = nan;
+0065         param_cortex = median(cortex_masked(~isnan(cortex_masked)));
+0066         fileID = fopen(fullfile(STATS_SUB, [ <span class="string">'cortex_stable_'</span>,param,<span class="string">'.csv'</span>]), <span class="string">'a'</span>);
+0067         fprintf(fileID, <span class="string">'%d, %1.4f \n'</span>,stable_frequencies(f), param_cortex);
+0068         fclose(fileID);
+0069     <span class="keyword">end</span>
+0070     fclose(<span class="string">'all'</span>);
+0071 
+0072 <span class="keyword">end</span> 
+0073     
+0074 <a name="_sub2" href="#_subfunctions" class="code">function cortex_stable_springpot(info, prefs)</a>
+0075     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0076 
+0077     disp([<span class="string">'Cortical Medians, Springpot'</span>]);
+0078     MU_FILENAME = [<span class="string">'mu_weighted'</span>, NIF_EXT];
+0079     ALPHA_FILENAME = [<span class="string">'alpha_weighted'</span>,NIF_EXT];
+0080     RSS_FILENAME = [<span class="string">'rss_weighted'</span>,NIF_EXT];
+0081     MU_MIN = 200;
+0082 
+0083     [SPRINGPOT_SUB, STATS_SUB] = <a href="#_sub5" class="code" title="subfunction [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)">set_dirs_springpot</a>(info, prefs);
+0084     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
+0085     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
+0086     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);
+0087     mu_path_unzip = mu_path_zip(1:end-3);
+0088     alpha_path_unzip = alpha_path_zip(1:end-3);
+0089     rss_path_unzip = rss_path_zip(1:end-3);
+0090     <span class="keyword">if</span> exist(mu_path_zip, <span class="string">'file'</span>)
+0091         gunzip(mu_path_zip);
+0092     <span class="keyword">end</span>
+0093     <span class="keyword">if</span> exist(alpha_path_zip, <span class="string">'file'</span>)
+0094         gunzip(alpha_path_zip);
+0095     <span class="keyword">end</span>
+0096     <span class="keyword">if</span> exist(rss_path_zip, <span class="string">'file'</span>)
+0097         gunzip(rss_path_zip);
+0098     <span class="keyword">end</span>
+0099     mu_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(mu_path_unzip);
+0100     mu_img = mu_vol.img;
+0101     alpha_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(alpha_path_unzip);
+0102     alpha_img = alpha_vol.img;    
+0103     rss_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(rss_path_unzip);
+0104     rss_img = rss_vol.img;        
+0105     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0106     mu_masked = double(mask).*double(mu_img);
+0107     alpha_masked = double(mask).*double(alpha_img);
+0108     rss_masked = double(mask).*double(rss_img);
+0109     mu_masked(mu_masked == 0) = nan;
+0110     alpha_masked(alpha_masked == 0) = nan;
+0111     rss_masked(rss_masked == 0) = nan;
+0112     mu_cortex = median(mu_masked(mu_masked &gt; MU_MIN));
+0113     alpha_cortex = median(alpha_masked(~isnan(alpha_masked)));
+0114     rss_cortex = median(rss_masked(~isnan(rss_masked)));
+0115     mu_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_Mu.csv'</span>), <span class="string">'w'</span>);
+0116     alpha_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_Alpha.csv'</span>), <span class="string">'w'</span>);
+0117     rss_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_RSS.csv'</span>), <span class="string">'w'</span>);
+0118     fprintf(mu_ID, <span class="string">'Cortical Median \n'</span>);
+0119     fprintf(mu_ID, <span class="string">'%1.4f \n'</span>, mu_cortex);
+0120     fprintf(alpha_ID, <span class="string">'Cortical Median \n'</span>);
+0121     fprintf(alpha_ID, <span class="string">'%1.4f \n'</span>, alpha_cortex);
+0122     fprintf(rss_ID, <span class="string">'Cortical Median \n'</span>);
+0123     fprintf(rss_ID, <span class="string">'%1.4f \n'</span>, rss_cortex);    
+0124     fclose(<span class="string">'all'</span>);
+0125 
+0126 <span class="keyword">end</span>
+0127 
+0128    
+0129 <a name="_sub3" href="#_subfunctions" class="code">function cortex_stable_springpot_weighted(info, prefs)</a>
+0130 
+0131     display([<span class="string">'Cortical Medians, Springpot'</span>]);
+0132     MU_FILENAME = <span class="string">'mu_weighted.nii.gz'</span>;
+0133     ALPHA_FILENAME = <span class="string">'alpha_weighted.nii.gz'</span>;
+0134     RSS_FILENAME = <span class="string">'rss_weighted.nii.gz'</span>;
+0135     MU_MIN = 200;
+0136 
+0137     [SPRINGPOT_SUB, STATS_SUB] = <a href="#_sub5" class="code" title="subfunction [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)">set_dirs_springpot</a>(info, prefs);
+0138     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0139     mu_path_zip = fullfile(SPRINGPOT_SUB, MU_FILENAME);
+0140     alpha_path_zip = fullfile(SPRINGPOT_SUB, ALPHA_FILENAME);
+0141     rss_path_zip = fullfile(SPRINGPOT_SUB, RSS_FILENAME);
+0142     mu_path_unzip = mu_path_zip(1:end-3);
+0143     alpha_path_unzip = alpha_path_zip(1:end-3);
+0144     rss_path_unzip = rss_path_zip(1:end-3);
+0145     <span class="keyword">if</span> exist(mu_path_zip, <span class="string">'file'</span>)
+0146         gunzip(mu_path_zip);
+0147     <span class="keyword">end</span>
+0148     <span class="keyword">if</span> exist(alpha_path_zip, <span class="string">'file'</span>)
+0149         gunzip(alpha_path_zip);
+0150     <span class="keyword">end</span>
+0151     <span class="keyword">if</span> exist(rss_path_zip, <span class="string">'file'</span>)
+0152         gunzip(rss_path_zip);
+0153     <span class="keyword">end</span>
+0154     mu_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(mu_path_unzip);
+0155     mu_img = mu_vol.img;
+0156     alpha_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(alpha_path_unzip);
+0157     alpha_img = alpha_vol.img;    
+0158     rss_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(rss_path_unzip);
+0159     rss_img = rss_vol.img;        
+0160     mask = double(<a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs));
+0161     mu_masked = double(mask).*double(mu_img);
+0162     alpha_masked = double(mask).*double(alpha_img);
+0163     rss_masked = double(mask).*double(rss_img);
+0164     mu_masked(mu_masked == 0) = nan;
+0165     alpha_masked(alpha_masked == 0) = nan;
+0166     rss_masked(rss_masked == 0) = nan;
+0167     mu_cortex = median(mu_masked(mu_masked &gt; MU_MIN));
+0168     alpha_cortex = median(alpha_masked(~isnan(alpha_masked)));
+0169     rss_cortex = median(rss_masked(~isnan(rss_masked)));
+0170     mu_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_Mu.csv'</span>), <span class="string">'w'</span>);
+0171     alpha_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_Alpha.csv'</span>), <span class="string">'w'</span>);
+0172     rss_ID = fopen(fullfile(STATS_SUB, <span class="string">'cortex_stable_RSS.csv'</span>), <span class="string">'w'</span>);
+0173     fprintf(mu_ID, <span class="string">'Cortical Median \n'</span>);
+0174     fprintf(mu_ID, <span class="string">'%1.4f \n'</span>, mu_cortex);
+0175     fprintf(alpha_ID, <span class="string">'Cortical Median \n'</span>);
+0176     fprintf(alpha_ID, <span class="string">'%1.4f \n'</span>, alpha_cortex);
+0177     fprintf(rss_ID, <span class="string">'Cortical Median \n'</span>);
+0178     fprintf(rss_ID, <span class="string">'%1.4f \n'</span>, rss_cortex);    
+0179     fclose(<span class="string">'all'</span>);
+0180 
+0181 <span class="keyword">end</span>
+0182 
+0183 <a name="_sub4" href="#_subfunctions" class="code">function [PARAM_SUB, STATS_SUB] = set_dirs(info, prefs, param)</a>
+0184 
+0185     PARAM_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0186     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0187     
+0188 <span class="keyword">end</span>
+0189 
+0190 <a name="_sub5" href="#_subfunctions" class="code">function [SPRINGPOT_SUB, STATS_SUB] = set_dirs_springpot(info, prefs)</a>
+0191 
+0192     SPRINGPOT_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Springpot'</span>);
+0193     STATS_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0194 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

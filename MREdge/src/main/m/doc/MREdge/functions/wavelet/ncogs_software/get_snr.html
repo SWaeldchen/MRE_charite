@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of get_snr</title>
+  <meta name="keywords" content="get_snr">
+  <meta name="description" content="SNR = get_snr(x, y)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; get_snr.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>get_snr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>SNR = get_snr(x, y)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function SNR = get_snr(x, y) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SNR = get_snr(x, y)
+ Signal to noise ratio
+
+ INPUT
+    x: clean signal
+    y: estimate
+
+ OUTPUT       
+    SNR (dB)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="Example1.html" class="code" title="">Example1</a>	% Group-sparse denoising by non-convex regularization: 1D example</li><li><a href="Example2.html" class="code" title="">Example2</a>	% Group-sparse denoising by non-convex regularization: Speech denoising</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SNR = get_snr(x, y)</a>
+0002 <span class="comment">% SNR = get_snr(x, y)</span>
+0003 <span class="comment">% Signal to noise ratio</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%    x: clean signal</span>
+0007 <span class="comment">%    y: estimate</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUT</span>
+0010 <span class="comment">%    SNR (dB)</span>
+0011 
+0012 x = x(:);
+0013 y = y(:);
+0014 
+0015 SNR = 10 * log10(sum(abs(x).^2)/sum(abs(x-y).^2));</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

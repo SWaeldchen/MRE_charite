@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dwt3D_u</title>
+  <meta name="keywords" content="dwt3D_u">
+  <meta name="description" content="3-D Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; dwt3D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dwt3D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>3-D Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w = dwt3D_u(x, J, af) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 3-D Discrete Wavelet Transform
+
+ USAGE:
+   w = dwt3D(x, stages, af)
+ INPUT:
+   x - N1 by N2 by N3 matrix
+       1) Ni all even
+       2) min(Ni) &gt;= 2^(J-1)*length(af)
+   J - number of stages
+   af  - analysis filters
+ OUTPUT:
+   w - cell array of wavelet coefficients
+ EXAMPLE:
+   [af, sf] = farras;
+   x = rand(128,64,64);
+   w = dwt3D(x,3,af);
+   y = idwt3D(w,3,sf);
+   err = x-y; 
+   max(max(max(abs(err))))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li><li><a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="wavelet_gradients_stationary.html" class="code" title="function [u_x, u_y, u_z] = wavelet_gradients_stationary(U, J, spacing)">wavelet_gradients_stationary</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = dwt3D_u(x, J, af)</a>
+0002 
+0003 <span class="comment">% 3-D Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   w = dwt3D(x, stages, af)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - N1 by N2 by N3 matrix</span>
+0009 <span class="comment">%       1) Ni all even</span>
+0010 <span class="comment">%       2) min(Ni) &gt;= 2^(J-1)*length(af)</span>
+0011 <span class="comment">%   J - number of stages</span>
+0012 <span class="comment">%   af  - analysis filters</span>
+0013 <span class="comment">% OUTPUT:</span>
+0014 <span class="comment">%   w - cell array of wavelet coefficients</span>
+0015 <span class="comment">% EXAMPLE:</span>
+0016 <span class="comment">%   [af, sf] = farras;</span>
+0017 <span class="comment">%   x = rand(128,64,64);</span>
+0018 <span class="comment">%   w = dwt3D(x,3,af);</span>
+0019 <span class="comment">%   y = idwt3D(w,3,sf);</span>
+0020 <span class="comment">%   err = x-y;</span>
+0021 <span class="comment">%   max(max(max(abs(err))))</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0024 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0025 
+0026 <span class="keyword">for</span> j = 1:J
+0027     [x w{j}] = <a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>(x, j, af, af, af);
+0028 <span class="keyword">end</span>
+0029 w{J+1} = x;
+0030</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

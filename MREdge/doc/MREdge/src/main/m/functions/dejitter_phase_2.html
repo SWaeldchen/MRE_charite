@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dejitter_phase_2</title>
+  <meta name="keywords" content="dejitter_phase_2">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">functions</a> &gt; dejitter_phase_2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/functions&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dejitter_phase_2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function [s_d, stats] = dejitter_phase_2(s, NORM, TOTAL_SHIFTS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="iscomplex.html" class="code" title="function y = iscomplex(x)">iscomplex</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/src/main/m/mredge_slice_align.html" class="code" title="function mredge_slice_align(info, prefs)">mredge_slice_align</a>	Dejitters slices using adaptation of Nikolova et al 2001 dejitter algorithm</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [s_d, norms, distances] = dejitter_vol(s, TOTAL_SHIFTS, NORM)</a></li><li><a href="#_sub2" class="code">function [slice_d, mn, dist] = dejitter_slice(next_slice, current_slice, prev_slice, TOTAL_SHIFTS, NORM)</a></li><li><a href="#_sub3" class="code">function [s2_d, mn, dist] = dejitter_second_slice(s1, s2, TOTAL_SHIFTS, NORM)</a></li><li><a href="#_sub4" class="code">function shifted_slices = get_slice_phase_shifts(slice, TOTAL_SHIFTS)</a></li><li><a href="#_sub5" class="code">function norms = get_phase_shift_norms(shifted_next_slices, curr_slice, prev_slice, TOTAL_SHIFTS, NORM)</a></li><li><a href="#_sub6" class="code">function norms = get_phase_shift_norms_firstord(shifted_next_slices, curr_slice, TOTAL_SHIFTS, NORM)</a></li><li><a href="#_sub7" class="code">function d = get_distance(ind, TOTAL_SHIFTS)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [s_d, stats] = dejitter_phase_2(s, NORM, TOTAL_SHIFTS)</a>
+0002 
+0003     <span class="keyword">if</span> ~<a href="iscomplex.html" class="code" title="function y = iscomplex(x)">iscomplex</a>(s)
+0004         disp(<span class="string">'This method is for complex data'</span>)
+0005         <span class="keyword">return</span>
+0006     <span class="keyword">end</span>
+0007     
+0008     <span class="comment">% set constants</span>
+0009     <span class="keyword">if</span> nargin &lt; 3
+0010         TOTAL_SHIFTS = 256;
+0011         <span class="keyword">if</span> nargin &lt; 2
+0012          NORM = 2;
+0013         <span class="keyword">end</span>
+0014     <span class="keyword">end</span>
+0015                 
+0016     szs = size(s);
+0017     <span class="comment">% reshape Nd to 4d</span>
+0018     num_vols = prod(szs(4:end));
+0019     s_resh = reshape(s, [szs(1) szs(2) szs(3) num_vols]);
+0020     <span class="comment">% make struct for stats</span>
+0021     num_slices = szs(3);
+0022     stats.norms = zeros(num_slices - 1, num_vols);
+0023     stats.distances = zeros(num_slices - 1, num_vols);
+0024     <span class="comment">% dejitter each volume</span>
+0025     <span class="keyword">for</span> n = 1:num_vols
+0026         [s_resh(:,:,:,n), stats.norms(:,n), stats.distances(:,n)] = <a href="#_sub1" class="code" title="subfunction [s_d, norms, distances] = dejitter_vol(s, TOTAL_SHIFTS, NORM)">dejitter_vol</a>(s(:,:,:,n), TOTAL_SHIFTS, NORM);
+0027     <span class="keyword">end</span>
+0028     <span class="comment">% restore original dimensions</span>
+0029     s_d = reshape(s_resh, szs);
+0030 <span class="keyword">end</span>
+0031 
+0032 <a name="_sub1" href="#_subfunctions" class="code">function [s_d, norms, distances] = dejitter_vol(s, TOTAL_SHIFTS, NORM)</a>
+0033     szs = size(s);
+0034     num_slices = szs(3);
+0035     <span class="comment">% stats</span>
+0036     norms = zeros(num_slices - 1, 1);
+0037     distances = zeros(num_slices - 1, 1);
+0038     <span class="comment">% accept first slice</span>
+0039     s_d(:,:,1) = s(:,:,1);
+0040     <span class="comment">% second slice is first order</span>
+0041     [s_d(:,:,2), norms(1), distances(1)] = <a href="#_sub3" class="code" title="subfunction [s2_d, mn, dist] = dejitter_second_slice(s1, s2, TOTAL_SHIFTS, NORM)">dejitter_second_slice</a>(s(:,:,1), s(:,:,2), TOTAL_SHIFTS, NORM); <span class="comment">% linear for second slice</span>
+0042     <span class="comment">% march through remaining slices</span>
+0043     <span class="keyword">for</span> n = 3:num_slices
+0044         next_slice = s(:,:,n);
+0045         current_slice = s_d(:,:,n-1);
+0046         prev_slice = s_d(:,:,n-2);
+0047         [s_d(:,:,n), norms(n-1), distances(n-1)] = <a href="#_sub2" class="code" title="subfunction [slice_d, mn, dist] = dejitter_slice(next_slice, current_slice, prev_slice, TOTAL_SHIFTS, NORM)">dejitter_slice</a>(next_slice, current_slice, prev_slice, TOTAL_SHIFTS, NORM);
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050    
+0051 <a name="_sub2" href="#_subfunctions" class="code">function [slice_d, mn, dist] = dejitter_slice(next_slice, current_slice, prev_slice, TOTAL_SHIFTS, NORM)</a>
+0052     shifted_next_slices = <a href="#_sub4" class="code" title="subfunction shifted_slices = get_slice_phase_shifts(slice, TOTAL_SHIFTS)">get_slice_phase_shifts</a>(next_slice, TOTAL_SHIFTS);
+0053     norms = <a href="#_sub5" class="code" title="subfunction norms = get_phase_shift_norms(shifted_next_slices, curr_slice, prev_slice, TOTAL_SHIFTS, NORM)">get_phase_shift_norms</a>(shifted_next_slices, current_slice, prev_slice, TOTAL_SHIFTS, NORM);
+0054     [mn, ind] = min(norms);
+0055     slice_d = shifted_next_slices(:,:,ind);
+0056     dist = <a href="#_sub7" class="code" title="subfunction d = get_distance(ind, TOTAL_SHIFTS)">get_distance</a>(ind, TOTAL_SHIFTS);
+0057 <span class="keyword">end</span>
+0058 
+0059 <a name="_sub3" href="#_subfunctions" class="code">function [s2_d, mn, dist] = dejitter_second_slice(s1, s2, TOTAL_SHIFTS, NORM)</a>
+0060     shifted_next_slices = <a href="#_sub4" class="code" title="subfunction shifted_slices = get_slice_phase_shifts(slice, TOTAL_SHIFTS)">get_slice_phase_shifts</a>(s2, TOTAL_SHIFTS);
+0061     norms = <a href="#_sub6" class="code" title="subfunction norms = get_phase_shift_norms_firstord(shifted_next_slices, curr_slice, TOTAL_SHIFTS, NORM)">get_phase_shift_norms_firstord</a>(shifted_next_slices, s1, TOTAL_SHIFTS, NORM);
+0062     [mn, ind] = min(norms);
+0063     s2_d = shifted_next_slices(:,:,ind);
+0064     dist = <a href="#_sub7" class="code" title="subfunction d = get_distance(ind, TOTAL_SHIFTS)">get_distance</a>(ind, TOTAL_SHIFTS);
+0065 <span class="keyword">end</span>
+0066 
+0067 <a name="_sub4" href="#_subfunctions" class="code">function shifted_slices = get_slice_phase_shifts(slice, TOTAL_SHIFTS)</a>
+0068     szs = size(slice);
+0069     shifted_slices = zeros(szs(1), szs(2), TOTAL_SHIFTS);
+0070     <span class="keyword">for</span> n = 1:TOTAL_SHIFTS
+0071         shifted_slices(:,:,n) = slice * exp(-2*pi*1i*(n-1)/TOTAL_SHIFTS);
+0072     <span class="keyword">end</span>
+0073 <span class="keyword">end</span>
+0074 
+0075 <a name="_sub5" href="#_subfunctions" class="code">function norms = get_phase_shift_norms(shifted_next_slices, curr_slice, prev_slice, TOTAL_SHIFTS, NORM)</a>
+0076     norms = zeros(TOTAL_SHIFTS, 1);
+0077     <span class="keyword">for</span> n = 1 : TOTAL_SHIFTS
+0078         <span class="comment">% phase arithmetic</span>
+0079         second_order_diff = angle( (shifted_next_slices(:,:,n) ./ curr_slice) .* (prev_slice ./ curr_slice) );
+0080         norms(n) = norm(second_order_diff(:), NORM);
+0081     <span class="keyword">end</span>
+0082 <span class="keyword">end</span>
+0083 
+0084 <a name="_sub6" href="#_subfunctions" class="code">function norms = get_phase_shift_norms_firstord(shifted_next_slices, curr_slice, TOTAL_SHIFTS, NORM)</a>
+0085     norms = zeros(TOTAL_SHIFTS, 1);
+0086     <span class="keyword">for</span> n = 1 : TOTAL_SHIFTS
+0087         <span class="comment">% phase arithmetic</span>
+0088         first_order_diff = angle(shifted_next_slices(:,:,n) ./ curr_slice);
+0089         norms(n) = norm(first_order_diff(:), NORM);
+0090     <span class="keyword">end</span>
+0091 <span class="keyword">end</span>
+0092 
+0093 <a name="_sub7" href="#_subfunctions" class="code">function d = get_distance(ind, TOTAL_SHIFTS)</a>
+0094     d_phase = 2*pi* (ind-1) / TOTAL_SHIFTS;
+0095     d = min(d_phase, 2*pi - d_phase);
+0096     <span class="keyword">if</span> d ~= d_phase
+0097         d = -d;
+0098     <span class="keyword">end</span>
+0099 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:20:49 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

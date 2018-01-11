@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_analysis_path</title>
+  <meta name="keywords" content="mredge_analysis_path">
+  <meta name="description" content="Generates uniform analysis folder path names">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_analysis_path.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_analysis_path
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Generates uniform analysis folder path names</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function path = mredge_analysis_path(info, prefs, subdir) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Generates uniform analysis folder path names
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   subdir - name of analysis parameter
+
+ OUTPUTS:
+
+   none
+
+ SEE ALSO:
+
+   <a href="mredge_create_analysis_folder.html" class="code" title="function mredge_create_analysis_folder(info, prefs)">mredge_create_analysis_folder</a>
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_combine_ft.html" class="code" title="function mredge_combine_ft(info, prefs)">mredge_combine_ft</a>	Combines real and imaginary parts of complex wave field. Needed for FSL FT distortion correction.</li><li><a href="mredge_create_analysis_folder.html" class="code" title="function mredge_create_analysis_folder(info, prefs)">mredge_create_analysis_folder</a>	If analysis folder does not exist, create it.</li><li><a href="mredge_fd_import.html" class="code" title="function mredge_fd_import(info)">mredge_fd_import</a>	</li><li><a href="mredge_load_FT_as_5d.html" class="code" title="function data_5d = mredge_load_FT_as_5d (info, prefs)">mredge_load_FT_as_5d</a>	Load Fourier-transformed wavefield into MATLAB.</li><li><a href="mredge_load_amplitudes.html" class="code" title="function amplitudes = mredge_load_amplitudes(info, prefs)">mredge_load_amplitudes</a>	Load amplitude maps into MATLAB.</li><li><a href="mredge_load_elastograms.html" class="code" title="function elastograms = mredge_load_elastograms(info, prefs)">mredge_load_elastograms</a>	Load elastograms into MATLAB.</li><li><a href="mredge_organize_acquisition_octave.html" class="code" title="function mredge_organize_acquisition_octave(info, prefs)">mredge_organize_acquisition_octave</a>	% function mredge_organize_acquisition_octave(info)</li><li><a href="mredge_sort_time_steps.html" class="code" title="function mredge_sort_time_steps(info, prefs)">mredge_sort_time_steps</a>	</li><li><a href="mredge_split_ft.html" class="code" title="function mredge_split_ft(info, prefs)">mredge_split_ft</a>	Splits the FT images into real and imaginary parts. Needed for FSL FT distortion correction.</li><li><a href="../../MREdge/functions/loop_over_freqs_and_components_4d_nii.html" class="code" title="function [] = loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)">loop_over_freqs_and_components_4d_nii</a>	loop_over_freqs_and_components_4d_nii(info, prefs, fun, IN_DIR_descr, OUT_DIR_descr)</li><li><a href="../../MREdge/mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li><li><a href="../../MREdge/mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>	Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</li><li><a href="../../MREdge/mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>	Applies highpass and lowpass butterworth filters if they are set in prefs</li><li><a href="../../MREdge/mredge_curl.html" class="code" title="function mredge_curl(info, prefs)">mredge_curl</a>	% function mredge_curl(info, prefs);</li><li><a href="../../MREdge/mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>	Denoise Fourier-transformed wavefield.</li><li><a href="../../MREdge/mredge_denoise_nopar.html" class="code" title="function mredge_denoise_nopar(info, prefs)">mredge_denoise_nopar</a>	% function mredge_denoise_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>	Correct distortion, applied to the Fourier-transformed wavefield.</li><li><a href="../../MREdge/mredge_ft2double.html" class="code" title="function mredge_ft2double(info,prefs)">mredge_ft2double</a>	% function mredge_ft2double(info,prefs);</li><li><a href="../../MREdge/mredge_invert_to_end.html" class="code" title="function mredge_invert_to_end(info, prefs)">mredge_invert_to_end</a>	</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li><li><a href="../../MREdge/mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>	Performs motion correction using SPM. Requires SPM 12.</li><li><a href="../../MREdge/mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li><li><a href="../../MREdge/mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>	Numerical divergence removal of the wave field</li><li><a href="../../MREdge/mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>	Removes interslice phase discontinuities.</li><li><a href="../../MREdge/mredge_save_as_param.html" class="code" title="function mredge_save_as_param (info, prefs, param_name, data, nifti_placeholder)">mredge_save_as_param</a>	</li><li><a href="../../MREdge/mredge_slice_align.html" class="code" title="function mredge_slice_align(info, prefs)">mredge_slice_align</a>	Dejitters slices using adaptation of Nikolova et al 2001 dejitter algorithm</li><li><a href="../../MREdge/mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>	Temporally Fourier-transforms the complex wave field.</li><li><a href="../../MREdge/mredge_zden.html" class="code" title="function mredge_zden(info, prefs)">mredge_zden</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/neuro/mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>	Co-registers magnitude image to MNI space. The deformation map is then used to co-register all elasticity maps.</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>	Coregisters a parameter map to MNI space using the deformation map from the averaged magnitude.</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni_sliding.html" class="code" title="function mredge_coreg_param_to_mni_sliding(info_an, prefs, param)">mredge_coreg_param_to_mni_sliding</a>	% function coreg_param_to_mni_sliding(info, param)</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni_springpot.html" class="code" title="function mredge_coreg_param_to_mni_springpot(info, prefs)">mredge_coreg_param_to_mni_springpot</a>	% function coreg_param_to_mni_springpot(info, param)</li><li><a href="../../MREdge/neuro/mredge_coreg_param_to_mni_stable.html" class="code" title="function mredge_coreg_param_to_mni_stable(info_mag, info_an, prefs, param)">mredge_coreg_param_to_mni_stable</a>	% function coreg_param_to_mni_stable(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map.html" class="code" title="function mredge_label_param_map(info, prefs, param, freq_indices)">mredge_label_param_map</a>	Labels paramater map results and produces statistics for brain anatomical regions.</li><li><a href="../../MREdge/neuro/mredge_label_param_map_sliding.html" class="code" title="function mredge_label_param_map_sliding(info_an, prefs, param)">mredge_label_param_map_sliding</a>	% function stats = mredge_label_param_map_sliding(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map_springpot.html" class="code" title="function mredge_label_param_map_springpot(info, prefs)">mredge_label_param_map_springpot</a>	% function stats = mredge_label_param_map(info, param)</li><li><a href="../../MREdge/neuro/mredge_label_param_map_stable.html" class="code" title="function mredge_label_param_map_stable(info_mag, info_an, prefs, param)">mredge_label_param_map_stable</a>	% function stats = mredge_label_param_map_stable(info, param)</li><li><a href="../../MREdge/neuro/mredge_labels_to_mni_space.html" class="code" title="function mredge_label_to_mni_space(info, prefs, param)">mredge_labels_to_mni_space</a>	% function mredge_labels_to_mni_space(info, param)</li><li><a href="../../MREdge/neuro/mredge_mni_labels_to_native_space.html" class="code" title="function mredge_mni_labels_to_native_space(info, prefs, param)">mredge_mni_labels_to_native_space</a>	% function mni_labels_to_native_space(info, param)</li><li><a href="../../MREdge/neuro/mredge_mni_to_label_space.html" class="code" title="function mredge_mni_to_label_space(info, prefs, param, freq_indices)">mredge_mni_to_label_space</a>	Transforms MNI space results to SPM label space</li><li><a href="../../MREdge/neuro/mredge_mni_to_label_space_sliding.html" class="code" title="function mredge_mni_to_label_space_sliding(info_an, prefs, param)">mredge_mni_to_label_space_sliding</a>	% function mredge_mni_to_label_space_sliding(info, param)</li><li><a href="../../MREdge/neuro/mredge_mni_to_label_space_springpot.html" class="code" title="function mredge_mni_to_label_space_springpot(info, prefs)">mredge_mni_to_label_space_springpot</a>	% function mredge_mni_to_label_space(info, param)</li><li><a href="../../MREdge/neuro/mredge_mni_to_label_space_stable.html" class="code" title="function mredge_mni_to_label_space_stable(info_mag, info_an, prefs, param)">mredge_mni_to_label_space_stable</a>	% function mredge_mni_to_label_space_stable(info, param)</li><li><a href="../../MREdge/stats/mredge_amp_wave_snr.html" class="code" title="function mredge_amp_wave_snr(info, prefs)">mredge_amp_wave_snr</a>	% function mredge_amp_guided_wave_to_noise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>	Creates summed amplitude images</li><li><a href="../../MREdge/stats/mredge_amplitudes_sliding.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_amplitudes_sliding(info, prefs)">mredge_amplitudes_sliding</a>	% function mredge_stable_amplitudes(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_average.html" class="code" title="function mredge_cortical_average(info, prefs)">mredge_cortical_average</a>	% function mredge_cortical_average(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_median.html" class="code" title="function mredge_cortical_median(info, prefs)">mredge_cortical_median</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_cortical_median_stable.html" class="code" title="function mredge_cortical_median_stable(info, prefs)">mredge_cortical_median_stable</a>	% function mredge_cortical_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_displacement_snr.html" class="code" title="function mredge_displacement_snr(info, prefs)">mredge_displacement_snr</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_displacement_snr_stable.html" class="code" title="function mredge_displacement_snr_stable(info, prefs)">mredge_displacement_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_laplacian_snr.html" class="code" title="function mredge_laplacian_snr(info, prefs, label)">mredge_laplacian_snr</a>	% function mredge_laplacian_snr(info, prefs)</li><li><a href="../../MREdge/stats/mredge_laplacian_snr_stable.html" class="code" title="function mredge_laplacian_snr_stable(info, prefs)">mredge_laplacian_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>	Returns median of masked values for a parameter map</li><li><a href="../../MREdge/stats/mredge_oss.html" class="code" title="function mredge_oss(info, prefs, label)">mredge_oss</a>	% function mredge_oss(info, prefs);</li><li><a href="../../MREdge/stats/mredge_psf.html" class="code" title="function mredge_psf(info, prefs)">mredge_psf</a>	% function mredge_psf(info);</li><li><a href="../../MREdge/stats/mredge_rer.html" class="code" title="function mredge_rer(info, prefs)">mredge_rer</a>	% function mredge_rer(info, prefs);</li><li><a href="../../MREdge/stats/mredge_snr.html" class="code" title="function mredge_snr(info, prefs)">mredge_snr</a>	Calculates SNR maps and records SNR values in stats folder.</li><li><a href="../../MREdge/stats/mredge_snr_stable.html" class="code" title="function mredge_snr_stable(info, prefs)">mredge_snr_stable</a>	% function mredge_laplacian_snr_stable(info, prefs)</li><li><a href="../../MREdge/stats/mredge_springpot.html" class="code" title="function mredge_springpot(info, prefs)">mredge_springpot</a>	% function mredge_springpot(info, prefs);</li><li><a href="../../MREdge/stats/mredge_springpot_stable.html" class="code" title="function mredge_springpot_stable(info, prefs)">mredge_springpot_stable</a>	% function mredge_springpot_stable(info, prefs);</li><li><a href="../../MREdge/stats/mredge_springpot_stable_weighted.html" class="code" title="function mredge_springpot_stable_weighted(info, prefs)">mredge_springpot_stable_weighted</a>	% function mredge_springpot_stable_weighted(info, prefs);</li><li><a href="../../MREdge/stats/mredge_stable_amplitudes.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_stable_amplitudes(info, prefs)">mredge_stable_amplitudes</a>	% function mredge_stable_amplitudes(info, prefs);</li><li><a href="../../MREdge/stats/mredge_whole_brain_median.html" class="code" title="function mredge_whole_brain_median(info, prefs)">mredge_whole_brain_median</a>	% function mredge_whole_brain_median(info, prefs);</li><li><a href="../../MREdge/stats/mredge_z_discontinuities.html" class="code" title="function mredge_z_discontinuities(info, prefs)">mredge_z_discontinuities</a>	% function mredge_denoise(info, prefs);</li><li><a href="../../MREdge/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function path = mredge_analysis_path(info, prefs, subdir)</a>
+0002 <span class="comment">% Generates uniform analysis folder path names</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0007 <span class="comment">%   subdir - name of analysis parameter</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SEE ALSO:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   mredge_create_analysis_folder</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Part of the MREdge software package</span>
+0018 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0019 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0020 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0021 <span class="comment">%</span>
+0022 <span class="keyword">if</span> numel(prefs.analysis_descriptor) &gt; 0
+0023     prefs.analysis_descriptor = [<span class="string">'_'</span>, prefs.analysis_descriptor];
+0024 <span class="keyword">end</span>
+0025 <span class="keyword">if</span> nargin &lt; 3
+0026     path = fullfile(info.path, [<span class="string">'AN_'</span>, sprintf(<span class="string">'%.3d'</span>, prefs.analysis_number), sprintf(<span class="string">'%s'</span>, prefs.analysis_descriptor)]);
+0027 <span class="keyword">else</span>
+0028     path = fullfile(info.path, [<span class="string">'AN_'</span>, sprintf(<span class="string">'%.3d'</span>, prefs.analysis_number), sprintf(<span class="string">'%s'</span>, prefs.analysis_descriptor)], subdir);
+0029 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

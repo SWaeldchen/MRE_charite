@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_springpot_stable_weighted</title>
+  <meta name="keywords" content="mredge_springpot_stable_weighted">
+  <meta name="description" content="% function mredge_springpot_stable_weighted(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">stats</a> &gt; mredge_springpot_stable_weighted.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/stats&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_springpot_stable_weighted
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_springpot_stable_weighted(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_springpot_stable_weighted(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_springpot_stable_weighted(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   voxel-wise springpot fit, stabilizing each inversion by combining 3
+   frequencies
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_ft_to_end.html" class="code" title="function mredge_ft_to_end(info, prefs)">mredge_ft_to_end</a>	% function [outputs] = mredge_ft_to_end(info, prefs);</li><li><a href="../../MREdge/mredge_ft_to_end_nopar.html" class="code" title="function mredge_ft_to_end_nopar(info, prefs)">mredge_ft_to_end_nopar</a>	% function [outputs] = mredge_ft_to_end_nopar(info, prefs);</li><li><a href="../../MREdge/mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [ABSG_SUB, PHI_SUB, SPRINGPOT_SUB, AMP_SUB] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_springpot_stable_weighted(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   voxel-wise springpot fit, stabilizing each inversion by combining 3</span>
+0012 <span class="comment">%   frequencies</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0017 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUTS:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   none</span>
+0022 
+0023 <a name="_sub0" href="#_subfunctions" class="code">function mredge_springpot_stable_weighted(info, prefs)</a>
+0024 
+0025     tic
+0026     display(<span class="string">'Calculating Springpot Fit (Least-Squares Method, Stable Inversions, Amplitude Weighted)'</span>);
+0027     [ABSG_SUB, PHI_SUB, SPRINGPOT_SUB, AMP_SUB] = <a href="#_sub1" class="code" title="subfunction [ABSG_SUB, PHI_SUB, SPRINGPOT_SUB, AMP_SUB] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0028     <span class="keyword">if</span> ~exist(SPRINGPOT_SUB, <span class="string">'dir'</span>)
+0029         mkdir(SPRINGPOT_SUB);
+0030     <span class="keyword">end</span>
+0031     NIF_EXT = <span class="string">'.nii.gz'</span>;
+0032     BRAIN_ETA = 3.7;
+0033 
+0034     [stable_filenames, stable_frequencies] = mredge_stable_inversions(info, prefs, 1);
+0035     df = stable_frequencies;
+0036     nf = numel(df);
+0037     wvec = 2*pi*df;
+0038     absg_images = cell(numel(df), 1);
+0039     phi_images = cell(numel(df), 1);
+0040     amp_images = cell(numel(df), 1);
+0041     <span class="keyword">for</span> f_num = 1:nf
+0042         absg_path = fullfile(ABSG_SUB, stable_filenames{f_num});
+0043         absg_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(absg_path);
+0044         absg_images{f_num} = absg_vol.img; 
+0045     <span class="keyword">end</span>
+0046     <span class="keyword">for</span> f_num = 1:nf
+0047         phi_path = fullfile(PHI_SUB, stable_filenames{f_num});
+0048         phi_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(phi_path);
+0049         phi_images{f_num} = phi_vol.img; 
+0050     <span class="keyword">end</span>
+0051     <span class="keyword">for</span> f_num = 1:nf
+0052         amp_path = fullfile(AMP_SUB, stable_filenames{f_num});
+0053         amp_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(amp_path);
+0054         amp_images{f_num} = amp_vol.img; 
+0055     <span class="keyword">end</span>
+0056     sz = size(absg_images{1});
+0057     image_block = zeros(sz(1), sz(2), sz(3), nf);
+0058     weights_block = zeros(sz(1), sz(2), sz(3), nf);
+0059     <span class="keyword">for</span> n = 1:nf
+0060         absg_image = absg_images{n};
+0061         phi_image = phi_images{n};
+0062         <span class="comment">% MEDIAN FILTER</span>
+0063         <span class="comment">%absg_image = medfilt3(absg_image, [5 5 5]);</span>
+0064         <span class="comment">%phi_image = medfilt3(phi_image, [5 5 5]);</span>
+0065         image_block(:,:,:,n) = absg_image.*cos(phi_image) + 1i*absg_image.*sin(phi_image); <span class="comment">% REAL IMAG</span>
+0066         weights_block(:,:,:,n) = amp_images{n};
+0067     <span class="keyword">end</span>
+0068     image_block = reshape(image_block, sz(1)*sz(2)*sz(3), nf);
+0069     weights_block = reshape(weights_block, sz(1)*sz(2)*sz(3), nf);
+0070     sz_vec = size(image_block);
+0071     mu = zeros(sz_vec(1),1);
+0072     alpha = zeros(sz_vec(1),1);
+0073     rss = zeros(sz_vec(1),1);
+0074     mask = <a href="../../MREdge/mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info,prefs);
+0075     mask = mask(:);
+0076     
+0077     parfor i = 1:sz_vec(1)
+0078         <span class="keyword">if</span> mask(i) == 1
+0079             Gvec = permute(squeeze(image_block(i,:)), [2 1]);
+0080             weights_vec = permute(squeeze(weights_block(i,:)), [2 1]);
+0081             <span class="comment">% normalize weights</span>
+0082             weights_vec = ( weights_vec - min(weights_vec) ) ./ ( max(weights_vec) - min(weights_vec) );
+0083             [mu_vox, alpha_vox, rss_vox] = bruteforce_springpot_fit_weighted(wvec, Gvec, weights_vec, BRAIN_ETA);
+0084             mu(i) = mu_vox;
+0085             alpha(i) = alpha_vox;
+0086             rss(i) = rss_vox;
+0087         <span class="keyword">end</span>
+0088     <span class="keyword">end</span>
+0089     
+0090     mu_vol = absg_vol;
+0091     mu_vol.img = reshape(mu, sz(1), sz(2), sz(3));
+0092     save_untouch_nii(mu_vol, fullfile(SPRINGPOT_SUB, <span class="string">'mu_weighted.nii.gz'</span>));
+0093     
+0094     alpha_vol = absg_vol;
+0095     alpha_vol.img = reshape(alpha, sz(1), sz(2), sz(3));
+0096     save_untouch_nii(alpha_vol, fullfile(SPRINGPOT_SUB, <span class="string">'alpha_weighted.nii.gz'</span>));
+0097     
+0098     rss_vol = absg_vol;
+0099     rss_vol.img = reshape(rss, sz(1), sz(2), sz(3));
+0100     save_untouch_nii(rss_vol, fullfile(SPRINGPOT_SUB, <span class="string">'rss_weighted.nii.gz'</span>));
+0101     toc           
+0102 <span class="keyword">end</span>
+0103 
+0104 <a name="_sub1" href="#_subfunctions" class="code">function [ABSG_SUB, PHI_SUB, SPRINGPOT_SUB, AMP_SUB] = set_dirs(info, prefs)</a>
+0105     ABSG_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Abs_G'</span>);
+0106     PHI_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Phi'</span>);
+0107     SPRINGPOT_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Springpot'</span>);
+0108     AMP_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Amp'</span>);
+0109 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

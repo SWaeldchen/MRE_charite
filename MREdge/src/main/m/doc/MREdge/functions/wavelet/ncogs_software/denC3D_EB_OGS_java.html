@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of denC3D_EB_OGS_java</title>
+  <meta name="keywords" content="denC3D_EB_OGS_java">
+  <meta name="description" content="% Example">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; denC3D_EB_OGS_java.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>denC3D_EB_OGS_java
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% Example</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = denC3D_EB_OGS_java(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> % Example
+ s1 = double(imread('st.tif'));
+ s = s1(:,:,3);
+ x = s + 20*randn(size(s));
+ lam = 40;
+ y = denC2D(x,T);
+ imagesc(y)
+ colormap(gray)
+ axis image
+ sqrt(mean(mean((y-s).^2)))</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>	Inverse 3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="ogs3_java.html" class="code" title="function [x, cost] = ogs3_java(y, K, lam, pen, rho, Nit, OGSI)">ogs3_java</a>	[x, cost] = ogs3(y, K, lam, pen, rho, Nit)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = denC3D_EB_OGS_java(x)</a>
+0002 
+0003 <span class="comment">% % Example</span>
+0004 <span class="comment">% s1 = double(imread('st.tif'));</span>
+0005 <span class="comment">% s = s1(:,:,3);</span>
+0006 <span class="comment">% x = s + 20*randn(size(s));</span>
+0007 <span class="comment">% lam = 40;</span>
+0008 <span class="comment">% y = denC2D(x,T);</span>
+0009 <span class="comment">% imagesc(y)</span>
+0010 <span class="comment">% colormap(gray)</span>
+0011 <span class="comment">% axis image</span>
+0012 <span class="comment">% sqrt(mean(mean((y-s).^2)))</span>
+0013 
+0014 OGSI = ESP.OGS;
+0015 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0016 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0017 J = 4;
+0018 <span class="comment">%display('Wavelet transform');</span>
+0019 w = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>(x,J,Faf,af);
+0020 I = sqrt(-1);
+0021 K = [3 3 3];
+0022 lam = 0.02;
+0023 <span class="comment">% loop thru scales</span>
+0024 
+0025 <span class="keyword">for</span> j = 1:J
+0026     <span class="comment">% loop thru subbands</span>
+0027     <span class="keyword">for</span> s1 = 1:2
+0028         <span class="keyword">for</span> s2 = 1:2
+0029             <span class="keyword">for</span> s3 = 1:7
+0030                 a = w{j}{1}{s1}{s2}{s3};
+0031                 b = w{j}{2}{s1}{s2}{s3};
+0032                 C = a + I*b;
+0033                 C = <a href="ogs3_java.html" class="code" title="function [x, cost] = ogs3_java(y, K, lam, pen, rho, Nit, OGSI)">ogs3_java</a>(C, K, lam, <span class="string">'atan'</span>, 1, 5, OGSI);
+0034                 w{j}{1}{s1}{s2}{s3} = real(C);
+0035                 w{j}{2}{s1}{s2}{s3} = imag(C);
+0036             <span class="keyword">end</span>
+0037         <span class="keyword">end</span>
+0038     <span class="keyword">end</span>
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="comment">%display('Wavelet inverse transform');</span>
+0042 
+0043 y = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>(w,J,Fsf,sf);
+0044 szx = size(x);
+0045 depth = szx(3);
+0046 <span class="keyword">if</span> depth &gt; 5
+0047     depth = 5;
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">%clear TC;</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

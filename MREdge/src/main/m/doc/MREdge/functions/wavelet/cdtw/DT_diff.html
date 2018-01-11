@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_diff</title>
+  <meta name="keywords" content="DT_diff">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_diff.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_diff
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [gradX, gradY] = DT_diff(x, J) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function g = diffX(f, kern)</a></li><li><a href="#_sub2" class="code">function g = diffY(f, kern)</a></li><li><a href="#_sub3" class="code">function [dfaf, dfsf, kern] = db_8_qshift</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [gradX, gradY] = DT_diff(x, J)</a>
+0002 <span class="keyword">if</span> (nargin &lt; 2) 
+0003    J = 3;
+0004 <span class="keyword">end</span>
+0005 [dfaf, dfsf, kern] = <a href="#_sub3" class="code" title="subfunction [dfaf, dfsf, kern] = db_8_qshift">db_8_qshift</a>;
+0006 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0007 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0008 <span class="comment">%w = cplxdual2D(x,J,dfaf,dfaf);</span>
+0009 w = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>(x,J,Faf,af);
+0010 gradX_dt = w;
+0011 gradY_dt = w;
+0012 <span class="comment">% loop levels</span>
+0013 <span class="keyword">for</span> j = 1:J
+0014     <span class="comment">% loop trees</span>
+0015     <span class="keyword">for</span> m = 1:2
+0016         <span class="keyword">for</span> n = 1:2
+0017                 gradX_dt{J+1}{m}{n} = <a href="#_sub1" class="code" title="subfunction g = diffX(f, kern)">diffX</a>(w{J+1}{m}{n}, kern);
+0018                 gradY_dt{J+1}{m}{n} = <a href="#_sub2" class="code" title="subfunction g = diffY(f, kern)">diffY</a>(w{J+1}{m}{n}, kern);
+0019         <span class="keyword">end</span>
+0020     <span class="keyword">end</span>
+0021 <span class="comment">%gradX = icplxdual2D(gradX_dt,J,dfsf,dfsf);</span>
+0022 <span class="comment">%gradY = icplxdual2D(gradY_dt,J,dfsf,dfsf);</span>
+0023 gradX = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>(gradX_dt,J,Fsf,sf);
+0024 gradY = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>(gradY_dt,J,Fsf,sf);
+0025 <span class="keyword">end</span>
+0026 
+0027 <a name="_sub1" href="#_subfunctions" class="code">function g = diffX(f, kern)</a>
+0028     sz = size(f);
+0029     g = convn(f, kern, <span class="string">'same'</span>);
+0030 <span class="keyword">end</span>
+0031 
+0032 <a name="_sub2" href="#_subfunctions" class="code">function g = diffY(f, kern) </a>
+0033     g = <a href="#_sub1" class="code" title="subfunction g = diffX(f, kern)">diffX</a>(f, kern');
+0034 <span class="keyword">end</span>
+0035 
+0036 <a name="_sub3" href="#_subfunctions" class="code">function [dfaf, dfsf, kern] = db_8_qshift</a>
+0037     db8 = [-0.0105974018, 0.0328830117, 0.0308413818, -0.1870348117, <span class="keyword">...</span>
+0038             -0.0279837694, 0.6308807679, 0.7148465706, 0.2303778133];
+0039     dfaf{1} = [db8' (fliplr(db8).*(-1).^(1:8))'];
+0040     dfaf{2} = flipud(dfaf{1});
+0041     <span class="comment">%dfaf{2} = dfaf{1};</span>
+0042     dfsf{1} = dfaf{2};
+0043     dfsf{2} = dfaf{1};
+0044     <span class="comment">%dfsf = circshift(dfaf, [2 0]);</span>
+0045      kern = [-0.000008 0.0002 0.0022 -0.034 0.19 -0.79 0 -0.19<span class="keyword">...</span>
+0046             0.034 -0.0022 -0.0002 0.0000008];
+0047 <span class="keyword">end</span>
+0048 
+0049 
+0050</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

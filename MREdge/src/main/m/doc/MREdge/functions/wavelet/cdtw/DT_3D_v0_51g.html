@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_3D_v0_51g</title>
+  <meta name="keywords" content="DT_3D_v0_51g">
+  <meta name="description" content="Dualtree complex denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_3D_v0_51g.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_3D_v0_51g
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Dualtree complex denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = DT_3D_v0_51g(x, fac, cut) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Dualtree complex denoising 
+ with overlapping group sparsity thresholding</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>	Dualtree complex denoising</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = DT_3D_v0_51g(x, fac, cut)</a>
+0002 
+0003 <span class="comment">% Dualtree complex denoising</span>
+0004 <span class="comment">% with overlapping group sparsity thresholding</span>
+0005 y = zeros(size(x));
+0006 <span class="keyword">if</span> numel(size(x)) &lt; 4
+0007     d4 = 1;
+0008 <span class="keyword">else</span>
+0009     d4 = size(x,4);
+0010 <span class="keyword">end</span>
+0011 
+0012 <span class="keyword">for</span> n = 1:d4
+0013     
+0014     xr = real(x(:,:,:,n));
+0015     xi = imag(x(:,:,:,n));
+0016     sz = size(xr);
+0017 
+0018     <span class="comment">%[xr, order_vector] = dtdenoise_z_auto_noise_est_nocrop(xr);</span>
+0019     <span class="comment">%[xi, ~] = dtdenoise_z_auto_noise_est_nocrop(xi);</span>
+0020       
+0021     mad_r = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(xr);
+0022     mad_i = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(xi);
+0023        lambda_r = (fac*mad_r);
+0024     lambda_i = (fac*mad_i);
+0025  
+0026  
+0027     sz2 = size(xr);
+0028     pwr2_y = nextpwr2(sz2(1));
+0029     pwr2_x = nextpwr2(sz2(2));
+0030     pwr2_z = nextpwr2(sz2(3));
+0031 
+0032     pwrmax = max(pwr2_y, max(pwr2_x, pwr2_z));
+0033     pad_vec = [pwrmax, pwrmax, pwrmax];
+0034     xr_pad = simplepad(xr, pad_vec);
+0035     xi_pad = simplepad(xi, pad_vec);
+0036 
+0037     k = [3 3 3];
+0038     shifts = 4;
+0039     xr_pad_spin = zeros(size(xr_pad));
+0040     xi_pad_spin = zeros(size(xi_pad));
+0041     den = tic;
+0042     <span class="keyword">for</span> xJig = 0:shifts-1
+0043         <span class="keyword">for</span> yJig = 0:shifts-1
+0044             <span class="keyword">for</span> zJig = 0:shifts-1
+0045                 display([num2str(xJig), <span class="string">' '</span>, num2str(yJig), <span class="string">' '</span>, num2str(zJig)]);
+0046                 xr_pad_temp = <a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>(circshift(xr_pad, [xJig yJig zJig]), k, lambda_r, 2);
+0047                 xi_pad_temp = <a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>(circshift(xi_pad, [xJig yJig zJig]), k, lambda_i, 2);
+0048                 <span class="comment">%xr_pad_temp = DT_SOFT(circshift(xr_pad, [xJig yJig zJig]), lambda_r);</span>
+0049                 <span class="comment">%xi_pad_temp = DT_SOFT(circshift(xi_pad, [xJig yJig zJig]), lambda_i);</span>
+0050                 xr_pad_spin = xr_pad_spin + circshift(xr_pad_temp, [-xJig -yJig -zJig]);
+0051                 xi_pad_spin = xi_pad_spin + circshift(xi_pad_temp, [-xJig -yJig -zJig]);        
+0052             <span class="keyword">end</span>
+0053         <span class="keyword">end</span>
+0054     <span class="keyword">end</span>
+0055     disp(<span class="string">'denoise complete'</span>);
+0056     toc(den);
+0057     xr = xr_pad_spin(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0058     xi = xi_pad_spin(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0059 
+0060     firsts = find(order_vector==1);
+0061     index1 = firsts(1);
+0062     index2 = index1 + sz(3) - 1;
+0063     xr = xr(:,:,index1:index2);
+0064     xi = xi(:,:,index1:index2);
+0065 
+0066     den = xr + 1i*xi;
+0067     <span class="comment">%den = hipass_butter_3d(4, cut, den);</span>
+0068     y(:,:,:,n) = den;
+0069     
+0070 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

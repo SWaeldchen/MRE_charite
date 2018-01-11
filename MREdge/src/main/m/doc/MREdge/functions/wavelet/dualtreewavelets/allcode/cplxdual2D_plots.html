@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cplxdual2D_plots</title>
+  <meta name="keywords" content="cplxdual2D_plots">
+  <meta name="description" content="cplxdual2D_plots">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; cplxdual2D_plots.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>cplxdual2D_plots
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>cplxdual2D_plots</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> cplxdual2D_plots
+ DISPLAY 2D WAVELETS OF cplxdual2D.M</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="cplxdual2D_plots.html" class="code" title="">cplxdual2D_plots</a>	cplxdual2D_plots</li><li><a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>	Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="cplxdual2D_plots.html" class="code" title="">cplxdual2D_plots</a>	cplxdual2D_plots</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% cplxdual2D_plots</span>
+0002 <span class="comment">% DISPLAY 2D WAVELETS OF cplxdual2D.M</span>
+0003 
+0004 J = 4;
+0005 L = 3*2^(J+1);
+0006 N = L/2^J;
+0007 [Faf, Fsf] = <a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0008 [af, sf] = <a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0009 x = zeros(2*L,6*L);
+0010 w = <a href="cplxdual2D.html" class="code" title="function w = cplxdual2D(x, J, Faf, af)">cplxdual2D</a>(x, J, Faf, af);
+0011 w{J}{1}{2}{2}(N/2,N/2+0*N) = 1;
+0012 w{J}{1}{1}{3}(N/2,N/2+1*N) = 1;
+0013 w{J}{1}{2}{1}(N/2,N/2+2*N) = 1;
+0014 w{J}{1}{1}{1}(N/2,N/2+3*N) = 1;
+0015 w{J}{1}{2}{3}(N/2,N/2+4*N) = 1;
+0016 w{J}{1}{1}{2}(N/2,N/2+5*N) = 1;
+0017 w{J}{2}{2}{2}(N/2+N,N/2+0*N) = 1;
+0018 w{J}{2}{1}{3}(N/2+N,N/2+1*N) = 1;
+0019 w{J}{2}{2}{1}(N/2+N,N/2+2*N) = 1;
+0020 w{J}{2}{1}{1}(N/2+N,N/2+3*N) = 1;
+0021 w{J}{2}{2}{3}(N/2+N,N/2+4*N) = 1;
+0022 w{J}{2}{1}{2}(N/2+N,N/2+5*N) = 1;
+0023 y = <a href="icplxdual2D.html" class="code" title="function y = icplxdual2D(w, J, Fsf, sf)">icplxdual2D</a>(w, J, Fsf, sf);
+0024 y = [y; sqrt(y(1:L,:).^2+y(L+[1:L],:).^2)];
+0025 figure(1)
+0026 clf
+0027 imagesc(y);
+0028 title(<span class="string">'2D Dual-Tree Complex Wavelets'</span>)
+0029 axis image
+0030 axis off
+0031 colormap(gray(128))
+0032 print -djpeg95 <a href="cplxdual2D_plots.html" class="code" title="">cplxdual2D_plots</a></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

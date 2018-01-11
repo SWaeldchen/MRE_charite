@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dwt3D_plots</title>
+  <meta name="keywords" content="dwt3D_plots">
+  <meta name="description" content="dwt3D_plots">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; dwt3D_plots.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dwt3D_plots
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>dwt3D_plots</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> dwt3D_plots
+ DISPLAY 3D WAVELETS OF DWT3D.M</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dwt3D.html" class="code" title="function w = dwt3D(x, J, af)">dwt3D</a>	3-D Discrete Wavelet Transform</li><li><a href="dwt3D_plots.html" class="code" title="">dwt3D_plots</a>	dwt3D_plots</li><li><a href="farras.html" class="code" title="function [af, sf] = farras">farras</a>	Farras nearly symmetric filters for orthogonal</li><li><a href="idwt3D.html" class="code" title="function y = idwt3D(w, J, sf)">idwt3D</a>	Inverse 3-D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dwt3D_plots.html" class="code" title="">dwt3D_plots</a>	dwt3D_plots</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% dwt3D_plots</span>
+0002 <span class="comment">% DISPLAY 3D WAVELETS OF DWT3D.M</span>
+0003 
+0004 [af, sf] = <a href="farras.html" class="code" title="function [af, sf] = farras">farras</a>;
+0005 J = 4;
+0006 L = 3*2^(J+1);
+0007 N = L/2^J;
+0008 x = zeros(L,L,L);
+0009 w = <a href="dwt3D.html" class="code" title="function w = dwt3D(x, J, af)">dwt3D</a>(x,J,af);
+0010 w{J}{7}(N/2,N/2,N/2) = 1;
+0011 y = <a href="idwt3D.html" class="code" title="function y = idwt3D(w, J, sf)">idwt3D</a>(w,J,sf);
+0012 figure(1)
+0013 clf
+0014 v = 1:L;
+0015 S = 0.017;
+0016 p1 = patch(isosurface(v,v,v,y,S));
+0017 isonormals(v,v,v,y,p1);
+0018 set(p1,<span class="string">'FaceColor'</span>,<span class="string">'red'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0019 hold on
+0020 p2 = patch(isosurface(v,v,v,y,-S));
+0021 isonormals(v,v,v,y,p2);
+0022 set(p2,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0023 hold off
+0024 daspect([1 1 1]);
+0025 view(-30,30); 
+0026 camlight;
+0027 lighting phong
+0028 grid
+0029 axis([32 48 32 48 32 48])
+0030 set(gca,<span class="string">'fontsize'</span>,7)
+0031 title(<span class="string">'3-D WAVELET ISOSURFACE (SEPARABLE TRANSFORM)'</span>)
+0032 set(gcf,<span class="string">'paperposition'</span>,[0.5 0.5 0 0]+[0 0 4 3])
+0033 print -djpeg95 <a href="dwt3D_plots.html" class="code" title="">dwt3D_plots</a></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

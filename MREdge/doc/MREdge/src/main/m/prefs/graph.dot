@@ -1,0 +1,11 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  mredge_prefs -> mredge_default_prefs;
+  mredge_prefs -> mredge_validate_prefs;
+  mredge_validate_prefs -> mredge_get_valid_preference_options;
+
+  mredge_default_prefs [URL="mredge_default_prefs.html"];
+  mredge_get_valid_preference_options [URL="mredge_get_valid_preference_options.html"];
+  mredge_prefs [URL="mredge_prefs.html"];
+  mredge_validate_prefs [URL="mredge_validate_prefs.html"];
+}

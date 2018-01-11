@@ -5,9 +5,9 @@ if nargin < 2
 end
 sz = size(x);
 
-if numel(x) < 4
+if numel(sz) < 4
     d4 = 1;
-    if numel(x) < 3
+    if numel(sz) < 3
         d3 = 1;
     else
         d3 = sz(3);

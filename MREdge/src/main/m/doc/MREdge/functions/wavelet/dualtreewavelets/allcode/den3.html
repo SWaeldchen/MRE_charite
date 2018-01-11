@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of den3</title>
+  <meta name="keywords" content="den3">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; den3.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>den3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="cden2.html" class="code" title="function e = cden2(s,x,t)">cden2</a>	% Example</li><li><a href="den2.html" class="code" title="function e = den2(s,x,t)">den2</a>	% Example</li><li><a href="denC2D.html" class="code" title="function y = denC2D(x,T);">denC2D</a>	% Example</li><li><a href="denS2D.html" class="code" title="function y = denS2D(x,T)">denS2D</a>	% Example</li><li><a href="rden2.html" class="code" title="function re = rden2(s,x,t)">rden2</a>	% Example</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 
+0003 s1 = double(imread(<span class="string">'st.tif'</span>));
+0004 s = s1(:,:,3);
+0005 x = s + 20*randn(size(s));
+0006 t = 0:5:50;         <span class="comment">% threshold range(0~50),increment by 5</span>
+0007 e = <a href="den2.html" class="code" title="function e = den2(s,x,t)">den2</a>(s,x,t);    <span class="comment">% using standard method</span>
+0008 re = <a href="rden2.html" class="code" title="function re = rden2(s,x,t)">rden2</a>(s,x,t);  <span class="comment">% using reduced 2-D dual-tree method</span>
+0009 ce = <a href="cden2.html" class="code" title="function e = cden2(s,x,t)">cden2</a>(s,x,t);  <span class="comment">% using complex 2-D dual-tree method</span>
+0010 
+0011 figure(1)
+0012 plot(t,e)
+0013 hold on
+0014 plot(t,re,<span class="string">'r'</span>)
+0015 hold on
+0016 plot(t,ce,<span class="string">'k'</span>)
+0017 title(<span class="string">'RMS error V.S. Threshold Pt.'</span>) 
+0018 xlabel(<span class="string">'Threshold pt.'</span>);
+0019 ylabel(<span class="string">'RMS error'</span>);
+0020 legend(<span class="string">'Standard 2D'</span>,<span class="string">'Reduced 2D dual'</span>,<span class="string">'Complx 2D dual'</span>,0);
+0021 
+0022 
+0023 [emin,k] = min(e);
+0024 T = t(k);
+0025 y = <a href="denS2D.html" class="code" title="function y = denS2D(x,T)">denS2D</a>(x,T);
+0026 figure(2)
+0027 clf
+0028 image(y/4)
+0029 colormap(gray)
+0030 axis image
+0031 axis off
+0032 print -deps den3_A
+0033 
+0034 ax = [280*[1 1] 250*[1 1]]+[0 1 0 1]*120;
+0035 
+0036 figure(3)
+0037 clf
+0038 image(y/4)
+0039 colormap(gray)
+0040 axis(ax)
+0041 axis square
+0042 axis off
+0043 print -deps den3_B
+0044 
+0045 [emin,k] = min(ce);
+0046 T = t(k);
+0047 y = <a href="denC2D.html" class="code" title="function y = denC2D(x,T);">denC2D</a>(x,T);
+0048 figure(4)
+0049 clf
+0050 image(y/4)
+0051 colormap(gray)
+0052 axis image
+0053 axis off
+0054 print -deps cden3_A
+0055 
+0056 figure(5)
+0057 clf
+0058 image(y/4)
+0059 colormap(gray)
+0060 axis(ax)
+0061 axis square
+0062 axis off
+0063 print -deps cden3_B
+0064</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

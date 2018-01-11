@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dualtree2D</title>
+  <meta name="keywords" content="dualtree2D">
+  <meta name="description" content="2D Dual-Tree Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; dualtree2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dualtree2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>2D Dual-Tree Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function w = dualtree2D(x, J, Faf, af) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Dual-Tree Discrete Wavelet Transform
+
+ USAGE:
+   w = dualtree2D(x, J, Faf, af)
+ INPUT:
+   x - M by N array
+   J - number of stages
+   Faf - first stage filters
+   af - filters for remaining stages
+ OUPUT:
+   w{j}{d1}{d2} - DWT coefficients
+       j = 1..J, k = 1..2, d = 1..3
+   w{J+1}{k} - lowpass coefficients
+       k = 1..2
+ % EXAMPLE:
+   x = rand(256);
+   J = 3;
+   [Faf, Fsf] = FSfarras;
+   [af, sf] = dualfilt1;
+   w = dualtree2D(x, J, Faf, af);
+   y = idualtree2D(w, J, Fsf, sf);
+   err = x - y;
+   max(max(abs(err)))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="afb2D.html" class="code" title="function [lo, hi] = afb2D(x, af1, af2)">afb2D</a>	2D Analysis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="denR2D.html" class="code" title="function y = denR2D(x,T);">denR2D</a>	% Example</li><li><a href="dualtree2D_plots.html" class="code" title="">dualtree2D_plots</a>	dualtree2D_plots</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = dualtree2D(x, J, Faf, af)</a>
+0002 
+0003 <span class="comment">% 2D Dual-Tree Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   w = dualtree2D(x, J, Faf, af)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - M by N array</span>
+0009 <span class="comment">%   J - number of stages</span>
+0010 <span class="comment">%   Faf - first stage filters</span>
+0011 <span class="comment">%   af - filters for remaining stages</span>
+0012 <span class="comment">% OUPUT:</span>
+0013 <span class="comment">%   w{j}{d1}{d2} - DWT coefficients</span>
+0014 <span class="comment">%       j = 1..J, k = 1..2, d = 1..3</span>
+0015 <span class="comment">%   w{J+1}{k} - lowpass coefficients</span>
+0016 <span class="comment">%       k = 1..2</span>
+0017 <span class="comment">% % EXAMPLE:</span>
+0018 <span class="comment">%   x = rand(256);</span>
+0019 <span class="comment">%   J = 3;</span>
+0020 <span class="comment">%   [Faf, Fsf] = FSfarras;</span>
+0021 <span class="comment">%   [af, sf] = dualfilt1;</span>
+0022 <span class="comment">%   w = dualtree2D(x, J, Faf, af);</span>
+0023 <span class="comment">%   y = idualtree2D(w, J, Fsf, sf);</span>
+0024 <span class="comment">%   err = x - y;</span>
+0025 <span class="comment">%   max(max(abs(err)))</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0028 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0029 
+0030 <span class="comment">% normalization</span>
+0031 x = x/sqrt(2);
+0032 
+0033 <span class="comment">% Tree 1</span>
+0034 [x1 w{1}{1}] = <a href="afb2D.html" class="code" title="function [lo, hi] = afb2D(x, af1, af2)">afb2D</a>(x, Faf{1});      <span class="comment">% stage 1</span>
+0035 <span class="keyword">for</span> j = 2:J
+0036     [x1 w{j}{1}] = <a href="afb2D.html" class="code" title="function [lo, hi] = afb2D(x, af1, af2)">afb2D</a>(x1, af{1});  <span class="comment">% remaining stages</span>
+0037 <span class="keyword">end</span>
+0038 w{J+1}{1} = x1;                       <span class="comment">% lowpass subband</span>
+0039 
+0040 <span class="comment">% Tree 2</span>
+0041 [x2 w{1}{2}] = <a href="afb2D.html" class="code" title="function [lo, hi] = afb2D(x, af1, af2)">afb2D</a>(x, Faf{2});      <span class="comment">% stage 1</span>
+0042 <span class="keyword">for</span> j = 2:J
+0043     [x2 w{j}{2}] = <a href="afb2D.html" class="code" title="function [lo, hi] = afb2D(x, af1, af2)">afb2D</a>(x2, af{2});  <span class="comment">% remaining stages</span>
+0044 <span class="keyword">end</span>
+0045 w{J+1}{2} = x2;                       <span class="comment">% lowpass subband</span>
+0046 
+0047 <span class="comment">% sum and difference</span>
+0048 <span class="keyword">for</span> j = 1:J
+0049     <span class="keyword">for</span> m = 1:3
+0050         A = w{j}{1}{m};
+0051         B = w{j}{2}{m};
+0052         w{j}{1}{m} = (A+B)/sqrt(2);
+0053         w{j}{2}{m} = (A-B)/sqrt(2);
+0054     <span class="keyword">end</span>
+0055 <span class="keyword">end</span>
+0056</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

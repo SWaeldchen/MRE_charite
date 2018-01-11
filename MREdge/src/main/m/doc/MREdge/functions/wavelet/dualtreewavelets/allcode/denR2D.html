@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of denR2D</title>
+  <meta name="keywords" content="denR2D">
+  <meta name="description" content="% Example">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; denR2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>denR2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>% Example</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = denR2D(x,T); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> % Example
+ s1 = double(imread('st.tif'));
+ s = s1(:,:,3);
+ x = s + 20*randn(size(s));
+ T = 10;
+ y = denR2D(x,T);
+ imagesc(y)
+ colormap(gray)
+ axis image
+ sqrt(mean(mean((y-s).^2)))</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="dualtree2D.html" class="code" title="function w = dualtree2D(x, J, Faf, af)">dualtree2D</a>	2D Dual-Tree Discrete Wavelet Transform</li><li><a href="idualtree2D.html" class="code" title="function y = idualtree2D(w, J, Fsf, sf)">idualtree2D</a>	Inverse 2-D Dual-Tree Discrete Wavelet Transform</li><li><a href="soft.html" class="code" title="function y = soft(x,T)">soft</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/soft.html" class="code" title="function y = soft(x, T)">soft</a>	Soft-threshold function (real or complex x)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="rden2.html" class="code" title="function re = rden2(s,x,t)">rden2</a>	% Example</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = denR2D(x,T);</a>
+0002 
+0003 <span class="comment">% % Example</span>
+0004 <span class="comment">% s1 = double(imread('st.tif'));</span>
+0005 <span class="comment">% s = s1(:,:,3);</span>
+0006 <span class="comment">% x = s + 20*randn(size(s));</span>
+0007 <span class="comment">% T = 10;</span>
+0008 <span class="comment">% y = denR2D(x,T);</span>
+0009 <span class="comment">% imagesc(y)</span>
+0010 <span class="comment">% colormap(gray)</span>
+0011 <span class="comment">% axis image</span>
+0012 <span class="comment">% sqrt(mean(mean((y-s).^2)))</span>
+0013 
+0014 [Faf, Fsf] = <a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0015 [af, sf] = <a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0016 J = 4;
+0017 w = <a href="dualtree2D.html" class="code" title="function w = dualtree2D(x, J, Faf, af)">dualtree2D</a>(x,J,Faf,af);
+0018 <span class="comment">% loop thru scales:</span>
+0019 <span class="keyword">for</span> j = 1:J
+0020     <span class="comment">% loop thru subbands</span>
+0021     <span class="keyword">for</span> s1 = 1:2
+0022         <span class="keyword">for</span> s2 = 1:3
+0023             w{j}{s1}{s2} = <a href="soft.html" class="code" title="function y = soft(x,T)">soft</a>(w{j}{s1}{s2},T);
+0024         <span class="keyword">end</span>
+0025     <span class="keyword">end</span>
+0026 <span class="keyword">end</span>
+0027 y = <a href="idualtree2D.html" class="code" title="function y = idualtree2D(w, J, Fsf, sf)">idualtree2D</a>(w,J,Fsf,sf);
+0028</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

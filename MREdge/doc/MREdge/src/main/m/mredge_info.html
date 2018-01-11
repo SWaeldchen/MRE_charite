@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_info</title>
+  <meta name="keywords" content="mredge_info">
+  <meta name="description" content="Create structure containing required information from the MRE acquisition">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_info.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_info
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Create structure containing required information from the MRE acquisition</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function info = mredge_info(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Create structure containing required information from the MRE acquisition
+
+ INPUTS:
+
+   A series of key-value pairs to set values in the acquisition information
+ structure.
+
+   Accepted fields for acquisition info structures:
+
+    .path : Required. This path will be called as-is, whether it should be
+            absolute or relative is left to the user
+
+    .phase : Required. Vector of series numbers for the phase image acquisitions
+
+    .magnitude : Vector of series numbers for the magnitude image acquisitions
+
+    .t1 : Vector of series numbers for any accompanying T1 images
+
+    .t2 : Vector of series numbers for any accompanying T2 images
+
+    .localizer : Vector of series numbers for any accompanying localizer images
+
+    .fieldmap: Two-value vector for RL fieldmap (entry 1) and LR fieldmap (entry 2).
+
+    .dti : Vector of series numbers for any acompanying DTI acquisitions
+
+    .other : Vector of series numbers for any other acquisitions
+
+    .extension : Default extension is Siemens DICOM or '.ima' Set this field
+         to change to for example '.dcm'
+
+    .driving_frequencies: enter vector of experimental driving freqencies
+
+    .voxel_spacing: enter vector of voxel spacing in mm. If left empty, MREdge
+        will try to determine from the DICOMs
+
+    .time_steps: enter number of time steps. Default is 8
+
+    .all_freqs_one_series: processes data differently if all frequencies are
+    captured in one series number. set to 1 if true. Default: 0
+    
+   .dir_struct: contains precomputed directory information to make
+       iterating through folders and frequencies more efficient
+    
+ OUTPUTS:
+
+   info - an acquisition info structure for use with MREdge
+
+ SEE ALSO:
+
+   <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>, mredge_prefs
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results,
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge_dir_struct.html" class="code" title="function dir_struct = mredge_dir_struct(info)">mredge_dir_struct</a>	Creates dir_struct object, which enables clean looping in mredge methods.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function info = initialize_info</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = mredge_info(varargin)</a>
+0002 <span class="comment">% Create structure containing required information from the MRE acquisition</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   A series of key-value pairs to set values in the acquisition information</span>
+0007 <span class="comment">% structure.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Accepted fields for acquisition info structures:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%    .path : Required. This path will be called as-is, whether it should be</span>
+0012 <span class="comment">%            absolute or relative is left to the user</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%    .phase : Required. Vector of series numbers for the phase image acquisitions</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%    .magnitude : Vector of series numbers for the magnitude image acquisitions</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%    .t1 : Vector of series numbers for any accompanying T1 images</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%    .t2 : Vector of series numbers for any accompanying T2 images</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%    .localizer : Vector of series numbers for any accompanying localizer images</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%    .fieldmap: Two-value vector for RL fieldmap (entry 1) and LR fieldmap (entry 2).</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%    .dti : Vector of series numbers for any acompanying DTI acquisitions</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%    .other : Vector of series numbers for any other acquisitions</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%    .extension : Default extension is Siemens DICOM or '.ima' Set this field</span>
+0031 <span class="comment">%         to change to for example '.dcm'</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%    .driving_frequencies: enter vector of experimental driving freqencies</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%    .voxel_spacing: enter vector of voxel spacing in mm. If left empty, MREdge</span>
+0036 <span class="comment">%        will try to determine from the DICOMs</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%    .time_steps: enter number of time steps. Default is 8</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%    .all_freqs_one_series: processes data differently if all frequencies are</span>
+0041 <span class="comment">%    captured in one series number. set to 1 if true. Default: 0</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%   .dir_struct: contains precomputed directory information to make</span>
+0044 <span class="comment">%       iterating through folders and frequencies more efficient</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% OUTPUTS:</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%   info - an acquisition info structure for use with MREdge</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% SEE ALSO:</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%   mredge, mredge_prefs</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">% Part of the MREdge software package</span>
+0055 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0056 <span class="comment">% So that we can vouch for results,</span>
+0057 <span class="comment">% this code is source-available but not open source.</span>
+0058 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0059 <span class="comment">% for permission to make modifications.</span>
+0060 
+0061     info = <a href="#_sub1" class="code" title="subfunction info = initialize_info">initialize_info</a>;
+0062     has_phase = 0;
+0063 
+0064     <span class="keyword">if</span> ~ischar(varargin{1})
+0065         disp(<span class="string">'MREdge ERROR: make_acquisition_info: First entry must be path to files'</span>);
+0066         <span class="keyword">return</span>;
+0067     <span class="keyword">else</span>
+0068         info.path = varargin{1};
+0069     <span class="keyword">end</span>
+0070     <span class="keyword">for</span> n = 2:2:numel(varargin)
+0071         arg_lower = lower(varargin{n});
+0072         <span class="keyword">if</span> strcmp(arg_lower, <span class="string">'phase'</span>) == 1
+0073             info.phase = varargin{n+1};
+0074             has_phase = 1;
+0075         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'magnitude'</span>) == 1
+0076             info.magnitude = varargin{n+1};
+0077         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'t1'</span>) == 1
+0078             info.t1 = varargin{n+1};
+0079         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'t2'</span>) == 1
+0080             info.t2 = varargin{n+1};
+0081         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'localizer'</span>) == 1
+0082             info.localizer = varargin{n+1};
+0083         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'fieldmap'</span>) == 1
+0084             info.fieldmap = varargin{n+1};
+0085         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'dti'</span>) == 1
+0086             info.dti = varargin{n+1};
+0087         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'other'</span>) == 1
+0088             info.other = varargin{n+1};
+0089         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'file_extension'</span>) == 1
+0090             info.file_extension = varargin{n+1};
+0091         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'driving_frequencies'</span>) == 1
+0092             info.driving_frequencies = varargin{n+1};
+0093         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'voxel_spacing'</span>) == 1
+0094             info.voxel_spacing = varargin{n+1};
+0095         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'time_steps'</span>) == 1
+0096             info.time_steps = varargin{n+1};
+0097         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'all_freqs_one_series'</span>) == 1
+0098             info.all_freqs_one_series = varargin{n+1};
+0099         <span class="keyword">elseif</span> strcmp(arg_lower, <span class="string">'fd_import'</span>) == 1
+0100             info.fd_import = varargin{n+1};
+0101         <span class="keyword">else</span>
+0102             disp([<span class="string">'MREdge ERROR: Invalid field: '</span>, arg_lower]);
+0103             disp(<span class="string">'Valid options are: phase, magnitude, t1, t2, localizer, fieldmap, dti, file_extension, driving_frequencies, voxel_spacing, time_steps, all_freqs_one_series, or other.'</span>);
+0104             <span class="keyword">return</span>; 
+0105         <span class="keyword">end</span>
+0106     <span class="keyword">end</span>
+0107     <span class="keyword">if</span> has_phase == 0
+0108         disp(<span class="string">'MREdge WARNING: Acquisition must have at least one phase series to be processed'</span>);
+0109     <span class="keyword">end</span>
+0110     info.ds = <a href="mredge_dir_struct.html" class="code" title="function dir_struct = mredge_dir_struct(info)">mredge_dir_struct</a>(info);
+0111 <span class="keyword">end</span>
+0112 
+0113 <a name="_sub1" href="#_subfunctions" class="code">function info = initialize_info</a>
+0114     <span class="comment">% ensures that later methods can analyze the acquisition content with isempty()</span>
+0115     info.path = <span class="string">''</span>;
+0116     info.phase = [];
+0117     info.magnitude = [];
+0118     info.t1 = [];
+0119     info.t2 = [];
+0120     info.localizer = [];
+0121     info.fieldmap = [];
+0122     info.dti = [];
+0123     info.other = [];
+0124     info.file_extension = <span class="string">'.ima'</span>;
+0125     info.driving_frequencies = 0;
+0126     info.voxel_spacing = [.002 .002 .002];
+0127     info.time_steps = 8;
+0128     info.all_freqs_one_series = 0;
+0129     info.fd_import = 0;
+0130 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

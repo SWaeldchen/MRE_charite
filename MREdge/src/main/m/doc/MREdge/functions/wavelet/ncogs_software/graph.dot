@@ -1,0 +1,41 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  Example1 -> get_snr;
+  Example1 -> ogs1;
+  Example1 -> soft;
+  Example2 -> displaySTFT;
+  Example2 -> find_lam;
+  Example2 -> get_snr;
+  Example2 -> istft;
+  Example2 -> ogs2;
+  Example2 -> soft;
+  Example2 -> stft;
+  Example3 -> ogs3;
+  GenLamTable -> ogs2;
+  den3D_OGS_demo -> denC3D_EB_OGS;
+  den3D_OGS_demo -> ogs3;
+  den3D_OGS_demo -> soft;
+  denC3D_EB_OGS -> ogs3;
+  denC3D_EB_OGS_java -> ogs3_java;
+  denC3D_EB_soft -> soft;
+
+  Example1 [URL="Example1.html"];
+  Example2 [URL="Example2.html"];
+  Example3 [URL="Example3.html"];
+  GenLamTable [URL="GenLamTable.html"];
+  den3D_OGS_demo [URL="den3D_OGS_demo.html"];
+  denC3D_EB_OGS [URL="denC3D_EB_OGS.html"];
+  denC3D_EB_OGS_java [URL="denC3D_EB_OGS_java.html"];
+  denC3D_EB_nng [URL="denC3D_EB_nng.html"];
+  denC3D_EB_soft [URL="denC3D_EB_soft.html"];
+  displaySTFT [URL="displaySTFT.html"];
+  find_lam [URL="find_lam.html"];
+  get_snr [URL="get_snr.html"];
+  istft [URL="istft.html"];
+  ogs1 [URL="ogs1.html"];
+  ogs2 [URL="ogs2.html"];
+  ogs3 [URL="ogs3.html"];
+  ogs3_java [URL="ogs3_java.html"];
+  soft [URL="soft.html"];
+  stft [URL="stft.html"];
+}

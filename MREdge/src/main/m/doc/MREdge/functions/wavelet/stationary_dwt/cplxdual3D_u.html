@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cplxdual3D_u</title>
+  <meta name="keywords" content="cplxdual3D_u">
+  <meta name="description" content="3D Complex Dual-Tree Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; cplxdual3D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>cplxdual3D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>3D Complex Dual-Tree Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w = cplxdual3D_u(x, J, Faf, af) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 3D Complex Dual-Tree Discrete Wavelet Transform
+
+ USAGE:
+   w = cplxdual3D(x, J, Faf, af)
+ INPUT:
+   x - 3D array
+   J - number of stages
+   Faf - first stage filters
+   af - filters for remaining stages
+ OUPUT:
+   w{j}{m}{n}{p}{d} - wavelet coefficients
+       j = 1..J, m = 1..2, n = 1..2, p = 1..2, d = 1..7
+   w{J+1}{m}{n}{d} - lowpass coefficients
+       m = 1..2, n = 1..2, p = 1..2, d = 1..7
+ EXAMPLE:
+   x = rand(64,64,64);
+   J = 3;
+   [Faf, Fsf] = FSfarras;
+   [af, sf] = dualfilt1;
+   w = cplxdual3D(x, J, Faf, af);
+   y = icplxdual3D(w, J, Fsf, sf);
+   err = x - y;
+   max(max(max(abs(err))))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm4.html" class="code" title="function [u, v, q, r] = pm4(a, b, c, d)">pm4</a>	[u, v, q, r] = pm4(a, b, c, d);</li><li><a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u.html" class="code" title="function [u_den] = DT_OGS_u(u, K, fac, J, mask)">DT_OGS_u</a>	Dualtree complex denoising</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u_diff.html" class="code" title="function [u_den, u_x, u_y, u_z] = DT_OGS_u(u, K, lambda, J)">DT_OGS_u_diff</a>	Dualtree complex denoising</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/DT_OGS_u_log.html" class="code" title="function [u_den] = DT_OGS_u_log(u, K, fac, J, mask, fileID, base1, base2)">DT_OGS_u_log</a>	Dualtree complex denoising</li><li><a href="DT_ASG_u.html" class="code" title="function [u_den] = DT_ASG_u(u, J, mask, amp)">DT_ASG_u</a>	Dualtree complex denoising</li><li><a href="DT_OGS_u.html" class="code" title="function [u_den] = DT_OGS_u(u, K, lambda, J)">DT_OGS_u</a>	Dualtree complex denoising</li><li><a href="testing.html" class="code" title="">testing</a>	% TESTING MODULE</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = cplxdual3D_u(x, J, Faf, af)</a>
+0002 
+0003 <span class="comment">% 3D Complex Dual-Tree Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   w = cplxdual3D(x, J, Faf, af)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   x - 3D array</span>
+0009 <span class="comment">%   J - number of stages</span>
+0010 <span class="comment">%   Faf - first stage filters</span>
+0011 <span class="comment">%   af - filters for remaining stages</span>
+0012 <span class="comment">% OUPUT:</span>
+0013 <span class="comment">%   w{j}{m}{n}{p}{d} - wavelet coefficients</span>
+0014 <span class="comment">%       j = 1..J, m = 1..2, n = 1..2, p = 1..2, d = 1..7</span>
+0015 <span class="comment">%   w{J+1}{m}{n}{d} - lowpass coefficients</span>
+0016 <span class="comment">%       m = 1..2, n = 1..2, p = 1..2, d = 1..7</span>
+0017 <span class="comment">% EXAMPLE:</span>
+0018 <span class="comment">%   x = rand(64,64,64);</span>
+0019 <span class="comment">%   J = 3;</span>
+0020 <span class="comment">%   [Faf, Fsf] = FSfarras;</span>
+0021 <span class="comment">%   [af, sf] = dualfilt1;</span>
+0022 <span class="comment">%   w = cplxdual3D(x, J, Faf, af);</span>
+0023 <span class="comment">%   y = icplxdual3D(w, J, Fsf, sf);</span>
+0024 <span class="comment">%   err = x - y;</span>
+0025 <span class="comment">%   max(max(max(abs(err))))</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0028 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0029 
+0030 <span class="comment">% normalization</span>
+0031 x = x/sqrt(8);
+0032 
+0033 <span class="keyword">for</span> m = 1:2
+0034     <span class="keyword">for</span> n = 1:2
+0035         <span class="keyword">for</span> p = 1:2
+0036             [lo, w{1}{m}{n}{p}] = <a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>(x, 1, Faf{m}, Faf{n}, Faf{p});
+0037             <span class="keyword">for</span> j = 2:J
+0038                 [lo, w{j}{m}{n}{p}] = <a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>(lo, j, af{m}, af{n}, af{p});
+0039             <span class="keyword">end</span>
+0040             w{J+1}{m}{n}{p} = lo;
+0041         <span class="keyword">end</span>
+0042     <span class="keyword">end</span>
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="keyword">for</span> j = 1:J
+0046     <span class="keyword">for</span> m = 1:7
+0047         [w{j}{1}{1}{1}{m}, w{j}{2}{2}{1}{m}, w{j}{2}{1}{2}{m}, w{j}{1}{2}{2}{m}] = <span class="keyword">...</span>
+0048             <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm4.html" class="code" title="function [u, v, q, r] = pm4(a, b, c, d)">pm4</a>(w{j}{1}{1}{1}{m}, w{j}{2}{2}{1}{m}, w{j}{2}{1}{2}{m}, w{j}{1}{2}{2}{m});
+0049          [w{j}{2}{2}{2}{m}, w{j}{1}{1}{2}{m}, w{j}{1}{2}{1}{m}, w{j}{2}{1}{1}{m}] = <span class="keyword">...</span>
+0050             <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm4.html" class="code" title="function [u, v, q, r] = pm4(a, b, c, d)">pm4</a>(w{j}{2}{2}{2}{m}, w{j}{1}{1}{2}{m}, w{j}{1}{2}{1}{m}, w{j}{2}{1}{1}{m});
+0051     <span class="keyword">end</span>
+0052 <span class="keyword">end</span>
+0053 
+0054 
+0055</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

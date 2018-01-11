@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of denoise_separate_volume</title>
+  <meta name="keywords" content="denoise_separate_volume">
+  <meta name="description" content="Dualtree complex denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; denoise_separate_volume.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>denoise_separate_volume
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Dualtree complex denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [u_lo, u_hi] = denoise_separate_volume(u, K, lambda, J) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Dualtree complex denoising 
+ with overlapping group sparsity thresholding</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/ncogs_software/ogs3.html" class="code" title="function [x, cost] = ogs3(y, K, lam, pen, rho, Nit)">ogs3</a>	[x, cost] = ogs3(y, K, lam, pen, rho, Nit)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual3D_u.html" class="code" title="function y = icplxdual3D_u(w, J, Fsf, sf)">icplxdual3D_u</a>	Inverse Dual-Tree Complex Undecimated 3D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="denoise_and_separate.html" class="code" title="function [u_lo, u_hi] = denoise_and_separate(u, fac, J, mask)">denoise_and_separate</a>	3D Dualtree complex denoising</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [u_lo, u_hi] = denoise_separate_volume(u, K, lambda, J)</a>
+0002 
+0003 <span class="comment">% Dualtree complex denoising</span>
+0004 <span class="comment">% with overlapping group sparsity thresholding</span>
+0005 
+0006 pad_1 = nextpwr2(size(u,1));
+0007 pad_2 = nextpwr2(size(u,2));
+0008 u_pad = simplepad(u, [pad1, pad2]);
+0009 shearletSystem = SLgetShearletSystem2D(useGPU, rows, cols, nScales, shearLevels, full, directionalFilter, quadratureMirrorFilter)
+0010 <span class="comment">% loop thru scales</span>
+0011 <span class="keyword">for</span> j = 1:J
+0012     <span class="comment">% loop thru subbands</span>
+0013     <span class="keyword">for</span> s1 = 1:2
+0014         <span class="keyword">for</span> s2 = 1:2
+0015             <span class="keyword">for</span> s3 = 1:7
+0016                 a = w{j}{1}{s1}{s2}{s3};
+0017                 b = w{j}{2}{s1}{s2}{s3};
+0018                 C = a + 1i*b;
+0019                 <span class="comment">%c = javaMethod('threshold', OGSJava, real(C), imag(C));</span>
+0020                 <span class="comment">%C = c(:,:,:,1) + 1i*c(:,:,:,2);</span>
+0021                 C = <a href="../../../../MREdge/functions/wavelet/ncogs_software/ogs3.html" class="code" title="function [x, cost] = ogs3(y, K, lam, pen, rho, Nit)">ogs3</a>(C, K, lambda, <span class="string">'atan'</span>, 1, 5);
+0022                 w{j}{1}{s1}{s2}{s3} = real(C);
+0023                 w{j}{2}{s1}{s2}{s3} = imag(C);
+0024             <span class="keyword">end</span>
+0025         <span class="keyword">end</span>
+0026     <span class="keyword">end</span>
+0027 <span class="keyword">end</span>
+0028 w_hi = w;
+0029 w_lo = w;
+0030 <span class="keyword">for</span> s0 = 1:2
+0031     <span class="keyword">for</span> s1 = 1:2
+0032         <span class="keyword">for</span> s2 = 1:2
+0033                 w_hi{J+1}{s0}{s1}{s2} = butter_3d(ORD, CUT, w{J+1}{s0}{s1}{s2},1);
+0034                 w_lo{J+1}{s0}{s1}{s2} = w{J+1}{s0}{s1}{s2} - w_hi{J+1}{s0}{s1}{s2};
+0035         <span class="keyword">end</span>
+0036     <span class="keyword">end</span>
+0037 <span class="keyword">end</span>
+0038 u_lo = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual3D_u.html" class="code" title="function y = icplxdual3D_u(w, J, Fsf, sf)">icplxdual3D_u</a>(w_lo,J,Fsf,sf);
+0039 u_hi = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/icplxdual3D_u.html" class="code" title="function y = icplxdual3D_u(w, J, Fsf, sf)">icplxdual3D_u</a>(w_hi,J,Fsf,sf);
+0040</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

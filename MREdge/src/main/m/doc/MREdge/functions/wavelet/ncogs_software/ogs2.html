@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ogs2</title>
+  <meta name="keywords" content="ogs2">
+  <meta name="description" content="[x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; ogs2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>ogs2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>[x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)
+ Overlapping Group Shrinkage/Thresholding (2D)
+
+ Input
+   y      : observed signal (2D array)
+   lam    : regularization parameter
+   K1, K2 : group size
+   pen    : 'abs', 'log', 'atan' or 'rat'
+   rho  : normalized non-convexity parameter, 0 &lt;= rho &lt;= 1
+   Nit    : number of iterations
+
+ Output
+   x    : output signal
+   cost : cost function history
+
+ Note: for the L1 penalty ('abs'), 'rho' must be 0.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/cdtw/DT_2D_u.html" class="code" title="function y = DT_2D_u(x, T, J, meth)">DT_2D_u</a>	</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/subband_OGS_2D.html" class="code" title="function [w] = subband_OGS_2D(w, lam, J)">subband_OGS_2D</a>	</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/subband_thresh_2D.html" class="code" title="function [w] = subband_thresh_2D(w, T, J, meth)">subband_thresh_2D</a>	</li><li><a href="Example2.html" class="code" title="">Example2</a>	% Group-sparse denoising by non-convex regularization: Speech denoising</li><li><a href="GenLamTable.html" class="code" title="function GenLamTable(pen, Nit, realcompl, stdo1, stdo2)">GenLamTable</a>	'GenLamTable' generates the table of lambda for desired output</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)</a>
+0002 
+0003 <span class="comment">% [x, cost] = ogs2(y, K1, K2, lam, pen, rho, Nit)</span>
+0004 <span class="comment">% Overlapping Group Shrinkage/Thresholding (2D)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Input</span>
+0007 <span class="comment">%   y      : observed signal (2D array)</span>
+0008 <span class="comment">%   lam    : regularization parameter</span>
+0009 <span class="comment">%   K1, K2 : group size</span>
+0010 <span class="comment">%   pen    : 'abs', 'log', 'atan' or 'rat'</span>
+0011 <span class="comment">%   rho  : normalized non-convexity parameter, 0 &lt;= rho &lt;= 1</span>
+0012 <span class="comment">%   Nit    : number of iterations</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Output</span>
+0015 <span class="comment">%   x    : output signal</span>
+0016 <span class="comment">%   cost : cost function history</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Note: for the L1 penalty ('abs'), 'rho' must be 0.</span>
+0019 
+0020 <span class="comment">% Po-Yu Chen and Ivan Selesnick</span>
+0021 <span class="comment">% NYU-Poly, 2013</span>
+0022 
+0023 <span class="comment">% Perform some error checking</span>
+0024 <span class="keyword">if</span> strcmp(pen, <span class="string">'abs'</span>)
+0025     <span class="keyword">if</span> rho ~= 0
+0026         error(<span class="string">'Error: need rho = 0 for abs penalty'</span>)
+0027     <span class="keyword">end</span>
+0028 <span class="keyword">end</span>
+0029 <span class="keyword">if</span> rho == 0
+0030     pen = <span class="string">'abs'</span>;
+0031 <span class="keyword">elseif</span> (rho &lt; 0) || (rho &gt; 1)
+0032     error(<span class="string">'Error: need 0 &lt;= rho &lt;= 1.'</span>)
+0033 <span class="keyword">end</span>
+0034 
+0035 a_max = 1/(lam*K1*K2);
+0036 a = rho * a_max;
+0037 
+0038 <span class="keyword">switch</span> pen
+0039     <span class="keyword">case</span> <span class="string">'abs'</span>
+0040         phi = @(x) abs(x);
+0041         wfun = @(x) abs(x);
+0042         a = 0;
+0043     <span class="keyword">case</span> <span class="string">'rat'</span>
+0044         phi = @(x) abs(x)./(1+a*abs(x)/2);
+0045         wfun = @(x) abs(x) .* (1 + a*abs(x)/2).^2;
+0046     <span class="keyword">case</span> <span class="string">'log'</span>
+0047         phi = @(x) 1/a * log(1 + a*abs(x));
+0048         wfun = @(x) abs(x) .* (1 + a*abs(x));
+0049     <span class="keyword">case</span> <span class="string">'atan'</span>
+0050         phi = @(x) 2/(a*sqrt(3)) *  (atan((1+2*a*abs(x))/sqrt(3)) - pi/6);
+0051         wfun = @(x) abs(x) .* (1 + a*abs(x) + a^2.*abs(x).^2);
+0052     <span class="keyword">otherwise</span>
+0053         disp(<span class="string">'penalty must be abs, log, atan, or rat'</span>)
+0054         x = []; cost = [];
+0055         <span class="keyword">return</span>
+0056 <span class="keyword">end</span>
+0057 
+0058 
+0059 h1 = ones(K1, 1);
+0060 h2 = ones(K2, 1);
+0061 x = y;
+0062 cost = zeros(1, Nit);
+0063 
+0064 <span class="keyword">for</span> it = 1 : Nit
+0065     r = sqrt( conv2(h1, h2, abs(x).^2, <span class="string">'full'</span>) );
+0066     cost(it) = 0.5 * sum(sum(abs(x-y).^2)) + lam * sum(sum(phi(r)));
+0067     v = 1 + lam*conv2(h1, h2, 1./wfun(r), <span class="string">'valid'</span>);
+0068     x = y./v;
+0069 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

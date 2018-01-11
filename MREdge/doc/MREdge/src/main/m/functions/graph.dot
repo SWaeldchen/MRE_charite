@@ -1,0 +1,40 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  align_phase -> resh;
+  butter_2d -> resh;
+  dct_unwrap -> dctn_octave;
+  dct_unwrap -> idctn_octave;
+  dct_unwrap -> resh;
+  dctn -> resh;
+  dctn_octave -> dct_octave;
+  dctn_octave -> resh;
+  dejitter_phase_2 -> iscomplex;
+  dejitter_phase_mask -> iscomplex;
+  idctn -> resh;
+  idctn_octave -> idct_octave;
+  idctn_octave -> resh;
+  mad_est_3d -> cell2cat;
+  mad_est_3d -> simplecrop;
+
+  align_phase [URL="align_phase.html"];
+  butter_2d [URL="butter_2d.html"];
+  cell2cat [URL="cell2cat.html"];
+  dct_octave [URL="dct_octave.html"];
+  dct_unwrap [URL="dct_unwrap.html"];
+  dctn [URL="dctn.html"];
+  dctn_octave [URL="dctn_octave.html"];
+  dejitter_phase_2 [URL="dejitter_phase_2.html"];
+  dejitter_phase_mask [URL="dejitter_phase_mask.html"];
+  idct_octave [URL="idct_octave.html"];
+  idctn [URL="idctn.html"];
+  idctn_octave [URL="idctn_octave.html"];
+  iscomplex [URL="iscomplex.html"];
+  ismember_strcheck [URL="ismember_strcheck.html"];
+  load_untouch_nii_eb [URL="load_untouch_nii_eb.html"];
+  mad_eb [URL="mad_eb.html"];
+  mad_est_3d [URL="mad_est_3d.html"];
+  normalizeImage [URL="normalizeImage.html"];
+  resh [URL="resh.html"];
+  signal_power [URL="signal_power.html"];
+  simplecrop [URL="simplecrop.html"];
+}

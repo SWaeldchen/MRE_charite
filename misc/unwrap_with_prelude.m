@@ -1,6 +1,9 @@
-function unwrap = unwrap_with_prelude(phase, mag)
-if nargin < 2
-    mag = ones(size(phase));
+function unwrap = unwrap_with_prelude(phase, mag, flag)
+if nargin < 3
+    flag = 'f';
+    if nargin < 2
+        mag = ones(size(phase));
+    end
 end
 sz = size(phase);
 [phase_resh, n_vols] = resh(phase, 4);
@@ -14,9 +17,10 @@ for n = 1:n_vols
     mag_vol = make_nii(mag_resh(:,:,:,n));
     save_nii(phase_vol, 'phase.nii');
     save_nii(mag_vol, 'mag.nii');
-    fsl_command = ['fsl5.0-prelude -vf -p ',fullfile(CURR_DIR, 'phase'),' -a ',fullfile(CURR_DIR, 'mag'),...
+    fsl_command = ['fsl5.0-prelude -',flag,' -p ',fullfile(CURR_DIR, 'phase'),' -a ',fullfile(CURR_DIR, 'mag'),...
     ' -o ',fullfile(CURR_DIR,'unwrap')]; %#ok<NASGU>
-    evalc('system(fsl_command);');
+    %evalc('system(fsl_command);');
+    system(fsl_command);
     unwrap_vol = load_untouch_nii('unwrap.nii.gz');
     range_ctr = floor(mean(unwrap_vol.img(unwrap_vol.img ~= 0)) / (2*pi));
     unwrap_vol.img = unwrap_vol.img - (range_ctr*2*pi);

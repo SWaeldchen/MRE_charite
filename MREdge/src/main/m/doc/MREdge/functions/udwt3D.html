@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of udwt3D</title>
+  <meta name="keywords" content="udwt3D">
+  <meta name="description" content="Undecimated 3-D Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; udwt3D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>udwt3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Undecimated 3-D Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function w = udwt3D(x, J, h0, h1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Undecimated 3-D Discrete Wavelet Transform
+
+ INPUT
+   x : N1 by N2 by N3 matrix
+       1) Ni all even
+       2) min(Ni) &gt;= 2^(J-1)*length(af)
+   J : number of stages
+   af : analysis filters
+
+ OUTPUT
+   w : cell array of wavelet coefficients
+
+ EXAMPLE
+   [af, sf] = farras;
+   x = rand(128,64,64);
+   J = 3;
+   w = udwt3D(x,J,af);
+   y = iudwt3D(w,J,sf);
+   err = x-y; 
+   max(max(max(abs(err))))
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>	Undecimated 3D Analysis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/reverse_hard_thresh.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">reverse_hard_thresh</a>	</li><li><a href="../../MREdge/functions/wavelet/cdtw/zden_3D_DWT.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">zden_3D_DWT</a>	</li><li><a href="../../MREdge/functions/wavelet/stationary_dwt/testing.html" class="code" title="">testing</a>	% TESTING MODULE</li><li><a href="zden_3D_DWT.html" class="code" title="function [u_den] = zden_3D_DWT(u, J, mask, cut)">zden_3D_DWT</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = udwt3D(x, J, h0, h1)</a>
+0002 
+0003 <span class="comment">% Undecimated 3-D Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%   x : N1 by N2 by N3 matrix</span>
+0007 <span class="comment">%       1) Ni all even</span>
+0008 <span class="comment">%       2) min(Ni) &gt;= 2^(J-1)*length(af)</span>
+0009 <span class="comment">%   J : number of stages</span>
+0010 <span class="comment">%   af : analysis filters</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% OUTPUT</span>
+0013 <span class="comment">%   w : cell array of wavelet coefficients</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% EXAMPLE</span>
+0016 <span class="comment">%   [af, sf] = farras;</span>
+0017 <span class="comment">%   x = rand(128,64,64);</span>
+0018 <span class="comment">%   J = 3;</span>
+0019 <span class="comment">%   w = udwt3D(x,J,af);</span>
+0020 <span class="comment">%   y = iudwt3D(w,J,sf);</span>
+0021 <span class="comment">%   err = x-y;</span>
+0022 <span class="comment">%   max(max(max(abs(err))))</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0025 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0026 
+0027 <span class="keyword">if</span> nargin == 3
+0028     af = h0;
+0029 <span class="keyword">else</span>
+0030     af = [h0 h1];
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="keyword">for</span> j = 1:J
+0034     [x w{j}] = <a href="afb3D_u.html" class="code" title="function [lo, hi] = afb3D_u(x, j, af1, af2, af3)">afb3D_u</a>(x, j, af, af, af);
+0035 <span class="keyword">end</span>
+0036 w{J+1} = x;
+0037</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

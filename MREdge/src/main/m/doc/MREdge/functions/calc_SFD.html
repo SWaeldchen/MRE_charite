@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_SFD</title>
+  <meta name="keywords" content="calc_SFD">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">functions</a> &gt; calc_SFD.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>calc_SFD
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mFD = calc_SFD(PROJ_DATA,Asubject) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mFD = calc_SFD(PROJ_DATA,Asubject)</a>
+0002 
+0003 <span class="keyword">for</span> s = 1:numel(Asubject)
+0004     SUBJ_DIR = Asubject{s}{1};
+0005     
+0006     rp(s,:,:) = load(fullfile(PROJ_DATA,SUBJ_DIR,<span class="string">'RAWN'</span>,<span class="string">'rp_RL_dyn_ma0001.txt'</span>));
+0007     
+0008     tx(s,:)  = squeeze(rp(s,:,1));
+0009     ty(s,:)  = squeeze(rp(s,:,2));
+0010     tz(s,:)  = squeeze(rp(s,:,3));
+0011     rx(s,:)  = squeeze(rp(s,:,4))*360/(2*pi) *50*pi/360; <span class="comment">% R=50mm [Power_2012]</span>
+0012     ry(s,:)  = squeeze(rp(s,:,5))*360/(2*pi) *50*pi/360;
+0013     rz(s,:)  = squeeze(rp(s,:,6))*360/(2*pi) *50*pi/360;
+0014     
+0015     dtx(s,:) = diff(tx(s,:));
+0016     dty(s,:) = diff(ty(s,:));
+0017     dtz(s,:) = diff(tz(s,:));
+0018     drx(s,:) = diff(rx(s,:));
+0019     dry(s,:) = diff(ry(s,:));
+0020     drz(s,:) = diff(rz(s,:));
+0021     
+0022     <span class="comment">%     FD(s,:)  = abs(dtx(s,:)) + abs(dty(s,:)) + abs(dtz(s,:)) + abs(drx(s,:)) + abs(dry(s,:)) + abs(drz(s,:));</span>
+0023     FD(s,:)  = 2*sqrt((1/3*(std(tx(s,:)) + std(ty(s,:)) + std(tz(s,:))))^2 + (1/3*(std(rx(s,:)) + std(ry(s,:)) + std(rz(s,:))))^2);
+0024     
+0025     sFD(s)   = sum(FD(s,:),2);
+0026     mFD(s)   = mean(FD(s,:),2);
+0027     eFD(s)   = std(FD(s,:),[],2);
+0028     
+0029     hold on
+0030     plot3(tx(s,:),ty(s,:),tz(s,:),<span class="string">'.-'</span>);
+0031     
+0032 <span class="keyword">end</span>
+0033 save(fullfile(PROJ_DATA,<span class="string">'mFD.mat'</span>),<span class="string">'mFD'</span>,<span class="string">'eFD'</span>);
+0034 
+0035 figure; errorbar(mFD, eFD,<span class="string">'.'</span>), ylabel(<span class="string">'mean(FD) [mm]'</span>), xlabel(<span class="string">'Subject #'</span>);
+0036 saveas(gcf,fullfile(PROJ_DATA,<span class="string">'PICS'</span>,<span class="string">'pic_mFDeFD.png'</span>))
+0037 <span class="comment">%close</span>
+0038 disp([mean(mFD) std(mFD)]);
+0039 <span class="comment">% figure; errorbar(sFD, eFD,'.'), ylabel('sum(FD) [mm]'), xlabel('Subject #')</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">% figure;</span>
+0042 <span class="comment">% subplot(711)</span>
+0043 <span class="comment">% errorbar(mean(dtx,1), std(dtx,[],1) ,'k-'), ylabel('dtx [mm]')</span>
+0044 <span class="comment">% subplot(712)</span>
+0045 <span class="comment">% errorbar(mean(dty,1), std(dty,[],1) ,'r-'), ylabel('dty [mm]')</span>
+0046 <span class="comment">% subplot(713)</span>
+0047 <span class="comment">% errorbar(mean(dtz,1), std(dtz,[],1) ,'b-'), ylabel('dtz [mm]')</span>
+0048 <span class="comment">% subplot(714)</span>
+0049 <span class="comment">% errorbar(mean(drx,1), std(drx,[],1) ,'k-.'), ylabel('drx [mm]')</span>
+0050 <span class="comment">% subplot(715)</span>
+0051 <span class="comment">% errorbar(mean(dry,1), std(dry,[],1) ,'r-.'), ylabel('dry [mm]')</span>
+0052 <span class="comment">% subplot(716)</span>
+0053 <span class="comment">% errorbar(mean(drz,1), std(drz,[],1) ,'b-.'), ylabel('drz [mm]')</span>
+0054 <span class="comment">% subplot(717)</span>
+0055 <span class="comment">% errorbar(mean(FD,1), std(FD,[],1)) , ylabel('FD [mm]')</span>
+0056 
+0057 <span class="comment">% for s=1:14</span>
+0058 <span class="comment">% figure;</span>
+0059 <span class="comment">% subplot(211);hold on</span>
+0060 <span class="comment">% plot(tx(s,:),'k-')</span>
+0061 <span class="comment">% plot(ty(s,:),'r-')</span>
+0062 <span class="comment">% plot(tz(s,:),'b-')</span>
+0063 <span class="comment">% plot(rx(s,:),'k-.')</span>
+0064 <span class="comment">% plot(ry(s,:),'r-.')</span>
+0065 <span class="comment">% plot(rz(s,:),'b-.')</span>
+0066 <span class="comment">% subplot(212)</span>
+0067 <span class="comment">% plot(FD(s,:))</span>
+0068 <span class="comment">% pause(0.5)</span>
+0069 <span class="comment">% end</span>
+0070 
+0071 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

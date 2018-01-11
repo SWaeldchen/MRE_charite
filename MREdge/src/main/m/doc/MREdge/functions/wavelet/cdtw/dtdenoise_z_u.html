@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_z_u</title>
+  <meta name="keywords" content="dtdenoise_z_u">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dtdenoise_z_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_z_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [U_den] = dtdenoise_z_u(U, fac, J) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>	[h0, h1, g0, g1] = daubechies_filters(K)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>	[h0, h1, g0, g1] = daubechies_filters(K)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/iudwt.html" class="code" title="function y = iudwt(w, J, g0, g1)">iudwt</a>	y = iudwt(w, J, g0, g1)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/udwt.html" class="code" title="function w = udwt(x, J, h0, h1)">udwt</a>	Undecimated Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="dtdenoise_z_mad_u.html" class="code" title="function [U_den] = dtdenoise_z_mad_u(U, fac, J, is_complex)">dtdenoise_z_mad_u</a>	</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_z_mad_u.html" class="code" title="function [U_den] = dtdenoise_z_mad_u(U, fac, J, is_complex)">dtdenoise_z_mad_u</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [U_den] = dtdenoise_z_u(U, fac, J)</a>
+0002 [h0, h1, g0, g1] = <a href="../../../../MREdge/functions/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>(3);
+0003 <span class="keyword">if</span> nargin &lt; 3
+0004     J = 1;
+0005 <span class="keyword">end</span>
+0006 sz = size(U);
+0007 <span class="keyword">if</span> nargin &lt; 2
+0008     fac = 1;
+0009 <span class="keyword">end</span>
+0010 <span class="keyword">if</span> (numel(sz) &lt; 4)
+0011     d4 = 1;
+0012 <span class="keyword">else</span>
+0013     d4 = sz(4);
+0014 <span class="keyword">end</span>
+0015 
+0016 pwr = 0;
+0017 <span class="keyword">while</span> (2^pwr &lt; sz(3)) 
+0018     pwr = pwr+1;
+0019 <span class="keyword">end</span>
+0020 xDim = 2^(pwr+1);
+0021 Uex = zeros(sz(1), sz(2), xDim, d4);
+0022 <span class="keyword">for</span> m = 1:d4
+0023     [temp, order_vector] = extendZ2(U(:,:,:,m), xDim);
+0024     [Uex(:,:,:,m)] = temp(1:sz(1),1:sz(2),:);
+0025 <span class="keyword">end</span>
+0026 U = Uex;
+0027 U_den = zeros(sz(1), sz(2), xDim, d4);
+0028 z_grad = zeros(1,1,2);
+0029 z_grad(:) = [1 -1];
+0030 <span class="keyword">for</span> m = 1:d4
+0031     cube = U(:,:,:,m);
+0032     z_noise_est = sum(abs(convn(cube, z_grad, <span class="string">'same'</span>)), 3);
+0033     T = z_noise_est*fac;
+0034     <span class="keyword">for</span> i=1:sz(1)
+0035         <span class="keyword">for</span> j =1:sz(2)
+0036             z_line = squeeze(U(i,j,:,m));
+0037             w = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/udwt.html" class="code" title="function w = udwt(x, J, h0, h1)">udwt</a>(z_line, J, h0, h1);
+0038             <span class="keyword">for</span> n = 1:J
+0039                 a = w{n};
+0040                 c = sign(a).*max(abs(a) - T(i,j), 0);
+0041                 w{n} = c;
+0042             <span class="keyword">end</span>
+0043             z_line_den = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/iudwt.html" class="code" title="function y = iudwt(w, J, g0, g1)">iudwt</a>(w, J, g0, g1);
+0044             U_den(i,j,:,m) = z_line_den(1:numel(z_line));
+0045         <span class="keyword">end</span>
+0046     <span class="keyword">end</span>
+0047 <span class="keyword">end</span>
+0048 firsts = find(order_vector==1);
+0049 index1 = firsts(1);
+0050 index2 = index1 + sz(3) - 1;
+0051 U_den = U_den(:,:,index1:index2,:,:);
+0052 
+0053</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

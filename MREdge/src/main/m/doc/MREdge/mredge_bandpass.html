@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_bandpass</title>
+  <meta name="keywords" content="mredge_bandpass">
+  <meta name="description" content="Applies highpass and lowpass butterworth filters if they are set in prefs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_bandpass.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_bandpass
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Applies highpass and lowpass butterworth filters if they are set in prefs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_bandpass(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Applies highpass and lowpass butterworth filters if they are set in prefs
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/functions/butter_2d.html" class="code" title="function [y, filt] = butter_2d(ord, cut, x, hi)">butter_2d</a>	y = butter_2d(ord, cut, x)</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_bandpass(info, prefs)</a>
+0002 <span class="comment">% Applies highpass and lowpass butterworth filters if they are set in prefs</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0007 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Part of the MREdge software package</span>
+0014 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0015 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0016 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0017 <span class="comment">%</span>
+0018 mask = <a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info, prefs);
+0019 parfor s = 1:numel(info.ds.subdirs_comps_files)
+0020     subdir = info.ds.subdirs_comps_files(s);
+0021     wavefield_path = cell2str(fullfile(<a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'FT'</span>), subdir));
+0022     wavefield_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0023     wavefield_img = wavefield_vol.img;
+0024     resid_vol = wavefield_vol;
+0025     <span class="keyword">if</span> prefs.lowpass
+0026         <span class="keyword">if</span> prefs.lowpass_settings.dimensions == 2
+0027             <span class="keyword">for</span> z=1:size(wavefield_img,3)
+0028                wavefield_img(:,:,z) = <a href="../MREdge/functions/butter_2d.html" class="code" title="function [y, filt] = butter_2d(ord, cut, x, hi)">butter_2d</a>(prefs.lowpass_settings.order, prefs.lowpass_settings.cutoff, wavefield_img(:,:,z));
+0029             <span class="keyword">end</span>
+0030         <span class="keyword">elseif</span> prefs.lowpass_settings.dimensions == 3
+0031             wavefield_img = butter_3d(prefs.lowpass_settings.order, prefs.lowpass_settings.cutoff, wavefield_img);
+0032         <span class="keyword">end</span>
+0033     <span class="keyword">end</span>
+0034     <span class="keyword">if</span> prefs.highpass
+0035         <span class="keyword">if</span> prefs.lowpass_settings.dimensions == 2
+0036             <span class="keyword">for</span> z=1:size(wavefield_img,3)
+0037                wavefield_img(:,:,z) = <a href="../MREdge/functions/butter_2d.html" class="code" title="function [y, filt] = butter_2d(ord, cut, x, hi)">butter_2d</a>(prefs.highpasspass_settings.order, prefs.highpass_settings.cutoff, wavefield_img(:,:,z), 1);
+0038             <span class="keyword">end</span>
+0039         <span class="keyword">elseif</span> prefs.lowpass_settings.dimensions == 3
+0040             wavefield_img = butter_3d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, wavefield_img, 1);
+0041         <span class="keyword">end</span>
+0042     <span class="keyword">end</span>
+0043     wavefield_vol.img = wavefield_img;
+0044     resid_vol.img = resid_vol.img - wavefield_img;
+0045     save_untouch_nii(wavefield_vol, wavefield_path);
+0046     resid_dir = fullfile(<a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'bandpass_resid'</span>));
+0047     resid_path = cell2str(fullfile(resid_dir, subdir));
+0048     save_untouch_nii_eb(resid_vol, resid_path);
+0049 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

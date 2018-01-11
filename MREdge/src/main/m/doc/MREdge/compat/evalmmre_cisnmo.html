@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of evalmmre_cisnmo</title>
+  <meta name="keywords" content="evalmmre_cisnmo">
+  <meta name="description" content="function [ABSG,PHI,ABSG_orig,PHI_orig,AMP,varmapX, varmapY, offsetX, offsetY] = evalmmre(W_wrap,freqs)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">compat</a> &gt; evalmmre_cisnmo.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/compat&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>evalmmre_cisnmo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ABSG,PHI,ABSG_orig,PHI_orig,AMP,varmapX, varmapY, offsetX, offsetY] = evalmmre(W_wrap,freqs)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ABSG,PHI,ABSG_orig,PHI_orig,AMP] = evalmmre_cisnmo(W_wrap,freqs,pixel_spacing) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> function [ABSG,PHI,ABSG_orig,PHI_orig,AMP,varmapX, varmapY, offsetX, offsetY] = evalmmre(W_wrap,freqs)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_compat_cisnmo.html" class="code" title="function matlab_outputs = mredge_compat_cisnmo(info, prefs)">mredge_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li><li><a href="../../MREdge/mredge_invert_compat_cisnmo.html" class="code" title="function mredge_compat_cisnmo(info, prefs)">mredge_invert_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ABSG,PHI,ABSG_orig,PHI_orig,AMP] = evalmmre_cisnmo(W_wrap,freqs,pixel_spacing)</a>
+0002 <span class="comment">% function [ABSG,PHI,ABSG_orig,PHI_orig,AMP,varmapX, varmapY, offsetX, offsetY] = evalmmre(W_wrap,freqs)</span>
+0003 
+0004 filt = 100;
+0005 SFloworder = 1;
+0006 
+0007 Nf=size(W_wrap,6);
+0008 Nc=size(W_wrap,5);
+0009 Nt=size(W_wrap,4);
+0010 
+0011 varmapX = zeros([size(W_wrap, 1), size(W_wrap, 2), size(W_wrap, 3), Nc, Nf]);
+0012 varmapY = zeros([size(W_wrap, 1), size(W_wrap, 2), size(W_wrap, 3), Nc, Nf]);
+0013 offsetX = varmapX;
+0014 offsetY = varmapX;
+0015 
+0016 <span class="comment">%pixel_spacing = [1.9 1.9]/1000;</span>
+0017 
+0018 om=freqs*2*pi;
+0019 numer_phi=0;
+0020 denom_phi=0;
+0021 numer_phi_noise=0;
+0022 denom_phi_noise=0;
+0023 numer_G=0;
+0024 denom_G=0;
+0025 numer_G_orig=0;
+0026 denom_G_orig=0;
+0027 
+0028 AMP=0;
+0029 
+0030 inc=0;
+0031 <span class="keyword">for</span> kf=1:Nf
+0032     <span class="keyword">for</span> kc=1:Nc
+0033         <span class="keyword">for</span> kt=1:Nt
+0034             inc=inc+1;
+0035             
+0036             PHI = angle(smooth3(exp(1i*W_wrap(:,:,:,kt,kc,kf)),<span class="string">'gaussian'</span>,[5 5 1]));
+0037             [PHIX PHIY]=gradient(exp(1i*PHI));
+0038             
+0039             UX(:,:,:,kt) = imag(PHIX.*exp(-1i*PHI));
+0040             UY(:,:,:,kt) = imag(PHIY.*exp(-1i*PHI));
+0041             
+0042         <span class="keyword">end</span>
+0043         
+0044         fUX = fft(UX,[],4);
+0045         fUY = fft(UY,[],4);
+0046 
+0047 <span class="comment">%         [fUX,vfUX] = sinfit(UX);</span>
+0048 <span class="comment">%         [fUY,vfUY] = sinfit(UY);</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%         varmapX(:,:,:,kc,kf) = squeeze(vfUX(:,:,:,1));</span>
+0051 <span class="comment">%         varmapY(:,:,:,kc,kf) = squeeze(vfUY(:,:,:,1));</span>
+0052 <span class="comment">%         offsetX(:,:,:,kc,kf) = squeeze(fUX(:,:,:,1));</span>
+0053 <span class="comment">%         offsetY(:,:,:,kc,kf) = squeeze(fUY(:,:,:,1));</span>
+0054         
+0055         <span class="comment">%%%%%% inversion %%%%%%%%%%%%%</span>
+0056         
+0057         <span class="keyword">for</span> k_filter=1:size(fUX,3)
+0058             U(:,:,k_filter) = uh_filtspatio2d(fUX(:,:,k_filter,2),[pixel_spacing(1); pixel_spacing(2)],filt,SFloworder,0,5,<span class="string">'bwlow'</span>,0);
+0059         <span class="keyword">end</span>
+0060         
+0061         [wx wy]   = gradient(U,pixel_spacing(1),pixel_spacing(2),1);
+0062         [wxx tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0063         [tmp wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0064         
+0065         DU=wxx+wyy;
+0066         
+0067         <span class="comment">%%%%%%% for noise correction</span>
+0068         N=smooth3(U,<span class="string">'gaussian'</span>,[3 3 1])-U;
+0069         [wx wy]   = gradient(N,pixel_spacing(1),pixel_spacing(2),1);
+0070         [wxx tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0071         [tmp wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0072         
+0073         DN=wxx+wyy;
+0074         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0075         
+0076         numer_phi = numer_phi + real(DU).*real(U) + imag(DU).*imag(U);
+0077         denom_phi = denom_phi + abs(DU).*abs(U);
+0078         
+0079         numer_phi_noise = numer_phi_noise + real(DN).*real(N)+imag(DN).*imag(N);
+0080         denom_phi_noise = denom_phi_noise + abs(DN).*abs(N);
+0081         
+0082         numer_G = numer_G + 1000*om(kf).^2.*(abs(U)-abs(N));
+0083         denom_G = denom_G + abs(DU) - abs(DN);
+0084         
+0085         AMP=AMP+abs(U);
+0086         
+0087         <span class="keyword">for</span> k_filter = 1:size(fUY,3)
+0088             U(:,:,k_filter) = uh_filtspatio2d(fUY(:,:,k_filter,2),[pixel_spacing(1); pixel_spacing(2)],filt,SFloworder,0,5,<span class="string">'bwlow'</span>,0);
+0089         <span class="keyword">end</span>
+0090         
+0091         [wx wy]   = gradient(U,pixel_spacing(1),pixel_spacing(2),1);
+0092         [wxx tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0093         [tmp wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0094         
+0095         DU=wxx+wyy;
+0096         
+0097         <span class="comment">%%%%%% for noise correction</span>
+0098         N=smooth3(U,<span class="string">'gaussian'</span>,[3 3 1])-U;
+0099         [wx wy]   = gradient(N,pixel_spacing(1),pixel_spacing(2),1);
+0100         [wxx tmp] = gradient(wx,pixel_spacing(1),pixel_spacing(2),1);
+0101         [tmp wyy] = gradient(wy,pixel_spacing(1),pixel_spacing(2),1);
+0102         
+0103         DN=wxx+wyy;
+0104         <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0105         
+0106         numer_phi = numer_phi+real(DU).*real(U)+imag(DU).*imag(U);
+0107         denom_phi = denom_phi+abs(DU).*abs(U);
+0108         
+0109         numer_phi_noise = numer_phi_noise+ real(DN).*real(N)+imag(DN).*imag(N);
+0110         denom_phi_noise = denom_phi_noise+ abs(DN).*abs(N);
+0111         
+0112         numer_G = numer_G + 1000*om(kf).^2.*(abs(U)-abs(N));
+0113         denom_G = denom_G + abs(DU) - abs(DN);
+0114         
+0115         numer_G_orig = numer_G_orig + 1000*om(kf).^2.*abs(U);
+0116         denom_G_orig = denom_G_orig + abs(DU);
+0117         
+0118         AMP=AMP+abs(U);
+0119         
+0120     <span class="keyword">end</span>
+0121 <span class="keyword">end</span>
+0122 
+0123 denom_phi(denom_phi == 0) = eps;
+0124 denom_phi_noise(denom_phi_noise == 0) = eps;
+0125 denom_G(denom_G == 0) = eps;
+0126 
+0127 PHIN = acos(-numer_phi_noise./denom_phi_noise);
+0128 corr_phi=mean(PHIN(PHIN &lt; 0.4));
+0129 
+0130 PHI = acos(-numer_phi./denom_phi) - corr_phi;
+0131 ABSG = numer_G./denom_G;
+0132 
+0133 PHI_orig = acos(-numer_phi./denom_phi);
+0134 ABSG_orig = numer_G_orig./denom_G_orig;
+0135 
+0136 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

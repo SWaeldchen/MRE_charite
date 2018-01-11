@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_zden</title>
+  <meta name="keywords" content="mredge_zden">
+  <meta name="description" content="% function mredge_denoise(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_zden.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_zden
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_denoise(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_zden(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_denoise(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   Deonise the complex wave field.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/functions/dejitter_phase_mask.html" class="code" title="function [s_d, stats] = dejitter_phase_mask(s, mask, NORM, TOTAL_SHIFTS)">dejitter_phase_mask</a>	</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="../MREdge/functions/wavelet/cdtw/dtdenoise_z_mad_u.html" class="code" title="function [U_den] = dtdenoise_z_mad_u(U, fac, J, is_complex)">dtdenoise_z_mad_u</a>	</li><li><a href="../MREdge/functions/wavelet/cdtw/zden_3D_DWT.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">zden_3D_DWT</a>	</li><li><a href="../MREdge/functions/wavelet/stationary_dwt/dtdenoise_z_mad_u.html" class="code" title="function [U_den] = dtdenoise_z_mad_u(U, fac, J, is_complex)">dtdenoise_z_mad_u</a>	</li><li><a href="../MREdge/functions/zden_3D_DWT.html" class="code" title="function [u_den] = zden_3D_DWT(u, J, mask, cut)">zden_3D_DWT</a>	</li><li><a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>	Loads the anatomical mask image and returns as a 3D object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIR, RESID_DIR] = set_dirs(info, prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_denoise(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Deonise the complex wave field.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% INPUTS:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0016 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% OUTPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   none</span>
+0021 
+0022 <a name="_sub0" href="#_subfunctions" class="code">function mredge_zden(info, prefs)</a>
+0023     time = tic;
+0024     [FT_DIR, RESID_DIR] = <a href="#_sub1" class="code" title="subfunction [FT_DIR, RESID_DIR] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0025     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0026     PAD = 5;
+0027     <span class="keyword">if</span> ~exist(RESID_DIR, <span class="string">'dir'</span>)
+0028         mkdir(RESID_DIR);
+0029     <span class="keyword">end</span>
+0030     mask = <a href="mredge_load_mask.html" class="code" title="function mask = mredge_load_mask(info, prefs)">mredge_load_mask</a>(info, prefs);
+0031       parfor f_num = 1:numel(info.driving_frequencies)
+0032           f = info.driving_frequencies(f_num);
+0033           disp([num2str(f), <span class="string">' Hz'</span>]);
+0034           <span class="keyword">for</span> c = 1:3
+0035               display(num2str(c));
+0036               wavefield_path = fullfile(FT_DIR, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT)); <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0037               wavefield_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0038               wavefield_img = wavefield_vol.img;
+0039               resid_vol = wavefield_vol;
+0040               <span class="keyword">if</span> strcmp(prefs.denoise_strategy, <span class="string">'z_xy'</span>) == 1 <span class="comment">%#ok&lt;PFBNS&gt;</span>
+0041                   wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/dtdenoise_z_mad_u.html" class="code" title="function [U_den] = dtdenoise_z_mad_u(U, fac, J, is_complex)">dtdenoise_z_mad_u</a>(wavefield_img, prefs.denoise_settings.z_thresh_factor, prefs.denoise_settings.z_level, 1);
+0042               <span class="keyword">elseif</span> strcmp(prefs.denoise_strategy, <span class="string">'3d'</span>) || strcmp(prefs.denoise_strategy, <span class="string">'2d'</span>) ||<span class="keyword">...</span>
+0043                 (prefs.distortion_correction == 1 &amp;&amp; strcmpi(prefs.dico_method, <span class="string">'ft'</span>) )
+0044                   wavefield_img = <a href="../MREdge/functions/dejitter_phase_mask.html" class="code" title="function [s_d, stats] = dejitter_phase_mask(s, mask, NORM, TOTAL_SHIFTS)">dejitter_phase_mask</a>(wavefield_img, logical(mask), 0.5, 256);
+0045                   wavefield_img = <a href="../MREdge/functions/wavelet/cdtw/zden_3D_DWT.html" class="code" title="function [u_den] = reverse_hard_thresh(u, J, mask)">zden_3D_DWT</a>(wavefield_img, prefs.denoise_settings.z_level, mask, prefs.denoise_settings.z_hipass_cut);
+0046               <span class="keyword">end</span>
+0047               wavefield_vol.img = wavefield_img;
+0048               resid_vol.img = resid_vol.img - wavefield_img;
+0049               save_untouch_nii(wavefield_vol, wavefield_path);
+0050           <span class="keyword">end</span>
+0051       <span class="keyword">end</span>
+0052       disp([<span class="string">'Dejitter time: '</span>, num2str(toc(time))]);
+0053 <span class="keyword">end</span>
+0054 
+0055 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIR, RESID_DIR] = set_dirs(info, prefs)</a>
+0056     FT_DIR = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'FT'</span>);
+0057     RESID_DIR = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'DENOISE_RESID'</span>);
+0058 <span class="keyword">end</span>
+0059 
+0060</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

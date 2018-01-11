@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of zden_3D_DWT</title>
+  <meta name="keywords" content="zden_3D_DWT">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; zden_3D_DWT.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>zden_3D_DWT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [u_den] = reverse_hard_thresh(u, J, mask) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/cell2cat.html" class="code" title="function y = cell2cat(x)">cell2cat</a>	</li><li><a href="../../../../MREdge/functions/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>	[h0, h1, g0, g1] = daubechies_filters(K)</li><li><a href="../../../../MREdge/functions/simplecrop.html" class="code" title="function v = simplecrop(w, cropdims)">simplecrop</a>	</li><li><a href="../../../../MREdge/functions/udwt3D.html" class="code" title="function w = udwt3D(x, J, h0, h1)">udwt3D</a>	Undecimated 3-D Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>	[h0, h1, g0, g1] = daubechies_filters(K)</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/iudwt3D.html" class="code" title="function y = iudwt3D(w, J, g0, g1)">iudwt3D</a>	Inverse Undecimated 3-D Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/stationary_dwt/udwt3D.html" class="code" title="function w = udwt3D(x, J, h0, h1)">udwt3D</a>	Undecimated 3-D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>	Removes interslice phase discontinuities.</li><li><a href="../../../../MREdge/mredge_zden.html" class="code" title="function mredge_zden(info, prefs)">mredge_zden</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [u_den] = reverse_hard_thresh(u, J, mask)</a>
+0002 
+0003 <span class="keyword">if</span> nargin &lt; 4
+0004     mask = ones(size(u,1), size(u,2), size(u,3));
+0005 <span class="keyword">end</span>
+0006 <span class="comment">% Dualtree complex denoising</span>
+0007 <span class="comment">% with overlapping group sparsity thresholding</span>
+0008 
+0009 [h0, h1, g0, g1] = <a href="../../../../MREdge/functions/daubf.html" class="code" title="function [h0, h1, g0, g1] = daubf(K)">daubf</a>(3);
+0010 w = <a href="../../../../MREdge/functions/udwt3D.html" class="code" title="function w = udwt3D(x, J, h0, h1)">udwt3D</a>(u,J,h0,h1);
+0011 <span class="comment">% loop thru scales</span>
+0012 <span class="keyword">for</span> j = 1:J
+0013     <span class="comment">% loop thru subbands</span>
+0014     MADs = zeros(6,1);
+0015     <span class="keyword">for</span> s = 2:7
+0016         vol_crop = <a href="../../../../MREdge/functions/simplecrop.html" class="code" title="function v = simplecrop(w, cropdims)">simplecrop</a>(w{j}{s}, [size(u,1), size(u,2), size(u,3)]);
+0017         MADs(s-1) = get_mad(vol_crop, mask);
+0018     <span class="keyword">end</span>
+0019     MAD = mean(MADs);
+0020     disp([<span class="string">'Threshing above '</span>, num2str(2*MAD)]);
+0021     pct_removed = numel(w{1}{s}(abs(w{1}{s}) &gt; 2*MAD)) / numel(<a href="../../../../MREdge/functions/cell2cat.html" class="code" title="function y = cell2cat(x)">cell2cat</a>(w{1}));
+0022     w{1}{s}(abs(w{1}{s}) &gt; 2*MAD) = 0;
+0023     disp([<span class="string">'PCT of coefficients altered: '</span>, num2str(pct_removed)]);
+0024 <span class="keyword">end</span>
+0025 
+0026 u_den = <a href="../../../../MREdge/functions/wavelet/stationary_dwt/iudwt3D.html" class="code" title="function y = iudwt3D(w, J, g0, g1)">iudwt3D</a>(w,J,g0,g1);
+0027</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

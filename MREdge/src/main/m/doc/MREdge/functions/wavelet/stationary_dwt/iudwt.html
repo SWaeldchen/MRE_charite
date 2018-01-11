@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of iudwt</title>
+  <meta name="keywords" content="iudwt">
+  <meta name="description" content="y = iudwt(w, J, g0, g1)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; iudwt.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>iudwt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>y = iudwt(w, J, g0, g1)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = iudwt(w, J, g0, g1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> y = iudwt(w, J, g0, g1)
+
+ Inverse Undecimated Discrete Wavelet Transform
+
+ INPUT
+   w : wavelet coefficients
+   J : number of stages
+   g0 : low-pass synthesis filter
+   g1 : high-pass synthesis filter
+
+ OUTPUT
+   y : output signal
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z.html" class="code" title="function [U_den] = dtdenoise_z(U, fac, J)">dtdenoise_z</a>	</li><li><a href="../../../../MREdge/functions/wavelet/cdtw/dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="dtdenoise_z_u.html" class="code" title="function [U_den] = dtdenoise_z_u(U, fac, J)">dtdenoise_z_u</a>	</li><li><a href="udwt_example.html" class="code" title="">udwt_example</a>	CONSTRUCT FILTERS</li><li><a href="udwt_example_2.html" class="code" title="">udwt_example_2</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = iudwt(w, J, g0, g1)</a>
+0002 
+0003 <span class="comment">% y = iudwt(w, J, g0, g1)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Inverse Undecimated Discrete Wavelet Transform</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% INPUT</span>
+0008 <span class="comment">%   w : wavelet coefficients</span>
+0009 <span class="comment">%   J : number of stages</span>
+0010 <span class="comment">%   g0 : low-pass synthesis filter</span>
+0011 <span class="comment">%   g1 : high-pass synthesis filter</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% OUTPUT</span>
+0014 <span class="comment">%   y : output signal</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0017 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0018 
+0019 R = sqrt(2);
+0020 g0 = g0/R;
+0021 g1 = g1/R;
+0022 
+0023 N0 = length(g0);
+0024 N1 = length(g1);
+0025 N = N0 + N1;
+0026 
+0027 y = w{J+1};
+0028 <span class="keyword">for</span> j = J:-1:1
+0029     M = 2^(j-1);
+0030 
+0031     lo = y;
+0032     hi = w{j};
+0033 
+0034     L0 = length(lo);
+0035     L1 = length(hi);
+0036 
+0037     y0 = zeros(L0+M*(N0-1),1);
+0038     y1 = zeros(L1+M*(N1-1),1);
+0039 
+0040     <span class="keyword">for</span> k = 0:N0-1
+0041         y0(M*k+(1:L0)) = y0(M*k+(1:L0)) + g0(k+1)*lo;
+0042     <span class="keyword">end</span>
+0043 
+0044     <span class="keyword">for</span> k = 0:N1-1
+0045         y1(M*k+(1:L1)) = y1(M*k+(1:L1)) + g1(k+1)*hi;
+0046     <span class="keyword">end</span>
+0047 
+0048     <span class="comment">% Add signals (make sure they are equal length).</span>
+0049     <span class="comment">% We assume 'lo' is longer than 'hi' because</span>
+0050     <span class="comment">% in a wavelet transform the lo/hi split is</span>
+0051     <span class="comment">% iterated on the 'lo' signal which increases its length.</span>
+0052     y = y0(1:length(y1)) + y1;
+0053 
+0054     L = M*(N/2-1);
+0055     y = y(L+1:end);
+0056 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

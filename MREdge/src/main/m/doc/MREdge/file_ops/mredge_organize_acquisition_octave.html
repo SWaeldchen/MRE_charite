@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_organize_acquisition_octave</title>
+  <meta name="keywords" content="mredge_organize_acquisition_octave">
+  <meta name="description" content="% function mredge_organize_acquisition_octave(info)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_organize_acquisition_octave.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_organize_acquisition_octave
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_organize_acquisition_octave(info)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_organize_acquisition_octave(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_organize_acquisition_octave(info)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="mredge_move_non_mre_series.html" class="code" title="function mredge_move_non_mre_series(series_num, subdir, info)">mredge_move_non_mre_series</a>	% function mredge_move_non_mre_series(series_num, subdir, info)</li><li><a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>	For acquisitions where each frequency has its own series number, rename each series to its corresponding frequency.</li><li><a href="mredge_reorganize_by_frequency.html" class="code" title="function mredge_reorganize_by_frequency(series_number, subdir, driving_frequencies)">mredge_reorganize_by_frequency</a>	% function mredge_reorganize_by_frequency(subdir, driving_frequencies)</li><li><a href="../../MREdge/mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>	Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</li><li><a href="../../MREdge/mredge_dicom_data_table.html" class="code" title="function [data_table] = mredge_dicom_data_table(info)">mredge_dicom_data_table</a>	% function data_table = mredge_dicom_data_table(info)</li><li><a href="../../MREdge/mredge_dicom_to_nii.html" class="code" title="function mredge_dicom_to_nii(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii</a>	% function mredge_dicom_to_nii(series_num, data_table, subdir, time_steps)</li><li><a href="../../MREdge/mredge_dicom_to_nii_octave.html" class="code" title="function mredge_dicom_to_nii_octave(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii_octave</a>	% function mredge_dicom_to_nii_octave(series_num, data_table, subdir, time_steps)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_octave.html" class="code" title="function [matlab_outputs] = mredge_octave(info, prefs)">mredge_octave</a>	% function [outputs] = mredge_octave(info, prefs);</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_organize_acquisition_octave(info)</span>
+0002 
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Organizes DICOM slices into folders, and for MRE acquisitions, 4D nifti files,</span>
+0012 <span class="comment">% guided by acquisition info object. May contain tweaks for octave compatibility</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% info - an acquisition info structure created by make_acquisition_info</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% OUTPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% none</span>
+0021 
+0022 <span class="comment">%% collect series numbers</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function mredge_organize_acquisition_octave(info, prefs)</a>
+0025 
+0026 called_dir = pwd;
+0027 
+0028 tic
+0029 display(<span class="string">'Organizing Acquisition Folder...'</span>);
+0030 cd(info.path)
+0031 
+0032 <span class="comment">% make DICOM data table</span>
+0033 file_names = dir([<span class="string">'*'</span>, info.file_extension]);
+0034 
+0035 <span class="keyword">if</span> prefs.temporal_ft == 1
+0036     is_time_series = 1;
+0037 <span class="keyword">else</span>
+0038     is_time_series = 0;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="keyword">if</span> ~exist(fullfile(info.path, <span class="string">'data_table.mat'</span>), <span class="string">'file'</span>)
+0042     data_table = <a href="../../MREdge/mredge_dicom_data_table.html" class="code" title="function [data_table] = mredge_dicom_data_table(info)">mredge_dicom_data_table</a>(info);
+0043     save(fullfile(info.path, <span class="string">'data_table.mat'</span>), <span class="string">'data_table'</span>);
+0044 <span class="keyword">end</span>
+0045 
+0046 load(<span class="string">'data_table.mat'</span>, <span class="string">'data_table'</span>);
+0047 assignin(<span class="string">'base'</span>, <span class="string">'data_table'</span>, data_table);
+0048 
+0049 
+0050 <span class="comment">%% process each series</span>
+0051 
+0052 <span class="keyword">if</span> ~isempty(info.phase)
+0053     PHASE_SUB = fullfile(info.path,<span class="string">'Phase'</span>);
+0054     <span class="keyword">if</span> ~exist(PHASE_SUB, <span class="string">'dir'</span>)
+0055         mkdir(PHASE_SUB);
+0056     <span class="keyword">end</span>
+0057     <span class="keyword">for</span> n = info.phase
+0058        <a href="../../MREdge/mredge_dicom_to_nii_octave.html" class="code" title="function mredge_dicom_to_nii_octave(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii_octave</a>(n, data_table, PHASE_SUB, is_time_series, info);
+0059     <span class="keyword">end</span>
+0060     <span class="keyword">if</span> info.all_freqs_one_series == 1
+0061        <a href="mredge_reorganize_by_frequency.html" class="code" title="function mredge_reorganize_by_frequency(series_number, subdir, driving_frequencies)">mredge_reorganize_by_frequency</a>(info.phase(1), PHASE_SUB, info.driving_frequencies);
+0062     <span class="keyword">else</span>
+0063        <a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>(info.phase, PHASE_SUB, info.driving_frequencies);
+0064     <span class="keyword">end</span>
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="keyword">if</span> ~isempty(info.magnitude)
+0068     MAG_SUB = fullfile(info.path, <span class="string">'Magnitude'</span>);
+0069     <span class="keyword">if</span> ~exist(MAG_SUB, <span class="string">'dir'</span>)
+0070     mkdir(MAG_SUB);
+0071     <span class="keyword">end</span>
+0072     <span class="keyword">for</span> n = info.magnitude
+0073       <a href="../../MREdge/mredge_dicom_to_nii_octave.html" class="code" title="function mredge_dicom_to_nii_octave(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii_octave</a>(n, data_table, MAG_SUB, is_time_series, info);
+0074     <span class="keyword">end</span>
+0075     <span class="keyword">if</span> info.all_freqs_one_series == 1
+0076         <a href="mredge_reorganize_by_frequency.html" class="code" title="function mredge_reorganize_by_frequency(series_number, subdir, driving_frequencies)">mredge_reorganize_by_frequency</a>(info.magnitude(1), MAG_SUB, info.driving_frequencies);
+0077     <span class="keyword">else</span>
+0078         <a href="mredge_rename_by_frequency.html" class="code" title="function mredge_rename_by_frequency(subdir, series_numbers, info)">mredge_rename_by_frequency</a>(info.magnitude, MAG_SUB, info.driving_frequencies);
+0079     <span class="keyword">end</span>
+0080     <a href="../../MREdge/mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>(info, prefs);
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="keyword">if</span> ~isempty(info.t1)
+0084     T1_SUB = fullfile(info.path, <span class="string">'T1'</span>);
+0085     <span class="keyword">if</span> ~exist(T1_SUB, <span class="string">'dir'</span>)
+0086     mkdir(T1_SUB);
+0087     <span class="keyword">end</span>
+0088     <span class="keyword">for</span> n = info.t1
+0089       cd(info.path)
+0090       <a href="../../MREdge/mredge_dicom_to_nii.html" class="code" title="function mredge_dicom_to_nii(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii</a>(n, data_table, T1_SUB, 0, info);
+0091     <span class="keyword">end</span>
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="keyword">if</span> ~isempty(info.t2)
+0095     T2_SUB = fullfile(info.path, <span class="string">'T2'</span>, <span class="string">'Localizer'</span>, <span class="string">'DICOM'</span>);
+0096     <span class="keyword">if</span> ~exist(T2_SUB, <span class="string">'dir'</span>)
+0097     mkdir(T2_SUB);
+0098     <span class="keyword">end</span>
+0099     <span class="keyword">for</span> n = info.t2
+0100       cd(info.path)
+0101       <a href="mredge_move_non_mre_series.html" class="code" title="function mredge_move_non_mre_series(series_num, subdir, info)">mredge_move_non_mre_series</a>(n, data_table, T2_SUB);
+0102     <span class="keyword">end</span>
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="keyword">if</span> ~isempty(info.localizer)
+0106     LOCALIZER_SUB = fullfile(info.path, <span class="string">'Localizer'</span>, <span class="string">'DICOM'</span>);
+0107     <span class="keyword">if</span> ~exist(LOCALIZER_SUB, <span class="string">'dir'</span>)
+0108     mkdir(LOCALIZER_SUB);
+0109     <span class="keyword">end</span>
+0110     <span class="keyword">for</span> n = info.localizer
+0111       <a href="mredge_move_non_mre_series.html" class="code" title="function mredge_move_non_mre_series(series_num, subdir, info)">mredge_move_non_mre_series</a>(n, data_table, LOCALIZER_SUB);
+0112     <span class="keyword">end</span>
+0113 <span class="keyword">end</span>
+0114 
+0115 <span class="keyword">if</span> ~isempty(info.fieldmap)
+0116     FIELDMAP_SUB = fullfile(info.path, <span class="string">'Fieldmap'</span>);
+0117     <span class="keyword">if</span> ~exist(FIELDMAP_SUB, <span class="string">'dir'</span>)
+0118     mkdir(FIELDMAP_SUB);
+0119     <span class="keyword">end</span>
+0120     <span class="keyword">for</span> n = info.fieldmap
+0121       <a href="../../MREdge/mredge_dicom_to_nii.html" class="code" title="function mredge_dicom_to_nii(series_num, data_table, subdir, is_time_series, info)">mredge_dicom_to_nii</a>(n, data_table, FIELDMAP_SUB);
+0122     <span class="keyword">end</span>
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="keyword">if</span> ~isempty(info.dti)
+0126     DTI_SUB = fullfile(info.path, <span class="string">'DTI'</span>, <span class="string">'DICOM'</span>);
+0127     <span class="keyword">if</span> ~exist(DTI_SUB, <span class="string">'dir'</span>)
+0128     mkdir(DTI_SUB);
+0129     <span class="keyword">end</span>
+0130     <span class="keyword">for</span> n = info.dti
+0131       <a href="mredge_move_non_mre_series.html" class="code" title="function mredge_move_non_mre_series(series_num, subdir, info)">mredge_move_non_mre_series</a>(n, data_table, DTI_SUB);
+0132     <span class="keyword">end</span>
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="keyword">if</span> ~isempty(info.other)
+0136     OTHER_SUB = fullfile(info.path, <span class="string">'Other'</span>, <span class="string">'DICOM'</span>);
+0137     <span class="keyword">if</span> ~exist(OTHER_SUB, <span class="string">'dir'</span>)
+0138     mkdir(OTHER_SUB);
+0139     <span class="keyword">end</span>
+0140     <span class="keyword">for</span> n = info.other
+0141       <a href="mredge_move_non_mre_series.html" class="code" title="function mredge_move_non_mre_series(series_num, subdir, info)">mredge_move_non_mre_series</a>(n, data_table, OTHER_SUB);
+0142     <span class="keyword">end</span>
+0143 <span class="keyword">end</span>
+0144 
+0145 STATS_SUB = <a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'stats'</span>);
+0146 <span class="keyword">if</span> ~exist(STATS_SUB, <span class="string">'dir'</span>)
+0147     mkdir(STATS_SUB);
+0148 <span class="keyword">end</span>
+0149 
+0150 cd(called_dir)
+0151 
+0152 toc</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

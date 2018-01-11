@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_brain_analysis</title>
+  <meta name="keywords" content="mredge_brain_analysis">
+  <meta name="description" content="Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">neuro</a> &gt; mredge_brain_analysis.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/neuro&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_brain_analysis
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_brain_analysis(info, prefs, freq_indices) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.
+
+ USAGE:
+
+   coregisters and labels brain results
+
+   If you use this method cite:
+
+   [paper in revision]
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ SEE ALSO:
+
+   <a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>, <a href="mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>,
+   <a href="mredge_mni_to_label_space.html" class="code" title="function mredge_mni_to_label_space(info, prefs, param, freq_indices)">mredge_mni_to_label_space</a>, <a href="mredge_label_param_map.html" class="code" title="function mredge_label_param_map(info, prefs, param, freq_indices)">mredge_label_param_map</a>
+
+ Part of the MREdge software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results,
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>	Co-registers magnitude image to MNI space. The deformation map is then used to co-register all elasticity maps.</li><li><a href="mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>	Coregisters a parameter map to MNI space using the deformation map from the averaged magnitude.</li><li><a href="mredge_label_param_map.html" class="code" title="function mredge_label_param_map(info, prefs, param, freq_indices)">mredge_label_param_map</a>	Labels paramater map results and produces statistics for brain anatomical regions</li><li><a href="mredge_mni_to_label_space.html" class="code" title="function mredge_mni_to_label_space(info, prefs, param, freq_indices)">mredge_mni_to_label_space</a>	Transforms MNI space results to SPM label space</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/src/main/m/mredge_ft_to_end.html" class="code" title="function mredge_ft_to_end(info, prefs)">mredge_ft_to_end</a>	Calls mredge inversion pipeline, but skips mredge preprocessing</li><li><a href="../../../../../MREdge/src/main/m/mredge_invert_and_stats.html" class="code" title="function mredge_invert_and_stats(info, prefs)">mredge_invert_and_stats</a>	Performs wave inversion and inversion-related statistical measures</li><li><a href="../../../../../MREdge/src/main/m/mredge_invert_to_end.html" class="code" title="function mredge_invert_to_end(info, prefs)">mredge_invert_to_end</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_brain_analysis(info, prefs, freq_indices)</a>
+0002 <span class="comment">% Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% USAGE:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   coregisters and labels brain results</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   If you use this method cite:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [paper in revision]</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% INPUTS:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0015 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% OUTPUTS:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   none</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% SEE ALSO:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   mredge_avg_mag_to_mni, mredge_coreg_param_to_mni,</span>
+0024 <span class="comment">%   mredge_mni_to_label_space, mredge_label_param_map</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% Part of the MREdge software package</span>
+0027 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0028 <span class="comment">% So that we can vouch for results,</span>
+0029 <span class="comment">% this code is source-available but not open source.</span>
+0030 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0031 <span class="comment">% for permission to make modifications.</span>
+0032 <span class="comment">%</span>
+0033 <a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>(info, prefs);
+0034 
+0035 <span class="keyword">if</span> strcmpi(prefs.inversion_strategy, <span class="string">'mdev'</span>)
+0036     params = {<span class="string">'absg'</span>, <span class="string">'phi'</span>};
+0037 <span class="keyword">else</span>
+0038     params  = {prefs.inversion_strategy};
+0039 <span class="keyword">end</span>
+0040 <span class="keyword">for</span> p = 1:numel(params)
+0041     <a href="mredge_coreg_param_to_mni.html" class="code" title="function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)">mredge_coreg_param_to_mni</a>(info, prefs, param, freq_indices);
+0042     <a href="mredge_mni_to_label_space.html" class="code" title="function mredge_mni_to_label_space(info, prefs, param, freq_indices)">mredge_mni_to_label_space</a>(info, prefs, param, freq_indices);
+0043     <a href="mredge_label_param_map.html" class="code" title="function mredge_label_param_map(info, prefs, param, freq_indices)">mredge_label_param_map</a>(info, prefs, param, freq_indices);
+0044 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

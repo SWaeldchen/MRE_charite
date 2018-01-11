@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_brain_analysis_sliding</title>
+  <meta name="keywords" content="mredge_brain_analysis_sliding">
+  <meta name="description" content="% function mredge_brain_analysis_sliding(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">neuro</a> &gt; mredge_brain_analysis_sliding.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/neuro&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_brain_analysis_sliding
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_brain_analysis_sliding(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_brain_analysis_sliding(info_mag, info_an, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_brain_analysis_sliding(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   coregisters and labels brain results
+
+   If you use this method cite
+
+   [fehlner ref to come]
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>	Co-registers magnitude image to MNI space. The deformation map is then used to co-register all elasticity maps.</li><li><a href="mredge_coreg_param_to_mni_sliding.html" class="code" title="function mredge_coreg_param_to_mni_sliding(info_an, prefs, param)">mredge_coreg_param_to_mni_sliding</a>	% function coreg_param_to_mni_sliding(info, param)</li><li><a href="mredge_label_param_map_sliding.html" class="code" title="function mredge_label_param_map_sliding(info_an, prefs, param)">mredge_label_param_map_sliding</a>	% function stats = mredge_label_param_map_sliding(info, param)</li><li><a href="mredge_mni_to_label_space_sliding.html" class="code" title="function mredge_mni_to_label_space_sliding(info_an, prefs, param)">mredge_mni_to_label_space_sliding</a>	% function mredge_mni_to_label_space_sliding(info, param)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function brain_analysis_sliding(info_an, prefs, param)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_brain_analysis_sliding(info_mag, info_an, prefs)</a>
+0002 <span class="comment">%% function mredge_brain_analysis_sliding(info, prefs);</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% USAGE:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   coregisters and labels brain results</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   If you use this method cite</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   [fehlner ref to come]</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% INPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0021 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% OUTPUTS:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   none</span>
+0026 
+0027     <span class="keyword">if</span> nargin == 2
+0028         prefs = info_an;
+0029         info_an = info_mag;
+0030     <span class="keyword">end</span>
+0031     <a href="mredge_avg_mag_to_mni.html" class="code" title="function mredge_avg_mag_to_mni(info, prefs)">mredge_avg_mag_to_mni</a>(info_mag, prefs);
+0032 
+0033     <span class="keyword">if</span> strcmpi(prefs.inversion_strategy, <span class="string">'MDEV'</span>) == 1
+0034         <a href="#_sub1" class="code" title="subfunction brain_analysis_sliding(info_an, prefs, param)">brain_analysis_sliding</a>(info_an, prefs, <span class="string">'Abs_G'</span>);
+0035         <a href="#_sub1" class="code" title="subfunction brain_analysis_sliding(info_an, prefs, param)">brain_analysis_sliding</a>(info_an, prefs, <span class="string">'amp'</span>);
+0036     <span class="keyword">end</span>
+0037     
+0038     <span class="keyword">if</span> strcmpi(prefs.inversion_strategy, <span class="string">'SFWI'</span>) == 1
+0039         <a href="#_sub1" class="code" title="subfunction brain_analysis_sliding(info_an, prefs, param)">brain_analysis_sliding</a>(info_an, prefs, <span class="string">'SFWI'</span>);
+0040     <span class="keyword">end</span>
+0041     
+0042 <span class="keyword">end</span>
+0043 
+0044 <a name="_sub1" href="#_subfunctions" class="code">function brain_analysis_sliding(info_an, prefs, param)</a>
+0045     
+0046     <a href="mredge_coreg_param_to_mni_sliding.html" class="code" title="function mredge_coreg_param_to_mni_sliding(info_an, prefs, param)">mredge_coreg_param_to_mni_sliding</a>(info_an, prefs, param);
+0047     <a href="mredge_mni_to_label_space_sliding.html" class="code" title="function mredge_mni_to_label_space_sliding(info_an, prefs, param)">mredge_mni_to_label_space_sliding</a>(info_an, prefs, param);
+0048     <a href="mredge_label_param_map_sliding.html" class="code" title="function mredge_label_param_map_sliding(info_an, prefs, param)">mredge_label_param_map_sliding</a>(info_an, prefs, param);
+0049     
+0050 <span class="keyword">end</span>
+0051</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

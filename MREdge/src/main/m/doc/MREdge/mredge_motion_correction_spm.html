@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_motion_correction_spm</title>
+  <meta name="keywords" content="mredge_motion_correction_spm">
+  <meta name="description" content="Performs motion correction using SPM. Requires SPM 12.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_motion_correction_spm.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_motion_correction_spm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Performs motion correction using SPM. Requires SPM 12.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_motion_correction_spm(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Performs motion correction using SPM. Requires SPM 12.
+
+ INPUTS:
+
+   info - an acquisition info structure created with make_acquisition_info
+   prefs - a preference file structure created with mredge_prefs
+
+ OUTPUTS:
+
+   none
+    
+ SEE ALSO:
+
+   spm_motion_correction, spm_motion_correction_fsl
+
+ TODO:
+
+   contains warnings -  debug
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/file_ops/mredge_load_with_spm.html" class="code" title="function [image, header] = mredge_load_with_spm(path)">mredge_load_with_spm</a>	% function mredge_load_with_spm(path)</li><li><a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>	Splits a 4D NIfTI into 3D images and passes the list of the 3d image paths. For FSL and SPM applications.</li><li><a href="../MREdge/file_ops/mredge_unzip_file_list.html" class="code" title="function unzipped_file_list = mredge_unzip_file_list(file_list)">mredge_unzip_file_list</a>	% function file_list = mredge_unzip_file_list(file_list)</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li><li><a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>	Convert cell array of 3D nii files to single 4D nii file.</li><li><a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>	Converts phase and magnitude data to real and imaginary data for processing of complex MR signal</li><li><a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>	Converts real and imagianry data to phase and magnitude</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_motion_correction.html" class="code" title="function mredge_motion_correction(info, prefs)">mredge_motion_correction</a>	Performs motion correction on raw MRE acquisitions, using FSL or SPM.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function call_spm_reslice(file_list, prefix)</a></li><li><a href="#_sub2" class="code">function [MAG_SUB, REAL_SUB, IMAG_SUB, STATS_SUB] = set_dirs(info, prefs)</a></li><li><a href="#_sub3" class="code">function replace_files(file_list, prefix, time_steps)</a></li><li><a href="#_sub4" class="code">function make_moco_mask(mag_path)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_motion_correction_spm(info, prefs)</a>
+0002 <span class="comment">% Performs motion correction using SPM. Requires SPM 12.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">%   prefs - a preference file structure created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SEE ALSO:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   spm_motion_correction, spm_motion_correction_fsl</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% TODO:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   contains warnings -  debug</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Part of the MREdge software package</span>
+0022 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0023 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0024 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0025 <span class="comment">%</span>
+0026 tic
+0027 disp(<span class="string">'MREdge Motion Correction with SPM'</span>);
+0028 cd(info.path);
+0029 [MAG_SUB, REAL_SUB, IMAG_SUB, STATS_SUB] = <a href="#_sub2" class="code" title="subfunction [MAG_SUB, REAL_SUB, IMAG_SUB, STATS_SUB] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0030 
+0031 NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0032 time_steps = info.time_steps;
+0033 total_acqs = numel(info.driving_frequencies)*time_steps*3;
+0034 full_unzipped_file_list_mag = cell(total_acqs, 1);
+0035 full_unzipped_file_list_real = cell(total_acqs, 1);
+0036 full_unzipped_file_list_imag = cell(total_acqs, 1);
+0037 
+0038 <span class="keyword">for</span> f_num = 1:numel(info.driving_frequencies)
+0039     f = info.driving_frequencies(f_num);
+0040     <span class="keyword">for</span> c = 1:3
+0041         index = (time_steps*3)*(f_num-1) + time_steps*(c-1) + 1;
+0042         index_end = index + time_steps - 1;
+0043         <a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>(info, f, c);
+0044 
+0045         file_list_mag = <a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(MAG_SUB, f, c, info);
+0046         file_list_mag_unzipped = <a href="../MREdge/file_ops/mredge_unzip_file_list.html" class="code" title="function unzipped_file_list = mredge_unzip_file_list(file_list)">mredge_unzip_file_list</a>(file_list_mag);
+0047         full_unzipped_file_list_mag(index:index_end) = file_list_mag_unzipped;
+0048 
+0049         file_list_real = <a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(REAL_SUB, f, c, info);
+0050         file_list_real_unzipped = <a href="../MREdge/file_ops/mredge_unzip_file_list.html" class="code" title="function unzipped_file_list = mredge_unzip_file_list(file_list)">mredge_unzip_file_list</a>(file_list_real);
+0051         full_unzipped_file_list_real(index:index_end) = file_list_real_unzipped;
+0052 
+0053         file_list_imag = <a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(IMAG_SUB, f, c, info);
+0054         file_list_imag_unzipped = <a href="../MREdge/file_ops/mredge_unzip_file_list.html" class="code" title="function unzipped_file_list = mredge_unzip_file_list(file_list)">mredge_unzip_file_list</a>(file_list_imag);
+0055         full_unzipped_file_list_imag(index:index_end) = file_list_imag_unzipped;
+0056 
+0057     <span class="keyword">end</span>
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% estimate motion, leaving trans matrix in magnitude headers</span>
+0061 spm(<span class="string">'defaults'</span>,<span class="string">'fmri'</span>);
+0062 spm_jobman(<span class="string">'initcfg'</span>);
+0063 matlabbatch{1}.spm.spatial.realign.estimate.data = {full_unzipped_file_list_mag};
+0064 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.quality = 0.9;
+0065 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.sep = 4;
+0066 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.fwhm = 5;
+0067 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.rtm = 0;   <span class="comment">% Register to first</span>
+0068 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.interp = 2;
+0069 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.wrap = [1 0 0];
+0070 matlabbatch{1}.spm.spatial.realign.estimate.eoptions.weight = <span class="string">''</span>;
+0071 
+0072 spm_jobman(<span class="string">'run'</span>,matlabbatch);
+0073 
+0074 <span class="comment">% load mag images to get their headers</span>
+0075 <span class="comment">% load real, imag files to get their voxels</span>
+0076 <span class="comment">% save real and imag images, with mag headers</span>
+0077 
+0078 <span class="keyword">for</span> index = 1: numel(full_unzipped_file_list_mag)        
+0079     [~, mag_header] = <a href="../MREdge/file_ops/mredge_load_with_spm.html" class="code" title="function [image, header] = mredge_load_with_spm(path)">mredge_load_with_spm</a>(full_unzipped_file_list_mag{index});
+0080     [real_image, ~] = <a href="../MREdge/file_ops/mredge_load_with_spm.html" class="code" title="function [image, header] = mredge_load_with_spm(path)">mredge_load_with_spm</a>(full_unzipped_file_list_real{index});
+0081     [imag_image, ~] = <a href="../MREdge/file_ops/mredge_load_with_spm.html" class="code" title="function [image, header] = mredge_load_with_spm(path)">mredge_load_with_spm</a>(full_unzipped_file_list_imag{index});
+0082     real_header = mag_header;
+0083     real_header.fname = full_unzipped_file_list_real{index};
+0084     imag_header = mag_header;
+0085     imag_header.fname = full_unzipped_file_list_imag{index};
+0086     spm_write_vol(real_header, real_image);
+0087     spm_write_vol(imag_header, imag_image);
+0088 <span class="keyword">end</span>
+0089 
+0090 
+0091 <span class="comment">% call reslice on real and imaginary images</span>
+0092 prefix = <span class="string">'r_'</span>;
+0093 disp(<span class="string">'Real'</span>);
+0094 <a href="#_sub1" class="code" title="subfunction call_spm_reslice(file_list, prefix)">call_spm_reslice</a>(full_unzipped_file_list_real, prefix);
+0095 disp(<span class="string">'Imaginary'</span>);
+0096 <a href="#_sub1" class="code" title="subfunction call_spm_reslice(file_list, prefix)">call_spm_reslice</a>(full_unzipped_file_list_imag, prefix);
+0097 
+0098 <a href="#_sub3" class="code" title="subfunction replace_files(file_list, prefix, time_steps)">replace_files</a>(full_unzipped_file_list_real, prefix, time_steps);
+0099 <a href="#_sub3" class="code" title="subfunction replace_files(file_list, prefix, time_steps)">replace_files</a>(full_unzipped_file_list_imag, prefix, time_steps);
+0100 
+0101 <span class="comment">%re-merge and zip</span>
+0102 <span class="keyword">for</span> f_num = 1:numel(info.driving_frequencies)
+0103     f = info.driving_frequencies(f_num);
+0104     <span class="keyword">for</span> c = 1:3
+0105         index = (time_steps*3)*(f_num-1) + time_steps*(c-1) + 1;
+0106         index_end = index + time_steps - 1;
+0107 
+0108         <a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(full_unzipped_file_list_real(index:index_end), REAL_SUB, f, c); <span class="comment">% automatically rezips</span>
+0109         <a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(full_unzipped_file_list_imag(index:index_end), IMAG_SUB, f, c);
+0110 
+0111         <a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>(info, f, c);
+0112     <span class="keyword">end</span>
+0113 <span class="keyword">end</span>
+0114 
+0115 <span class="keyword">for</span> f_num = 1:numel(info.driving_frequencies)
+0116     f = info.driving_frequencies(f_num);
+0117     <span class="keyword">for</span> c = 1:3
+0118        <span class="comment">% get binary masks for realignment later</span>
+0119         index = (time_steps*3)*(f_num-1) + time_steps*(c-1) + 1;
+0120         index_end = index + time_steps - 1;
+0121         mag_path =  fullfile(MAG_SUB, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0122         <a href="#_sub4" class="code" title="subfunction make_moco_mask(mag_path)">make_moco_mask</a>(mag_path);
+0123     <span class="keyword">end</span>
+0124 <span class="keyword">end</span>
+0125 
+0126 
+0127 <span class="comment">%move stats to root folder</span>
+0128 FSL_SPLIT_PREFIX = <span class="string">'vol000'</span>;
+0129 stats_path = fullfile(MAG_SUB, num2str(info.driving_frequencies(1)), <span class="string">'1'</span>, [<span class="string">'rp_'</span>, FSL_SPLIT_PREFIX, <span class="string">'0.txt'</span>]);
+0130 stats = load(stats_path);
+0131 delete(stats_path);
+0132 CONVERSION_CONSTANT = 360/(2*pi) *50*pi/360; <span class="comment">% R=50mm [Power_2012]</span>
+0133 tx  = squeeze(stats(:,1));
+0134 ty  = squeeze(stats(:,2));
+0135 tz  = squeeze(stats(:,3));
+0136 rx  = squeeze(stats(:,4))*CONVERSION_CONSTANT;
+0137 ry  = squeeze(stats(:,5))*CONVERSION_CONSTANT;
+0138 rz  = squeeze(stats(:,6))*CONVERSION_CONSTANT;
+0139 PV  = 2*sqrt(   (  1/3*( std(tx) + std(ty) + std(tz) )  )^2 + (  1/3*( std(rx) + std(ry) + std(rz) )  )^2   );
+0140 fileID = fopen(fullfile(STATS_SUB, <span class="string">'moco_full.csv'</span>), <span class="string">'w'</span>);
+0141 <span class="keyword">for</span> n = 1:numel(tx)
+0142     fprintf(fileID, <span class="string">'%1.3f, %1.3f, %1.3f, %1.3f, %1.3f, %1.3f \n'</span>, tx(n), ty(n), tz(n), rx(n), ry(n), rz(n));
+0143 <span class="keyword">end</span>
+0144 fclose(fileID);
+0145 fileID = fopen(fullfile(STATS_SUB, <span class="string">'moco_PV.csv'</span>), <span class="string">'w'</span>);
+0146 fprintf(fileID, <span class="string">'%1.3f \n'</span>, PV);
+0147 fclose(fileID);
+0148 toc
+0149 
+0150 <span class="keyword">end</span>
+0151 
+0152 <a name="_sub1" href="#_subfunctions" class="code">function call_spm_reslice(file_list, prefix)</a>
+0153     spm(<span class="string">'defaults'</span>,<span class="string">'fmri'</span>);
+0154     spm_jobman(<span class="string">'initcfg'</span>);
+0155     matlabbatch{1}.spm.spatial.realign.write.data = file_list;
+0156     matlabbatch{1}.spm.spatial.realign.write.roptions.which = [2 1];
+0157     matlabbatch{1}.spm.spatial.realign.write.roptions.interp = 4;
+0158     matlabbatch{1}.spm.spatial.realign.write.roptions.wrap = [1 0 0];
+0159     matlabbatch{1}.spm.spatial.realign.write.roptions.mask = 1;
+0160     matlabbatch{1}.spm.spatial.realign.write.roptions.prefix = prefix;
+0161     spm_jobman(<span class="string">'run'</span>, matlabbatch);    
+0162 <span class="keyword">end</span>
+0163 
+0164 <a name="_sub2" href="#_subfunctions" class="code">function [MAG_SUB, REAL_SUB, IMAG_SUB, STATS_SUB] = set_dirs(info, prefs)</a>
+0165     MAG_SUB = fullfile(info.path, <span class="string">'Magnitude'</span>);
+0166     REAL_SUB = fullfile(info.path, <span class="string">'Real'</span>);
+0167     IMAG_SUB = fullfile(info.path, <span class="string">'Imaginary'</span>);
+0168     STATS_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, <span class="string">'Stats'</span>);
+0169 <span class="keyword">end</span>
+0170 
+0171 <a name="_sub3" href="#_subfunctions" class="code">function replace_files(file_list, prefix, time_steps)</a>
+0172     FSL_SPLIT_PREFIX = <span class="string">'vol000'</span>;
+0173     <span class="comment">% 4 for .nii</span>
+0174     prefix_from_end = numel(FSL_SPLIT_PREFIX) + 5;
+0175     <span class="keyword">for</span> n = 1:numel(file_list)
+0176         index = mod(n-1, time_steps);
+0177         entry = file_list{n};
+0178         prefix_entry = [entry(1:end-prefix_from_end), prefix,entry(end-prefix_from_end+1:end)]; 
+0179         movefile(prefix_entry, entry);
+0180     <span class="keyword">end</span>
+0181 <span class="keyword">end</span>
+0182 
+0183 <a name="_sub4" href="#_subfunctions" class="code">function make_moco_mask(mag_path)</a>
+0184         moco_mask_path = mag_path(1:end-7);
+0185         moco_mask_path = [moco_mask_path, <span class="string">'_moco_mask.nii.gz'</span>];
+0186         mag_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(mag_path);
+0187         mask_vol = mag_vol;
+0188         mag_img = mag_vol.img;
+0189         mask_img = (mag_img == 0);
+0190         mask_vol.img = double(mask_img);
+0191         save_untouch_nii(mask_vol, moco_mask_path);
+0192 <span class="keyword">end</span>
+0193</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

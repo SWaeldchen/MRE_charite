@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_SOFT</title>
+  <meta name="keywords" content="DT_SOFT">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_SOFT.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_SOFT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = DT_SOFT(x, T, J) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>	Inverse 3D Complex Dual-Tree Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="DT_3D_v0_51f.html" class="code" title="function y = DT_3D_v0_51f(x)">DT_3D_v0_51f</a>	Dualtree complex denoising</li><li><a href="../../../../MREdge/mredge_denoise_3d.html" class="code" title="function y = mredge_denoise_3d(x)">mredge_denoise_3d</a>	% function y = mredge_denoise_3d(x, info, prefs)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = DT_SOFT(x, T, J)</a>
+0002 <span class="keyword">if</span> (nargin == 1)
+0003     T = 0.3;
+0004 <span class="keyword">end</span>
+0005 <span class="comment">% Dualtree complex denoising</span>
+0006 <span class="comment">% with soft thresholding</span>
+0007 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0008 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0009 w = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>(x,J,Faf,af);
+0010 <span class="keyword">for</span> j = 1:J
+0011     <span class="comment">% loop thru subbands</span>
+0012     <span class="keyword">for</span> s1 = 1:2
+0013         <span class="keyword">for</span> s2 = 1:2
+0014             <span class="keyword">for</span> s3 = 1:7
+0015                 a = w{j}{1}{s1}{s2}{s3};
+0016                 b = w{j}{2}{s1}{s2}{s3};
+0017                 C = a + 1i*b;
+0018                 <span class="comment">% soft thresh</span>
+0019                 c = max(abs(C) - T, 0);
+0020                 C = c./(c+T) .* C;
+0021                 <span class="comment">%</span>
+0022                 w{j}{1}{s1}{s2}{s3} = real(C);
+0023                 w{j}{2}{s1}{s2}{s3} = imag(C);
+0024             <span class="keyword">end</span>
+0025         <span class="keyword">end</span>
+0026     <span class="keyword">end</span>
+0027 <span class="keyword">end</span>
+0028 y = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>(w,J,Fsf,sf);
+0029</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

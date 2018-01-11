@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_xy</title>
+  <meta name="keywords" content="dtdenoise_xy">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; dtdenoise_xy.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_xy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function U_den = dtdenoise_xy(U, J, snr, curlFlag) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function U_den = dtdenoise_xy_lam(U)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function U_den = dtdenoise_xy(U, J, snr, curlFlag) </a>
+0003     sz = size(U);
+0004     denR = zeros(size(U));
+0005     denI = zeros(size(U));
+0006     <span class="keyword">if</span> (numel(sz) &lt; 4)
+0007         d4 = 1;
+0008     <span class="keyword">else</span> 
+0009         d4 = sz(4);
+0010     <span class="keyword">end</span>
+0011     pad1 = nextpwr2(sz(1));
+0012     pad2 = nextpwr2(sz(2));
+0013     padMax = max(pad1, pad2);
+0014     <span class="keyword">for</span> m = 1:d4
+0015         <span class="keyword">for</span> k = 1:size(U,3)
+0016             <span class="keyword">for</span> jiggerY = 0:3
+0017                 <span class="keyword">for</span> jiggerX = 0:3
+0018                     U_temp = circshift(simplepad(U(:,:,k,m), [padMax, padMax]), [jiggerY jiggerX]);
+0019                     snr_temp = circshift(simplepad(snr(:,:,k,m), [padMax, padMax]), [jiggerY jiggerX]);
+0020                     <span class="comment">%denR_temp = DT_2D_snr(real(U_temp), snr_temp, J);</span>
+0021                     <span class="comment">%denI_temp = DT_2D_snr(imag(U_temp), snr_temp, J);</span>
+0022                     denR_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(real(U_temp), J);
+0023                     denI_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(imag(U_temp), J);
+0024                     denR_temp = circshift(denR_temp, [-jiggerY -jiggerX]);
+0025                     denI_temp = circshift(denI_temp, [-jiggerY -jiggerX]);
+0026                     denR(:,:,k,m) = denR(:,:,k,m) + denR_temp(1:sz(1), 1:sz(2), :);
+0027                     denI(:,:,k,m) = denI(:,:,k,m) + denI_temp(1:sz(1), 1:sz(2), :);
+0028                 <span class="keyword">end</span>
+0029             <span class="keyword">end</span>
+0030         <span class="keyword">end</span>
+0031     <span class="keyword">end</span>
+0032     U_den = (denR + 1i*denI) ./ 16;
+0033 <span class="keyword">end</span>
+0034 
+0035 
+0036 <a name="_sub1" href="#_subfunctions" class="code">function U_den = dtdenoise_xy_lam(U) </a>
+0037     sz = size(U);
+0038     denR = zeros(size(U));
+0039     denI = zeros(size(U));
+0040     midpts = sz ./ 2;
+0041     <span class="keyword">for</span> m = 1:sz(4)
+0042         nl_est = 0;
+0043         <span class="keyword">for</span> k = 1:size(U,3)
+0044             sample_square = U(midpts(1)-20:midpts(1)+20,midpts(2)-20:midpts(2)+20,k,m);
+0045             sample_square = sample_square - min(sample_square(:));
+0046             nl_est = nl_est + NLEstimate(sample_square);
+0047         <span class="keyword">end</span>
+0048         nl_est = nl_est / size(U,3);
+0049         <span class="keyword">for</span> k = 1:size(U,3)
+0050             lambda = 0.3*nl_est;
+0051             <span class="keyword">for</span> jiggerY = 0:3
+0052                 <span class="keyword">for</span> jiggerX = 0:3
+0053                     U_temp = circshift(U(:,:,k,m), [jiggerY jiggerX]);
+0054                     size(U_temp)
+0055                     denR_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(real(U_temp), lambda);
+0056                     denI_temp = <a href="DT_2D.html" class="code" title="function y = DT_2D(x, T, J)">DT_2D</a>(imag(U_temp), lambda);
+0057                     denR_temp = circshift(denR_temp, [-jiggerY -jiggerX]);
+0058                     denI_temp = circshift(denI_temp, [-jiggerY -jiggerX]);
+0059                     denR(:,:,k,m) = denR(:,:,k,m) + denR_temp;
+0060                     denI(:,:,k,m) = denI(:,:,k,m) + denI_temp;
+0061                 <span class="keyword">end</span>
+0062             <span class="keyword">end</span>
+0063         <span class="keyword">end</span>
+0064     <span class="keyword">end</span>
+0065     U_den = (denR + 1i*denI) ./ 16;
+0066 <span class="keyword">end</span>
+0067 
+0068</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

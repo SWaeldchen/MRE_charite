@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_remove_divergence</title>
+  <meta name="keywords" content="mredge_remove_divergence">
+  <meta name="description" content="Numerical divergence removal of the wave field">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_remove_divergence.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_remove_divergence
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Numerical divergence removal of the wave field</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_remove_divergence(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Numerical divergence removal of the wave field
+
+ USAGE:
+
+   Helmholtz-Hodge decomposition of the vector fields, retaining curl
+   component
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ NOTE:
+
+   High-pass filtering is currently recommended instead of this method.
+
+ Part of the MREdge software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results, 
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../../../MREdge/src/main/m/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	Ensures consistent NIfTI file nomenclature</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIR, RESID_DIR] = set_dirs(info, prefs)</a></li><li><a href="#_sub2" class="code">function order_vec = get_order_vec(prefs)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_remove_divergence(info, prefs)</a>
+0002 <span class="comment">% Numerical divergence removal of the wave field</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% USAGE:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Helmholtz-Hodge decomposition of the vector fields, retaining curl</span>
+0007 <span class="comment">%   component</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% INPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0012 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% OUTPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   none</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% NOTE:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   High-pass filtering is currently recommended instead of this method.</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Part of the MREdge software package</span>
+0023 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0024 <span class="comment">% So that we can vouch for results,</span>
+0025 <span class="comment">% this code is source-available but not open source.</span>
+0026 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0027 <span class="comment">% for permission to make modifications.</span>
+0028 <span class="comment">%</span>
+0029 tic
+0030 disp(<span class="string">'Divergence Removal'</span>);
+0031 [FT_DIR, RESID_DIR] = <a href="#_sub1" class="code" title="subfunction [FT_DIR, RESID_DIR] = set_dirs(info, prefs)">set_dirs</a>(info, prefs);
+0032 NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0033 <span class="keyword">if</span> ~exist(RESID_DIR, <span class="string">'dir'</span>)
+0034     mkdir(RESID_DIR);
+0035 <span class="keyword">end</span>
+0036 <span class="keyword">for</span> f = info.driving_frequencies
+0037     <span class="comment">% make use of component order in prefs</span>
+0038     order_vec = <a href="#_sub2" class="code" title="subfunction order_vec = get_order_vec(prefs)">get_order_vec</a>(prefs);
+0039     wavefield_vol = cell(3,1);
+0040     components = cell(3,1);
+0041     <span class="keyword">for</span> c = 1:3
+0042         wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), <a href="../../../../MREdge/src/main/m/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, order_vec(c), NIF_EXT));
+0043         wavefield_vol{c} = load_untouch_nii_eb(wavefield_path);
+0044         components{order_vec(c)} = wavefield_vol{c}.img;
+0045     <span class="keyword">end</span>
+0046     resid_vol = wavefield_vol;
+0047     <span class="keyword">if</span> strcmp(prefs.curl_strategy, <span class="string">'lsqr'</span>) == 1
+0048         components = mredge_hhd_lsqr(components, prefs);
+0049     <span class="keyword">elseif</span> strcmp(prefs.curl_strategy, <span class="string">'fd'</span>) == 1
+0050         [components{1}, components{2}, components{3}] = curl(components{1}, components{2}, components{3});
+0051     <span class="keyword">elseif</span> strcmp(prefs.curl_strategy, <span class="string">'hipass'</span>) == 1
+0052         <span class="keyword">for</span> n = 1:3
+0053             components{n} = butter_2d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, components{n}, 1);
+0054         <span class="keyword">end</span>
+0055     <span class="keyword">end</span>
+0056     <span class="keyword">for</span> c = 1:3
+0057         wavefield_path = fullfile(FT_DIR, num2str(f), num2str(order_vec(c)), <a href="../../../../MREdge/src/main/m/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, order_vec(c), NIF_EXT));
+0058         wavefield_vol{c}.img = components{order_vec(c)};
+0059         save_untouch_nii(wavefield_vol{c}, wavefield_path);
+0060         resid_dir = fullfile(RESID_DIR, num2str(f), num2str(c));
+0061         <span class="keyword">if</span> ~exist(resid_dir, <span class="string">'dir'</span>)
+0062             mkdir(resid_dir);
+0063         <span class="keyword">end</span>
+0064         resid_path = fullfile(resid_dir, <a href="../../../../MREdge/src/main/m/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0065         resid_vol{c}.img = resid_vol{c}.img - wavefield_vol{c}.img;
+0066         save_untouch_nii(resid_vol{c}, resid_path);
+0067     <span class="keyword">end</span>
+0068 <span class="keyword">end</span>
+0069 toc   
+0070 
+0071 <span class="keyword">end</span>
+0072 
+0073 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIR, RESID_DIR] = set_dirs(info, prefs)</a>
+0074     FT_DIR = <a href="../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'FT'</span>);
+0075     RESID_DIR = <a href="../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs,<span class="string">'CURL_RESID'</span>);
+0076 <span class="keyword">end</span>
+0077 
+0078 <a name="_sub2" href="#_subfunctions" class="code">function order_vec = get_order_vec(prefs)</a>
+0079     order_vec = zeros(3,1);
+0080     <span class="keyword">if</span> strcmp(prefs.component_order(1), <span class="string">'x'</span>) == 1
+0081         order_vec(1) = 1;
+0082     <span class="keyword">elseif</span> strcmp(prefs(1), <span class="string">'y'</span>) == 1
+0083         order_vec(1) = 2;
+0084     <span class="keyword">else</span>
+0085         order_vec(1) = 3;
+0086     <span class="keyword">end</span>
+0087     <span class="keyword">if</span> strcmp(prefs.component_order(2), <span class="string">'x'</span>) == 1
+0088         order_vec(2) = 1;
+0089     <span class="keyword">elseif</span> strcmp(prefs.component_order(2), <span class="string">'y'</span>) == 1
+0090         order_vec(2) = 2;
+0091     <span class="keyword">else</span>
+0092         order_vec(2) = 3;
+0093     <span class="keyword">end</span>
+0094     <span class="keyword">if</span> strcmp(prefs.component_order(3), <span class="string">'x'</span>) == 1
+0095         order_vec(3) = 1;
+0096     <span class="keyword">elseif</span> strcmp(prefs.component_order(3), <span class="string">'y'</span>) == 1
+0097         order_vec(3) = 2;
+0098     <span class="keyword">else</span>
+0099         order_vec(3) = 3;
+0100     <span class="keyword">end</span>
+0101 <span class="keyword">end</span>
+0102 
+0103</pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

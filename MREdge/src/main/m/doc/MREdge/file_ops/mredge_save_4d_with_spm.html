@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_save_4d_with_spm</title>
+  <meta name="keywords" content="mredge_save_4d_with_spm">
+  <meta name="description" content="% function mredge_save_with_spm(path)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_save_4d_with_spm.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_save_4d_with_spm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_save_with_spm(path)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_save_4d_with_spm(header, image, subdir, series, component) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_save_with_spm(path)
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+ USAGE:
+
+ Saves NIfTI files using SPM functions, to preserve data types etc.
+ This requires  more parameters than load, because the images
+ must first be saved out as 3D, then merged to 4D, then gzipped.
+
+
+ INPUTS:
+
+ header - SPM header file (no other!)
+ image- SPM image cube
+ subdir - subdirectory (e.g. 'Phase')
+ series - driving frequency
+ component - component of motion
+
+ OUTPUTS:
+
+ none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../../MREdge/mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>	Convert cell array of 3D nii files to single 4D nii file.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_save_with_spm(path)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% USAGE:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Saves NIfTI files using SPM functions, to preserve data types etc.</span>
+0011 <span class="comment">% This requires  more parameters than load, because the images</span>
+0012 <span class="comment">% must first be saved out as 3D, then merged to 4D, then gzipped.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% INPUTS:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% header - SPM header file (no other!)</span>
+0018 <span class="comment">% image- SPM image cube</span>
+0019 <span class="comment">% subdir - subdirectory (e.g. 'Phase')</span>
+0020 <span class="comment">% series - driving frequency</span>
+0021 <span class="comment">% component - component of motion</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% OUTPUTS:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% none</span>
+0026 
+0027 <a name="_sub0" href="#_subfunctions" class="code">function mredge_save_4d_with_spm(header, image, subdir, series, component)</a>
+0028     sz = size(image);
+0029     <span class="keyword">if</span> numel(sz) &gt; 4
+0030         display(<span class="string">'MREdge ERROR: can only save 3D and 4D volumes'</span>);
+0031         <span class="keyword">return</span>;
+0032     <span class="keyword">end</span>
+0033     temp_file_paths = cell(sz(4), 1);
+0034     header_path = fullfile(subdir, num2str(series), num2str(component));
+0035     load(fullfile(header_path, <span class="string">'stashed_header.mat'</span>));
+0036     <span class="keyword">for</span> t = 1:sz(4)
+0037         temp_file_name = [<span class="string">'temp_'</span>, num2str(t), <span class="string">'.nii'</span>];
+0038         temp_file_path = fullfile(subdir, temp_file_name);
+0039         tempvol.name = temp_file_path;
+0040         tempvol.dt = [4 0];
+0041         spm_write_vol(header, tempvol);
+0042         temp_file_paths{t} = temp_file_path;
+0043     <span class="keyword">end</span>
+0044     <a href="../../MREdge/mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(temp_file_paths, <a href="mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(subdir, series, component, <span class="string">'.nii.gz'</span>));
+0045 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

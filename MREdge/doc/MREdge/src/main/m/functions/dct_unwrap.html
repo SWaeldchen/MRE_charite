@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dct_unwrap</title>
+  <meta name="keywords" content="dct_unwrap">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">functions</a> &gt; dct_unwrap.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/functions&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>dct_unwrap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function w_u = dct_unwrap(w, d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>	y = dctn(x)</li><li><a href="idctn_octave.html" class="code" title="function y = idctn_octave(x, dims)">idctn_octave</a>	y = idctn(x)</li><li><a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>	y = reshape(x,d)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function w_u = dct_unwrap_2d(w)</a></li><li><a href="#_sub2" class="code">function w_u = dct_unwrap_3d(w)</a></li><li><a href="#_sub3" class="code">function w_u = dct_unwrap_4d(w)</a></li><li><a href="#_sub4" class="code">function w_u = unwrap(w, mask)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w_u = dct_unwrap(w, d)</a>
+0002 
+0003 <span class="keyword">if</span> d == 2
+0004     w_u = <a href="#_sub1" class="code" title="subfunction w_u = dct_unwrap_2d(w)">dct_unwrap_2d</a>(w);
+0005 <span class="keyword">elseif</span> d == 3
+0006     w_u = <a href="#_sub2" class="code" title="subfunction w_u = dct_unwrap_3d(w)">dct_unwrap_3d</a>(w);
+0007 <span class="keyword">elseif</span> d==4
+0008     w_u = <a href="#_sub3" class="code" title="subfunction w_u = dct_unwrap_4d(w)">dct_unwrap_4d</a>(w);
+0009 <span class="keyword">else</span>
+0010     disp(<span class="string">'MCNIT error: dct_unwrap unwraps in 2, 3 or 4D'</span>);
+0011     <span class="keyword">return</span>;
+0012 <span class="keyword">end</span>
+0013 
+0014 <span class="keyword">end</span>
+0015 
+0016 <a name="_sub1" href="#_subfunctions" class="code">function w_u = dct_unwrap_2d(w)</a>
+0017     sz = size(w);
+0018     [x, y] = meshgrid(1:sz(2), 1:sz(1));
+0019     mask = x.^2 + y.^2;
+0020     [w_resh, n_slcs] = <a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(w, 3);
+0021     w_u = zeros(size(w_resh));
+0022     parfor n = 1:n_slcs
+0023         w_u(:,:,n) = <a href="#_sub4" class="code" title="subfunction w_u = unwrap(w, mask)">unwrap</a>(w_resh(:,:,n), mask);
+0024     <span class="keyword">end</span>
+0025     w_u = reshape(w_u, sz);
+0026 <span class="keyword">end</span>
+0027 
+0028 <a name="_sub2" href="#_subfunctions" class="code">function w_u = dct_unwrap_3d(w)</a>
+0029     sz = size(w);
+0030     [x, y, z] = meshgrid(1:sz(2), 1:sz(1), 1:sz(3));
+0031     mask = x.^2 + y.^2 + z.^2;
+0032     [w_resh, n_vols] = <a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(w, 4);
+0033     w_u = zeros(size(w_resh));
+0034     parfor n = 1:n_vols
+0035         w_u(:,:,:,n) = <a href="#_sub4" class="code" title="subfunction w_u = unwrap(w, mask)">unwrap</a>(w_resh(:,:,:,n), mask);
+0036     <span class="keyword">end</span>
+0037     w_u = reshape(w_u, sz);
+0038 <span class="keyword">end</span>
+0039 
+0040 <a name="_sub3" href="#_subfunctions" class="code">function w_u = dct_unwrap_4d(w)</a>
+0041     sz = size(w);
+0042     [x, y, z, t] = meshgrid(1:sz(2), 1:sz(1), 1:sz(3), 1:sz(4));
+0043     mask = x.^2 + y.^2 + z.^2 + t.^2;
+0044     [w_resh, n_acqs] = <a href="resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(w, 5);
+0045     w_u = zeros(size(w_resh));
+0046     parfor n = 1:n_acqs
+0047         w_u(:,:,:,:,n) = <a href="#_sub4" class="code" title="subfunction w_u = unwrap(w, mask)">unwrap</a>(w_resh(:,:,:,:,n), mask);
+0048     <span class="keyword">end</span>
+0049     w_u = reshape(w_u, sz);
+0050 <span class="keyword">end</span>
+0051 
+0052 <a name="_sub4" href="#_subfunctions" class="code">function w_u = unwrap(w, mask)</a>
+0053 
+0054     cosx = cos(w);
+0055     sinx = sin(w);
+0056    
+0057     term1 = sinx;
+0058     term1 = <a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>(term1);
+0059     term1 = term1 .* mask;
+0060     term1 = <a href="idctn_octave.html" class="code" title="function y = idctn_octave(x, dims)">idctn_octave</a>(term1);
+0061     term1 = term1 .* cosx;
+0062     term1 = <a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>(term1);
+0063     term1 = term1 ./ mask;
+0064     term1 = <a href="idctn_octave.html" class="code" title="function y = idctn_octave(x, dims)">idctn_octave</a>(term1);
+0065     
+0066     term2 = cosx;
+0067     term2 = <a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>(term2);
+0068     term2 = term2 .* mask;
+0069     term2 = <a href="idctn_octave.html" class="code" title="function y = idctn_octave(x, dims)">idctn_octave</a>(term2);
+0070     term2 = term2 .* sinx;
+0071     term2 = <a href="dctn_octave.html" class="code" title="function y = dctn(x, dims)">dctn_octave</a>(term2);
+0072     term2 = term2 ./ mask;
+0073     term2 = <a href="idctn_octave.html" class="code" title="function y = idctn_octave(x, dims)">idctn_octave</a>(term2);
+0074     
+0075     w_u = term1 - term2;
+0076 
+0077 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:20:49 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

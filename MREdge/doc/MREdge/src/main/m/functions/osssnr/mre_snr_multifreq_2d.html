@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mre_snr_multifreq_2d</title>
+  <meta name="keywords" content="mre_snr_multifreq_2d">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../../index.html">Home</a> &gt;  <a href="../../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../../index.html">m</a> &gt; <a href="../index.html">functions</a> &gt; <a href="index.html">osssnr</a> &gt; mre_snr_multifreq_2d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../../index.html"><img alt="<" border="0" src="../../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/functions/osssnr&nbsp;<img alt=">" border="0" src="../../../../../../right.png"></a></td></tr></table>-->
+
+<h1>mre_snr_multifreq_2d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../../up.png"></a></h2>
+<div class="box"><strong>function [disp_snr, strain_snr, lap_snr] = mre_snr_multifreq_2d(img, spacing, mask) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../../matlabicon.gif)">
+<li><a href="mre_snr_2d.html" class="code" title="function [disp_snr, strain_snr, lap_snr] = mre_snr_2d(img, spacing, mask)">mre_snr_2d</a>	</li><li><a href="../../../../../../MREdge/src/main/m/functions/resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>	y = reshape(x,d)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [disp_snr, strain_snr, lap_snr] = mre_snr_multifreq_2d(img, spacing, mask)</a>
+0002 sz = size(img);
+0003 [img_resh, n_freq] = <a href="../../../../../../MREdge/src/main/m/functions/resh.html" class="code" title="function [y, final_dim_size] = resh(x, d)">resh</a>(img, 5);
+0004 disp_snr = zeros(n_freq, 1);
+0005 strain_snr = zeros(n_freq, 1);
+0006 lap_snr = zeros(n_freq, 1);
+0007 <span class="keyword">if</span> nargin &lt; 2
+0008     mask = true(sz(1:3));
+0009 <span class="keyword">end</span>
+0010 <span class="keyword">for</span> n = 1:n_freq
+0011     [disp_snr(n), strain_snr(n), lap_snr(n)] = <a href="mre_snr_2d.html" class="code" title="function [disp_snr, strain_snr, lap_snr] = mre_snr_2d(img, spacing, mask)">mre_snr_2d</a>(img_resh(:,:,:,:,n), spacing, mask);
+0012 <span class="keyword">end</span>
+0013</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:20:49 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

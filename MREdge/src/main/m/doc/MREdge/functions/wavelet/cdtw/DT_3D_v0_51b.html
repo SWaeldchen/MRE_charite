@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of DT_3D_v0_51b</title>
+  <meta name="keywords" content="DT_3D_v0_51b">
+  <meta name="description" content="Dualtree complex denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; DT_3D_v0_51b.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>DT_3D_v0_51b
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Dualtree complex denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = DT_3D_v0_51b(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Dualtree complex denoising 
+ with overlapping group sparsity thresholding</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>	</li><li><a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>	Dualtree complex denoising</li><li><a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = DT_3D_v0_51b(x)</a>
+0002 
+0003 <span class="comment">% Dualtree complex denoising</span>
+0004 <span class="comment">% with overlapping group sparsity thresholding</span>
+0005 y = zeros(size(x));
+0006 
+0007 <span class="keyword">for</span> n = 1:size(x, 4)
+0008     
+0009     xr = real(x(:,:,:,n));
+0010     xi = imag(x(:,:,:,n));
+0011     
+0012     z_noise_r = z_noise_est(xr);
+0013     zfac_r = 2 + (1 + z_noise_r );
+0014     <span class="comment">%zfac_r = z_noise_r/300;</span>
+0015     <span class="comment">%display(['Z noise estimate real is ',num2str(z_noise_r), ' zfac is ', num2str(zfac_r)]);</span>
+0016     
+0017     z_noise_i = z_noise_est(xi);
+0018     zfac_i = 2 + (1 + z_noise_i );
+0019     <span class="comment">%zfac_i = z_noise_i/300;</span>
+0020     <span class="comment">%display(['Z noise estimate imag is ',num2str(z_noise_i), ' zfac is ', num2str(zfac_i)]);</span>
+0021   
+0022     sz = size(xr);
+0023 
+0024     [xr, order_vector] = <a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>(xr, zfac_r);
+0025     [xi, ~] = <a href="dtdenoise_z_nocrop.html" class="code" title="function [U_den, order_vector] = dtdenoise_z_nocrop(U, fac, J)">dtdenoise_z_nocrop</a>(xi, zfac_i);
+0026    
+0027     mad_r = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(xr);
+0028     mad_i = <a href="../../../../MREdge/functions/mad_est_3d.html" class="code" title="function sigma = mad_est_3d(volume, mask)">mad_est_3d</a>(xi);
+0029     
+0030     lambda_r = (0.005*mad_r);
+0031     lambda_i = (0.005*mad_i);
+0032 
+0033     <span class="comment">%lambda_r = (0.005*mad_r)</span>
+0034     <span class="comment">%lambda_i = (0.005*mad_i)</span>
+0035 
+0036  
+0037     sz2 = size(xr);
+0038     pwr2_y = nextpwr2(sz2(1));
+0039     pwr2_x = nextpwr2(sz2(2));
+0040     pwr2_z = nextpwr2(sz2(3));
+0041 
+0042     pwrmax = max(pwr2_y, max(pwr2_x, pwr2_z));
+0043     pad_vec = [pwrmax, pwrmax, pwrmax];
+0044     xr_pad = simplepad(xr, pad_vec);
+0045     xi_pad = simplepad(xi, pad_vec);
+0046 
+0047     k = [3 3 3];
+0048     xr_pad = <a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>(xr_pad, k, lambda_r);
+0049     xi_pad = <a href="DT_OGS.html" class="code" title="function y = DT_OGS(x, K, lambda, J)">DT_OGS</a>(xi_pad, k, lambda_i);
+0050 
+0051     xr = xr_pad(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0052     xi = xi_pad(1:sz2(1), 1:sz2(2), 1:sz2(3));
+0053 
+0054     firsts = find(order_vector==1);
+0055     index1 = firsts(1);
+0056     index2 = index1 + sz(3) - 1;
+0057     xr = xr(:,:,index1:index2);
+0058     xi = xi(:,:,index1:index2);
+0059 
+0060     y(:,:,:,n) = xr + 1i*xi;
+0061     
+0062     assignin(<span class="string">'base'</span>, <span class="string">'xr_pad'</span>, xr_pad);
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

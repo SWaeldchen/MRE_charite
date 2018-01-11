@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of icdtw_2d_stationary</title>
+  <meta name="keywords" content="icdtw_2d_stationary">
+  <meta name="description" content="Inverse Dual-Tree Complex 2D Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; icdtw_2d_stationary.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>icdtw_2d_stationary
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = icdtw_2d_stationary(w, J, Fsf, sf) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Inverse Dual-Tree Complex 2D Discrete Wavelet Transform
+ 
+ USAGE:
+   y = icplxdual2D(w, J, Fsf, sf)
+ INPUT:
+   w - wavelet coefficients
+   J - number of stages
+   Fsf - synthesis filters for final stage
+   sf - synthesis filters for preceeding stages
+ OUTPUT:
+   y - output array
+ See cplxdual2D
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm.html" class="code" title="function [u, v] = pm(a,b)">pm</a>	[u v] = pm(a,b)</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/sfb2D_stationary.html" class="code" title="function y = sfb2D(lo, hi, sf1, sf2)">sfb2D_stationary</a>	2D Synthesis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = icdtw_2d_stationary(w, J, Fsf, sf)</a>
+0002 
+0003 <span class="comment">% Inverse Dual-Tree Complex 2D Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   y = icplxdual2D(w, J, Fsf, sf)</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   w - wavelet coefficients</span>
+0009 <span class="comment">%   J - number of stages</span>
+0010 <span class="comment">%   Fsf - synthesis filters for final stage</span>
+0011 <span class="comment">%   sf - synthesis filters for preceeding stages</span>
+0012 <span class="comment">% OUTPUT:</span>
+0013 <span class="comment">%   y - output array</span>
+0014 <span class="comment">% See cplxdual2D</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0017 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0018 
+0019 <span class="keyword">for</span> j = 1:J
+0020     <span class="keyword">for</span> m = 1:3
+0021         [w{j}{1}{1}{m} w{j}{2}{2}{m}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm.html" class="code" title="function [u, v] = pm(a,b)">pm</a>(w{j}{1}{1}{m},w{j}{2}{2}{m});
+0022         [w{j}{1}{2}{m} w{j}{2}{1}{m}] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/pm.html" class="code" title="function [u, v] = pm(a,b)">pm</a>(w{j}{1}{2}{m},w{j}{2}{1}{m});
+0023     <span class="keyword">end</span>
+0024 <span class="keyword">end</span>
+0025 
+0026 y = zeros(size(w{1}{1}{1}{1}));
+0027 <span class="keyword">for</span> m = 1:2
+0028     <span class="keyword">for</span> n = 1:2
+0029         lo = w{J+1}{m}{n};
+0030         <span class="keyword">for</span> j = J:-1:2
+0031                   sf_atrous = atrous(sf, j);
+0032             lo = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/sfb2D_stationary.html" class="code" title="function y = sfb2D(lo, hi, sf1, sf2)">sfb2D_stationary</a>(lo, w{j}{m}{n}, sf_atrous{m}, sf_atrous{n});
+0033         <span class="keyword">end</span>
+0034         lo = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/sfb2D_stationary.html" class="code" title="function y = sfb2D(lo, hi, sf1, sf2)">sfb2D_stationary</a>(lo, w{1}{m}{n}, Fsf{m}, Fsf{n});
+0035         y = y + lo;
+0036     <span class="keyword">end</span>
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% normalization</span>
+0040 y = y/2;
+0041 
+0042 
+0043</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

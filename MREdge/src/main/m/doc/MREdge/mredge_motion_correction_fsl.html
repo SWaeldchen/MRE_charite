@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_motion_correction_fsl</title>
+  <meta name="keywords" content="mredge_motion_correction_fsl">
+  <meta name="description" content="Applies motion correction using FSL. Requires a Debian installation of FSL 5.0+">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_motion_correction_fsl.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_motion_correction_fsl
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Applies motion correction using FSL. Requires a Debian installation of FSL 5.0+</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_motion_correction_fsl(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Applies motion correction using FSL. Requires a Debian installation of FSL 5.0+
+
+ INPUTS:
+
+   info - an acquisition info structure created with make_acquisition_info
+   prefs - a preference file structure created with mredge_prefs
+
+ OUTPUTS:
+
+   none    
+
+ SEE ALSO:
+
+   <a href="mredge_motion_correction.html" class="code" title="function mredge_motion_correction(info, prefs)">mredge_motion_correction</a>, <a href="mredge_motion_correction_spm.html" class="code" title="function mredge_motion_correction_spm(info, prefs)">mredge_motion_correction_spm</a>
+
+ TODO:
+
+   has warnings -- debug
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>	Strips file extension from a nifti file, to allow alteration of filenames.</li><li><a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>	Splits a 4D NIfTI into 3D images and passes the list of the 3d image paths. For FSL and SPM applications.</li><li><a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>	Converts phase and magnitude data to real and imaginary data for processing of complex MR signal</li><li><a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>	Converts real and imagianry data to phase and magnitude</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_motion_correction.html" class="code" title="function mredge_motion_correction(info, prefs)">mredge_motion_correction</a>	Performs motion correction on raw MRE acquisitions, using FSL or SPM.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function apply_moco(path, path_mag_mat, info)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_motion_correction_fsl(info)</a>
+0002 <span class="comment">% Applies motion correction using FSL. Requires a Debian installation of FSL 5.0+</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">%   prefs - a preference file structure created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SEE ALSO:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   mredge_motion_correction, mredge_motion_correction_spm</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% TODO:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   has warnings -- debug</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Part of the MREdge software package</span>
+0022 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0023 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0024 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0025 <span class="comment">%</span>
+0026 tic
+0027 disp(<span class="string">'MREdge Motion Correction with FSL'</span>);
+0028 <a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>(info);
+0029 <span class="keyword">for</span> subdir = info.ds.subdirs_comps_files
+0030     <span class="comment">% make a copy, motion correct with copy in, original out</span>
+0031     subdir_temp = [<a href="../MREdge/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>(subdir), <span class="string">'_temp'</span>, NIF_EXT];
+0032     copyfile([info.ds.list(info.ds.enum.magnitude), subdir], [info.ds.list(info.ds.enum.magnitude), subdir_temp]);
+0033     mcflirt_command = [<span class="string">'fsl5.0-mcflirt -in '</span>, subdir_temp, <span class="string">' -out '</span>, subdir,<span class="string">' -smooth 0.5 -mats -stats'</span> ];
+0034     system(mcflirt_command);
+0035     delete(subdir_temp);
+0036     subdir_mat = [<a href="../MREdge/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>(subdir), <span class="string">'.mat'</span>];
+0037     <a href="#_sub1" class="code" title="subfunction apply_moco(path, path_mag_mat, info)">apply_moco</a>(info.ds.list(info.ds.enum.real), subdir, subdir_mat, info);
+0038     <a href="#_sub1" class="code" title="subfunction apply_moco(path, path_mag_mat, info)">apply_moco</a>(info.ds.list(info.ds.enum.imaginary), subdir, subdir_mat, info);
+0039 <span class="keyword">end</span>
+0040 <a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>(info);
+0041 toc
+0042 <span class="keyword">end</span>
+0043 
+0044 <a name="_sub1" href="#_subfunctions" class="code">function apply_moco(path, path_mag_mat, info)</a>
+0045     path_split_list = <a href="../MREdge/file_ops/mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(path);
+0046     <span class="keyword">for</span> t = 1:info.time_steps
+0047           split_image_temp = [fullfile(subdir, path_component), <span class="string">'/vol000'</span>, num2str(t-1), <span class="string">'.nii.gz'</span>];
+0048           split_image_temp_trans = [fullfile(subdir, path_component), <span class="string">'/vol000'</span>, num2str(t-1), <span class="string">'_trans.nii.gz'</span>];
+0049           trans_matrix_temp = [fullfile(path_mag_mat), <span class="string">'/MAT_000'</span>, num2str(t-1)];
+0050           flirt_command = [<span class="string">'fsl5.0-flirt -in '</span>,split_image_temp,<span class="string">' -ref '</span>,split_image_temp, <span class="string">' -out '</span>,split_image_temp_trans,<span class="string">' -init '</span>, trans_matrix_temp,<span class="string">' -applyxfm'</span>];
+0051           system(flirt_command);
+0052           splitfiles = [splitfiles, <span class="string">' '</span>, split_image_temp_trans]; <span class="comment">%#ok&lt;*AGROW&gt;</span>
+0053     <span class="keyword">end</span>
+0054     merge_command = [<span class="string">'fsl5.0-fslmerge -t '</span>, path_re, <span class="string">' '</span>, splitfiles];
+0055     system(merge_command);
+0056 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

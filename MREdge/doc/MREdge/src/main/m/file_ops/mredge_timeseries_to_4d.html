@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_timeseries_to_4d</title>
+  <meta name="keywords" content="mredge_timeseries_to_4d">
+  <meta name="description" content="Converts a timeseries of 3D nii files to a 4D nii file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="../index.html">m</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_timeseries_to_4d.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m/file_ops&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_timeseries_to_4d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>Converts a timeseries of 3D nii files to a 4D nii file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_timeseries_to_4d(subdir, series, component) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Converts a timeseries of 3D nii files to a 4D nii file
+
+ INPUTS:
+
+ time_series_subdir - subdir containing the time series
+ series_num - number of the acquisition series
+ n - number of the time series
+
+ OUTPUTS:
+
+ none
+
+ Part of the MREdge software package
+ Created 2016 at Charite Medical University Berlin
+ So that we can vouch for results, 
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="../../../../../MREdge/src/main/m/mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>	Convert cell array of 3D nii files to single 4D nii file.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_timeseries_to_4d(subdir, series, component)</a>
+0002 <span class="comment">% Converts a timeseries of 3D nii files to a 4D nii file</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% time_series_subdir - subdir containing the time series</span>
+0007 <span class="comment">% series_num - number of the acquisition series</span>
+0008 <span class="comment">% n - number of the time series</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% OUTPUTS:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% none</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Part of the MREdge software package</span>
+0015 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0016 <span class="comment">% So that we can vouch for results,</span>
+0017 <span class="comment">% this code is source-available but not open source.</span>
+0018 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0019 <span class="comment">% for permission to make modifications.</span>
+0020 <span class="comment">%</span>
+0021 
+0022 
+0023 NIF_EXT = <span class="string">'*.nii'</span>;
+0024 time_series_list = dir(fullfile(subdir, num2str(series), num2str(component), NIF_EXT));
+0025 num_time_series = numel(time_series_list);
+0026 cell_array = cell(num_time_series, 1);
+0027 <span class="keyword">for</span> t = 1:num_time_series
+0028   cell_array{t} = fullfile(subdir, num2str(series), num2str(component), time_series_list(t).name);
+0029 <span class="keyword">end</span>
+0030 
+0031 <a href="../../../../../MREdge/src/main/m/mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(cell_array, subdir, series, component);
+0032 
+0033 <span class="keyword">for</span> n = 1:numel(cell_array)
+0034     delete(cell_array{n});
+0035 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

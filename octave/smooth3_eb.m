@@ -1,6 +1,6 @@
 function ret = smooth3_eb(data, filt, sz, arg)
 
-
+[data_resh, n_vols] = resh(data, 4);
 
 if nargin==1      %smooth3(data)
   filt = 'b';
@@ -13,10 +13,6 @@ elseif nargin==3  %smooth3(data, filter, sz)
   arg = .65;
 elseif nargin>4 || nargin==0
   error('wrong number of inputs'); 
-end
-
-if ndims(data)~=3
-  error('data not 3d');
 end
 
 if length(sz)==1
@@ -41,8 +37,11 @@ else
   error('unknown filter');
 end
 
-ret=convn(padreplicate(data,padSize),smooth, 'valid');
+for n = 1:n_vols
+    ret_resh(:,:,:,n)=convn(padreplicate(data_resh(:,:,:,n),padSize),smooth, 'valid');
+end
 
+ret = reshape(ret_resh, size(data));
 
 function h = gaussian3(P1, P2)
 %3D Gaussian lowpass filter

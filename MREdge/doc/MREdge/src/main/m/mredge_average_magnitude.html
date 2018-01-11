@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_average_magnitude</title>
+  <meta name="keywords" content="mredge_average_magnitude">
+  <meta name="description" content="Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_average_magnitude.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_average_magnitude
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_average_magnitude(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.
+
+
+ INPUTS:
+
+ info - an acquisition info structure created with make_acquisition_info
+
+ OUTPUTS:
+
+ none
+
+ Part of the MREdge software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results, 
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_average_magnitude(info, prefs)</a>
+0002 <span class="comment">% Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUTS:</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% info - an acquisition info structure created with make_acquisition_info</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Part of the MREdge software package</span>
+0014 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0015 <span class="comment">% So that we can vouch for results,</span>
+0016 <span class="comment">% this code is source-available but not open source.</span>
+0017 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0018 <span class="comment">% for permission to make modifications.</span>
+0019 <span class="comment">%</span>
+0020 NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0021 avg_sub = <a href="../../../../MREdge/src/main/m/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info,prefs, <span class="string">'magnitude'</span>);
+0022 avg_vol = [];
+0023 
+0024 <span class="keyword">for</span> subdir = info.ds.subdirs_comps_files
+0025     mag_path = cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir));
+0026     mag_vol = load_untouch_nii_eb(mag_path);
+0027     <span class="keyword">if</span> isempty(avg_vol) <span class="comment">% use first volume of first image as placeholder</span>
+0028         avg_vol = load_untouch_nii_eb(mag_path);
+0029         avg_vol.img = avg_vol.img(:,:,:,1);
+0030         avg_vol.img = zeros(size(avg_vol.img));
+0031         avg_vol.hdr.dime.dim(1) = 3;
+0032         avg_vol.hdr.dime.dim(5) = 1;
+0033     <span class="keyword">else</span>
+0034         avg_vol.img = avg_vol.img + sum(mag_vol.img,4);
+0035     <span class="keyword">end</span>
+0036 <span class="keyword">end</span>
+0037 
+0038 avg_vol.img = avg_vol.img ./ ( numel(info.driving_frequencies) * 3 * info.time_steps);
+0039 avg_path = fullfile(avg_sub, <span class="string">'avg_magnitude'</span>, NIF_EXT);
+0040 save_untouch_nii_eb(avg_vol, avg_path);
+0041 mask_vol = avg_vol;
+0042 mask_vol.img(mask_vol.img &lt;= prefs.anat_mask_thresh_low) = nan;
+0043 mask_vol.img(mask_vol.img &gt;= prefs.anat_mask_thresh_high) = nan;
+0044 mask_vol.img(~isnan(mask_vol.img)) = 1;
+0045 mask_vol.img(isnan(mask_vol.img)) = 0;
+0046 mask_vol.img = double(mask_vol.img);
+0047 mask_path = fullfile(avg_sub, <span class="string">'magnitude_mask'</span>, NIF_EXT);
+0048 save_untouch_nii_eb(mask_vol, mask_path);</pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

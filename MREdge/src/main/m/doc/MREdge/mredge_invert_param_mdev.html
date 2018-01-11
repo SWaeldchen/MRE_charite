@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_invert_param_mdev</title>
+  <meta name="keywords" content="mredge_invert_param_mdev">
+  <meta name="description" content="% function mredge_invert_param_all(info, prefs, param, freq_indices);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_invert_param_mdev.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_invert_param_mdev
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_invert_param_all(info, prefs, param, freq_indices);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_invert_param_mdev(info, prefs, param, freq_indices) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_invert_param_all(info, prefs, param, freq_indices);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+
+ USAGE:
+
+   create an elastogram of param using the all approach
+
+   If you use this method cite
+
+   Braun, Jürgen, Jing Guo, Ralf Lützkendorf, Jörg Stadler, Sebastian
+   Papazoglou, Sebastian Hirsch, Ingolf Sack, and Johannes Bernarding. 
+   &quot;High-resolution mechanical imaging of the human brain by 
+   three-dimensional multifrequency magnetic resonance elastography at 
+   7T.&quot; Neuroimage 90 (2014): 308-314.
+
+   and preferably also
+
+   Papazoglou, Sebastian, Sebastian Hirsch, Jürgen Braun, and Ingolf 
+   Sack. &quot;Multifrequency inversion in magnetic resonance elastography.&quot; 
+   Physics in medicine and biology 57, no. 8 (2012): 2329.
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+   param - name of all-compatible parameter: 'absg', 'phi', 'c' or 'a'
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	% function mredge_analysis_path(info, subdir);</li><li><a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>	% function filename = mredge_filename(series, component)</li><li><a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>	% function mredge_get_ft_dirs(info, prefs);</li><li><a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_invert_sliding.html" class="code" title="function [stable_filenames, stable_frequencies] = mredge_invert_sliding(info, prefs, invert)">mredge_invert_sliding</a>	% function mredge_invert_sliding(info, prefs,invert);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_invert_param_all(info, prefs, param, freq_indices);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0006 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   create an elastogram of param using the all approach</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   If you use this method cite</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Braun, Jürgen, Jing Guo, Ralf Lützkendorf, Jörg Stadler, Sebastian</span>
+0016 <span class="comment">%   Papazoglou, Sebastian Hirsch, Ingolf Sack, and Johannes Bernarding.</span>
+0017 <span class="comment">%   &quot;High-resolution mechanical imaging of the human brain by</span>
+0018 <span class="comment">%   three-dimensional multifrequency magnetic resonance elastography at</span>
+0019 <span class="comment">%   7T.&quot; Neuroimage 90 (2014): 308-314.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   and preferably also</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Papazoglou, Sebastian, Sebastian Hirsch, Jürgen Braun, and Ingolf</span>
+0024 <span class="comment">%   Sack. &quot;Multifrequency inversion in magnetic resonance elastography.&quot;</span>
+0025 <span class="comment">%   Physics in medicine and biology 57, no. 8 (2012): 2329.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% INPUTS:</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0030 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0031 <span class="comment">%   param - name of all-compatible parameter: 'absg', 'phi', 'c' or 'a'</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% OUTPUTS:</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   none</span>
+0036 
+0037 <a name="_sub0" href="#_subfunctions" class="code">function mredge_invert_param_mdev(info, prefs, param, freq_indices)</a>
+0038     frequencies = info.driving_frequencies;
+0039     <span class="keyword">if</span> nargin &lt; 4
+0040         freq_indices = 1:numel(frequencies);
+0041         special_freq_set = 0;
+0042     <span class="keyword">else</span>
+0043         special_freq_set = 1;
+0044     <span class="keyword">end</span>
+0045     [FT_DIRS, PARAM_SUB] =<a href="#_sub1" class="code" title="subfunction [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)">set_dirs</a>(info, prefs, param);
+0046     NIF_EXT = getenv(<span class="string">'NIFTI_EXTENSION'</span>);
+0047     <span class="keyword">if</span> numel(unique(info.voxel_spacing)) == 1
+0048         ndims = 4;
+0049         iso = 1;
+0050     <span class="keyword">else</span>
+0051         ndims = 2;
+0052         iso = 0;
+0053     <span class="keyword">end</span>
+0054     all_u = [];
+0055     <span class="keyword">for</span> f_ind = freq_indices
+0056         f = info.driving_frequencies(f_ind);
+0057         freq_u = [];
+0058         <span class="keyword">for</span> c = 1:3
+0059             <span class="keyword">for</span> d = 1:numel(FT_DIRS)
+0060                 wavefield_path = fullfile(FT_DIRS{d}, num2str(f), num2str(c), <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0061                 wavefield_vol = <a href="../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(wavefield_path);
+0062                 wavefield_img = double(wavefield_vol.img);
+0063                 freq_u = cat(4, freq_u, wavefield_img);
+0064             <span class="keyword">end</span>
+0065             <span class="comment">% outputs for component</span>
+0066             <span class="keyword">if</span> special_freq_set == 0
+0067                 <span class="keyword">if</span> strcmpi(prefs.gradient_strategy, <span class="string">'fd'</span>) 
+0068                     absg = helmholtz_inversion(wavefield_img, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, ndims, iso);
+0069                 <span class="keyword">elseif</span> strcmpi(prefs.gradient_strategy, <span class="string">'lsq'</span>)                    
+0070                     absg = helm_inv_rg(wavefield_img, f, info.voxel_spacing);
+0071                 <span class="keyword">end</span>
+0072                 param_comp = wavefield_vol;
+0073                 param_comp.img = absg;
+0074                 <span class="comment">%param_comp = update_nifti_dims(param_comp);</span>
+0075                 param_comp_dir = fullfile(PARAM_SUB, num2str(f), num2str(c));
+0076                 <span class="keyword">if</span> ~exist(param_comp_dir, <span class="string">'dir'</span>)
+0077                     mkdir(param_comp_dir);
+0078                 <span class="keyword">end</span>
+0079                 param_comp_path = fullfile(param_comp_dir, <a href="../MREdge/file_ops/mredge_filename.html" class="code" title="function filename = mredge_filename(series, component, extension, descriptor)">mredge_filename</a>(f, c, NIF_EXT));
+0080                 save_untouch_nii(param_comp, param_comp_path);
+0081             <span class="keyword">end</span>
+0082         <span class="keyword">end</span>
+0083         all_u = cat(5, all_u, freq_u);
+0084         <span class="comment">% outputs for frequency</span>
+0085         <span class="keyword">if</span> special_freq_set == 0
+0086             <span class="keyword">if</span> strcmpi(prefs.gradient_strategy, <span class="string">'fd'</span>)
+0087                 absg = helmholtz_inversion(freq_u, f, info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+0088             <span class="keyword">elseif</span> strcmpi(prefs.gradient_strategy, <span class="string">'lsq'</span>)
+0089                 absg = helm_inv_rg(freq_u, f, info.voxel_spacing); 
+0090             <span class="keyword">end</span>
+0091             param_freq = wavefield_vol;
+0092             param_freq.img = absg;
+0093             param_freq.hdr.dime.datatype = 64;
+0094             <span class="comment">%param_freq = update_nifti_dims(param_freq);</span>
+0095             param_freq_dir = fullfile(PARAM_SUB, num2str(f));
+0096             <span class="keyword">if</span> ~exist(param_freq_dir, <span class="string">'dir'</span>)
+0097                disp(<span class="string">'MREdge ERROR: Frequency folder not found'</span>);
+0098                <span class="keyword">return</span>
+0099             <span class="keyword">end</span>
+0100             param_freq_path = fullfile(param_freq_dir, [num2str(f), NIF_EXT]);
+0101             save_untouch_nii(param_freq, param_freq_path);
+0102         <span class="keyword">end</span>
+0103     <span class="keyword">end</span>
+0104     <span class="comment">% all output</span>
+0105     <span class="keyword">if</span> prefs.inversion_settings.bootstrap
+0106         [x0, x1] = bootstrap_helmholtz(double(all_u), info.driving_frequencies, info.voxel_spacing);
+0107         mean_freq = mean(info.driving_frequencies);
+0108         absg = x0 + x1*mean_freq;
+0109     <span class="keyword">else</span>
+0110         <span class="keyword">if</span> strcmpi(prefs.gradient_strategy, <span class="string">'fd'</span>)
+0111             absg = helmholtz_inversion(all_u, info.driving_frequencies(freq_indices), info.voxel_spacing, <span class="keyword">...</span>
+0112             prefs.inversion_settings.mdev_laplacian_dims, 4, iso);
+0113         <span class="keyword">elseif</span> strcmpi(prefs.gradient_strategy, <span class="string">'lsq'</span>)
+0114             absg = helm_inv_rg(all_u, info.driving_frequencies(freq_indices), info.voxel_spacing);
+0115         <span class="keyword">end</span>
+0116     <span class="keyword">end</span>
+0117     param_all = wavefield_vol;
+0118     param_all.img = absg;
+0119     <span class="comment">%param_all = update_nifti_dims(param_all);</span>
+0120     param_all.hdr.dime.datatype = 64;
+0121     param_all_dir = fullfile(PARAM_SUB);
+0122     <span class="keyword">if</span> ~exist(param_all_dir, <span class="string">'dir'</span>)
+0123        disp(<span class="string">'MREdge ERROR: Param folder not found'</span>);
+0124        <span class="keyword">return</span>
+0125     <span class="keyword">end</span>
+0126     <span class="keyword">if</span> special_freq_set == 0
+0127         param_all_path = fullfile(param_all_dir, [<span class="string">'ALL'</span>, NIF_EXT]);
+0128     <span class="keyword">else</span> <span class="comment">% make file path unique to particular frequency combination</span>
+0129         filename = <span class="string">''</span>;
+0130         curr_freqs = frequencies(freq_indices);
+0131         nfreqs = numel(curr_freqs);
+0132         <span class="keyword">for</span> n = 1:nfreqs
+0133             filename = [filename, num2str(curr_freqs(n))]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0134             <span class="keyword">if</span> n &lt; nfreqs
+0135                 filename = [filename, <span class="string">'_'</span>]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0136             <span class="keyword">end</span>
+0137         <span class="keyword">end</span>
+0138         param_all_path = fullfile(param_all_dir, [filename, NIF_EXT]);
+0139     <span class="keyword">end</span>
+0140    save_untouch_nii(param_all, param_all_path);
+0141 
+0142 <span class="keyword">end</span>
+0143 
+0144 <a name="_sub1" href="#_subfunctions" class="code">function [FT_DIRS, PARAM_SUB] = set_dirs(info, prefs, param)</a>
+0145     FT_DIRS = <a href="../MREdge/file_ops/mredge_get_ft_dirs.html" class="code" title="function FT_DIRS = mredge_get_ft_dirs(info, prefs)">mredge_get_ft_dirs</a>(info, prefs);
+0146     PARAM_SUB = <a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs, param);
+0147 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 03-Jan-2018 09:52:05 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_invert_and_stats</title>
+  <meta name="keywords" content="mredge_invert_and_stats">
+  <meta name="description" content="Performs wave inversion and inversion-related statistical measures">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_invert_and_stats.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_invert_and_stats
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Performs wave inversion and inversion-related statistical measures</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_invert_and_stats(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Performs wave inversion and inversion-related statistical measures 
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ NOTE:
+
+   
+
+ Part of the MREdge software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results, 
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+ for permission to make modifications.
+
+ run loop across groups for sliding-window multifrequency analysis</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge_invert.html" class="code" title="function mredge_invert(info, prefs, freq_indices)">mredge_invert</a>	Wave inversion of preprocessed MRE data</li><li><a href="../../../../MREdge/src/main/m/neuro/mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>	Provides co-registration, segmentation and analysis of brain MRE data. Requires SPM12.</li><li><a href="../../../../MREdge/src/main/m/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>	Creates summed amplitude images</li><li><a href="../../../../MREdge/src/main/m/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>	Returns median of masked values for a parameter map</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function invert_and_stats(info, prefs, freq_indices)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_invert_and_stats(info, prefs)</a>
+0002 <span class="comment">% Performs wave inversion and inversion-related statistical measures</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0007 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% NOTE:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Part of the MREdge software package</span>
+0018 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0019 <span class="comment">% So that we can vouch for results,</span>
+0020 <span class="comment">% this code is source-available but not open source.</span>
+0021 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0022 <span class="comment">% for permission to make modifications.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% run loop across groups for sliding-window multifrequency analysis</span>
+0025 <span class="keyword">if</span> prefs.sliding_windows == 1
+0026     [~, freq_indices] = sort(info.driving_frequencies, <span class="string">'ascend'</span>);
+0027     <span class="keyword">for</span> n = 1:nf-2
+0028         sliding_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
+0029         <a href="#_sub1" class="code" title="subfunction invert_and_stats(info, prefs, freq_indices)">invert_and_stats</a>(info,prefs,sliding_group_indices);
+0030     <span class="keyword">end</span>
+0031 <span class="keyword">else</span>
+0032     <a href="#_sub1" class="code" title="subfunction invert_and_stats(info, prefs, freq_indices)">invert_and_stats</a>(info,prefs);
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="keyword">end</span>
+0036 
+0037 <a name="_sub1" href="#_subfunctions" class="code">function invert_and_stats(info, prefs, freq_indices)</a>
+0038     <span class="comment">% sort out freq indices</span>
+0039     <span class="keyword">if</span> isempty(freq_indices)
+0040         <span class="keyword">if</span> isempty(prefs.freq_indices)
+0041             freq_indices = 1:numel(prefs.driving_frequencies);
+0042         <span class="keyword">else</span>
+0043             freq_indices = prefs.freq_indices;
+0044         <span class="keyword">end</span>
+0045     <span class="keyword">end</span>
+0046     <span class="comment">% now process</span>
+0047     <a href="../../../../MREdge/src/main/m/stats/mredge_amplitudes.html" class="code" title="function mredge_amplitudes(info, prefs, freq_indices)">mredge_amplitudes</a>(info, prefs, freq_indices);
+0048     <span class="keyword">if</span> ~strcmp(prefs.inversion_strategy, <span class="string">'none'</span>)
+0049         <a href="mredge_invert.html" class="code" title="function mredge_invert(info, prefs, freq_indices)">mredge_invert</a>(info, prefs, freq_indices);
+0050         <a href="../../../../MREdge/src/main/m/stats/mredge_masked_median.html" class="code" title="function mredge_masked_median(info, prefs, freq_indices)">mredge_masked_median</a>(info, prefs, freq_indices);
+0051         <span class="keyword">if</span> prefs.brain_analysis
+0052             <a href="../../../../MREdge/src/main/m/neuro/mredge_brain_analysis.html" class="code" title="function mredge_brain_analysis(info, prefs, freq_indices)">mredge_brain_analysis</a>(info, prefs, freq_indices);
+0053         <span class="keyword">end</span> 
+0054     <span class="keyword">end</span>
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

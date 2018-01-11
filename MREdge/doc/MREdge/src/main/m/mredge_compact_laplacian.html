@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_compact_laplacian</title>
+  <meta name="keywords" content="mredge_compact_laplacian">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_compact_laplacian.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_compact_laplacian
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function U_laplacian = mredge_compact_laplacian(U, spacing, lap_dims) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/src/main/m/stats/mredge_z_xy_noise.html" class="code" title="function mredge_z_xy_noise(info, prefs)">mredge_z_xy_noise</a>	% function mredge_denoise(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function U_laplacian = get_compact_laplacian_5d(U, spacing, lap_dims)</a></li><li><a href="#_sub2" class="code">function U_laplacian = get_compact_laplacian_4d(U, spacing, lap_dims)</a></li><li><a href="#_sub3" class="code">function U_laplacian = get_compact_laplacian_3d(U, spacing, lap_dims)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function U_laplacian = mredge_compact_laplacian(U, spacing, lap_dims)</a>
+0003 
+0004 <span class="keyword">if</span> ndims(U) == 5
+0005     U_laplacian = <a href="#_sub1" class="code" title="subfunction U_laplacian = get_compact_laplacian_5d(U, spacing, lap_dims)">get_compact_laplacian_5d</a>(U, spacing, lap_dims);
+0006 <span class="keyword">elseif</span> ndims(U) == 4
+0007     U_laplacian = <a href="#_sub2" class="code" title="subfunction U_laplacian = get_compact_laplacian_4d(U, spacing, lap_dims)">get_compact_laplacian_4d</a>(U, spacing, lap_dims);
+0008 <span class="keyword">elseif</span> ndims(U) == 3
+0009     U_laplacian = <a href="#_sub3" class="code" title="subfunction U_laplacian = get_compact_laplacian_3d(U, spacing, lap_dims)">get_compact_laplacian_3d</a>(U, spacing, lap_dims);
+0010 <span class="keyword">else</span>
+0011     display(<span class="string">'5d max for this function'</span>);
+0012 <span class="keyword">end</span>
+0013 
+0014 <span class="keyword">end</span>
+0015 
+0016 <a name="_sub1" href="#_subfunctions" class="code">function U_laplacian = get_compact_laplacian_5d(U, spacing, lap_dims) </a>
+0017         U_laplacian = zeros(size(U));
+0018         <span class="keyword">for</span> n = 1:size(U, 5)
+0019             temp = <a href="#_sub2" class="code" title="subfunction U_laplacian = get_compact_laplacian_4d(U, spacing, lap_dims)">get_compact_laplacian_4d</a>(U(:,:,:,:,n), spacing, lap_dims);
+0020             U_laplacian(:,:,:,:,n) = temp;
+0021         <span class="keyword">end</span>
+0022 <span class="keyword">end</span>
+0023 
+0024 
+0025 <a name="_sub2" href="#_subfunctions" class="code">function U_laplacian = get_compact_laplacian_4d(U, spacing, lap_dims)</a>
+0026     U_laplacian = zeros(size(U));
+0027     <span class="keyword">if</span> (nargin &lt; 3)
+0028         lap_dims = 3;
+0029     <span class="keyword">end</span>
+0030     <span class="keyword">if</span> (lap_dims == 3)
+0031         lap1 = [1 -2 1];
+0032         lap2 = [1 -2 1]';
+0033         lap3 = zeros(3,3,3);
+0034         lap3(2,2,:) = [1 -2 1];
+0035         <span class="keyword">for</span> n = 1:size(U,4);
+0036             vol = U(:,:,:,n);
+0037             U_lap1 = convn(vol, lap1, <span class="string">'same'</span>) / spacing(1).^2;
+0038             U_lap2 = convn(vol, lap2, <span class="string">'same'</span>) / spacing(2).^2;
+0039             U_lap3 = convn(vol, lap3, <span class="string">'same'</span>) / spacing(3).^2;
+0040             U_laplacian(:,:,:,n) = U_lap1+U_lap2+U_lap3;
+0041         <span class="keyword">end</span>
+0042     <span class="keyword">else</span> 
+0043         lap = [0 1 0; 1 -4 1; 0 1 0] / (spacing(1)*spacing(2));
+0044         <span class="comment">%lap = [0 0 1 0 0; 0 0 0 0 0; 1 0 -4 0 1; 0 0 0 0 0; 0 0 1 0 0] / (spacing(1)*spacing(2));</span>
+0045         <span class="comment">%lap = [0 -1/30 -1/60 -1/30 0; ...</span>
+0046         <span class="comment">%    0 2/15 16/15 2/15 0; ...</span>
+0047         <span class="comment">%    -1/15 16/15 -9/2 16/15 -1/15; ...</span>
+0048         <span class="comment">%     0 2/15 16/15 2/15 0; ...</span>
+0049         <span class="comment">%    0 -1/30 -1/60 -1/30 0] / (spacing(1)*spacing(2));</span>
+0050         <span class="keyword">for</span> n = 1:size(U,4)
+0051             vol = U(:,:,:,n);
+0052             U_lap = convn(vol, lap, <span class="string">'same'</span>);
+0053             U_laplacian(:,:,:,n) = U_lap;
+0054         <span class="keyword">end</span>
+0055     <span class="keyword">end</span>
+0056 <span class="keyword">end</span>
+0057 
+0058 <a name="_sub3" href="#_subfunctions" class="code">function U_laplacian = get_compact_laplacian_3d(U, spacing, lap_dims)</a>
+0059     <span class="keyword">if</span> (nargin &lt; 3)
+0060         lap_dims = 3;
+0061     <span class="keyword">end</span>
+0062     <span class="keyword">if</span> (lap_dims == 3)
+0063         lap1 = [1 -2 1];
+0064         lap2 = [1 -2 1]';
+0065         lap3 = zeros(3,3,3);
+0066         lap3(2,2,:) = [1 -2 1];
+0067         U_lap1 = convn(U, lap1, <span class="string">'same'</span>) / spacing(1).^2;
+0068         U_lap2 = convn(U, lap2, <span class="string">'same'</span>) / spacing(2).^2;
+0069         U_lap3 = convn(U, lap3, <span class="string">'same'</span>) / spacing(3).^2;
+0070         U_laplacian = U_lap1+U_lap2+U_lap3;
+0071     <span class="keyword">else</span> 
+0072         lap = [0 1 0; 1 -4 1; 0 1 0] / (spacing(1)*spacing(2));
+0073         <span class="comment">%lap = [0 0 1 0 0; 0 0 0 0 0; 1 0 -4 0 1; 0 0 0 0 0; 0 0 1 0 0] / (spacing(1)*spacing(2));</span>
+0074         <span class="comment">%lap = [0 -1/30 -1/60 -1/30 0; ...</span>
+0075         <span class="comment">%    0 2/15 16/15 2/15 0; ...</span>
+0076         <span class="comment">%    -1/15 16/15 -9/2 16/15 -1/15; ...</span>
+0077         <span class="comment">%     0 2/15 16/15 2/15 0; ...</span>
+0078         <span class="comment">%    0 -1/30 -1/60 -1/30 0] / (spacing(1)*spacing(2));</span>
+0079         U_laplacian = convn(U, lap, <span class="string">'same'</span>);
+0080     <span class="keyword">end</span>
+0081 <span class="keyword">end</span>
+0082 
+0083</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 16:29:18 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sfb2D_A_u</title>
+  <meta name="keywords" content="sfb2D_A_u">
+  <meta name="description" content="2D Synthesis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; sfb2D_A_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sfb2D_A_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>2D Synthesis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = sfb2D_A_u(lo, hi, j, sf, d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Synthesis Filter Bank
+ (along single dimension only)
+
+ y = sfb2D_A(lo, hi, sf, d);
+ sf - synthesis filters
+ d  - dimension of filtering
+ see afb2D_A</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sfb2D_u.html" class="code" title="function y = sfb2D_u(lo, hi, j, sf1, sf2)">sfb2D_u</a>	Undecimated 2D Synthesis Filter Bank</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = sfb2D_A_u(lo, hi, j, sf, d)</a>
+0002 
+0003 <span class="comment">% 2D Synthesis Filter Bank</span>
+0004 <span class="comment">% (along single dimension only)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% y = sfb2D_A(lo, hi, sf, d);</span>
+0007 <span class="comment">% sf - synthesis filters</span>
+0008 <span class="comment">% d  - dimension of filtering</span>
+0009 <span class="comment">% see afb2D_A</span>
+0010 
+0011 
+0012 <span class="keyword">if</span> d == 2
+0013    lo = lo';
+0014    hi = hi';
+0015 <span class="keyword">end</span>
+0016 
+0017 R = sqrt(2);
+0018 g0 = sf(:,1)/R;
+0019 g1 = sf(:,2)/R;
+0020 
+0021 N0 = length(g0);
+0022 N1 = length(g1);
+0023 N = N0 + N1;
+0024 
+0025 sz0 = size(lo);
+0026 L0 = sz0(1);
+0027 sz1 = size(hi);
+0028 L1 = sz1(1);
+0029 
+0030 M = 2^(j-1);
+0031 
+0032 y0 = zeros(L0+M*(N0-1),sz0(2));
+0033 y1 = zeros(L1+M*(N1-1),sz1(2));
+0034 
+0035 <span class="keyword">for</span> k = 0:N0-1
+0036     y0(M*k+(1:L0),:) = y0(M*k+(1:L0),:) + g0(k+1)*lo;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">for</span> k = 0:N1-1
+0040     y1(M*k+(1:L1),:) = y1(M*k+(1:L1),:) + g1(k+1)*hi;
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Add signals (make sure they are equal length).</span>
+0044 <span class="comment">% We assume 'lo' is longer than 'hi' because</span>
+0045 <span class="comment">% in a wavelet transform the lo/hi split is</span>
+0046 <span class="comment">% iterated on the 'lo' signal which increases its length.</span>
+0047 y = y0(1:size(y1, 1),:);
+0048 y(1:size(y1,1), 1:size(y1,2)) = y(1:size(y1,1), 1:size(y1,2)) + y1;
+0049 
+0050 L = M*(N/2-1);
+0051 y = y(L+1:<span class="keyword">end</span>,:);
+0052 
+0053 
+0054 
+0055 <span class="keyword">if</span> d == 2
+0056    y = y';
+0057 <span class="keyword">end</span>
+0058 
+0059</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

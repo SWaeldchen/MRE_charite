@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cdtw_consensus_coefficients</title>
+  <meta name="keywords" content="cdtw_consensus_coefficients">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">cdtw</a> &gt; cdtw_consensus_coefficients.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/cdtw&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>cdtw_consensus_coefficients
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [v_thresh, w_sum] = cdtw_consensus_coefficients(v, T); </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>	Inverse 3D Complex Dual-Tree Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [v_thresh, w_sum] = cdtw_consensus_coefficients(v, T);</a>
+0002 
+0003 sz = size(v);
+0004 <span class="keyword">if</span> numel(sz) &lt; 5
+0005     d5 = 1;
+0006     <span class="keyword">if</span> numel(sz) &lt; 4
+0007         d4 = 1;
+0008     <span class="keyword">else</span>
+0009         d4 = sz(4);
+0010     <span class="keyword">end</span>
+0011 <span class="keyword">else</span>
+0012     d4 = sz(4);
+0013     d5 = sz(5);
+0014 <span class="keyword">end</span>
+0015 n_ims = d4*d5;
+0016 
+0017 
+0018 pwr2_y = nextpwr2(sz(1));
+0019 pwr2_x = nextpwr2(sz(2));
+0020 pwr2_z = nextpwr2(sz(3));
+0021 pwrmax = max(pwr2_y, max(pwr2_x, pwr2_z));
+0022 pad_vec = [pwrmax, pwrmax, pwrmax];
+0023 v_pad = zeros([pad_vec, d4]);
+0024 
+0025 <span class="keyword">for</span> n = 1:d5
+0026     <span class="keyword">for</span> m = 1:d4
+0027         v_pad(:,:,:,m,n) = simplepad(v(:,:,:,m,n), pad_vec);
+0028     <span class="keyword">end</span>
+0029 <span class="keyword">end</span>
+0030 
+0031 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0032 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0033 J = 1;
+0034 w_n = cell(m,n);
+0035 
+0036 <span class="comment">%set sizes within w_sum</span>
+0037 w_sum = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>(v_pad(:,:,:,1,1),J,Faf,af);
+0038 
+0039 <span class="comment">%reset w_sum to zeros</span>
+0040 <span class="keyword">for</span> j = 1:J
+0041     <span class="keyword">for</span> s1 = 1:2
+0042         <span class="keyword">for</span> s2 = 1:2
+0043             <span class="keyword">for</span> s3 = 1:2
+0044                 w_sum{j}{1}{s1}{s2}{s3} = zeros(size(w_sum{j}{1}{s1}{s2}{s3}));
+0045                 w_sum{j}{2}{s1}{s2}{s3} = [];
+0046             <span class="keyword">end</span>
+0047         <span class="keyword">end</span>
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 
+0051 
+0052 <span class="comment">% collect eact cdwt and sum abs at each voxel of w_sum</span>
+0053 <span class="keyword">for</span> n = 1:d5
+0054     <span class="keyword">for</span> m = 1:d4
+0055         w_n{m,n} = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>(v_pad(:,:,:,m,n),J,Faf,af);
+0056         <span class="keyword">for</span> j = 1:J
+0057             <span class="keyword">for</span> s1 = 1:2
+0058                 <span class="keyword">for</span> s2 = 1:2
+0059                     <span class="keyword">for</span> s3 = 1:7
+0060                         a = w_n{m,n}{j}{1}{s1}{s2}{s3};
+0061                         b = w_n{m,n}{j}{2}{s1}{s2}{s3};
+0062                         C = a + 1i*b;
+0063                         w_sum{j}{1}{s1}{s2}{s3} = w_sum{j}{1}{s1}{s2}{s3} + abs(C) ./ n_ims;
+0064                     <span class="keyword">end</span>
+0065                 <span class="keyword">end</span>
+0066             <span class="keyword">end</span>
+0067         <span class="keyword">end</span>
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 
+0071 w_thresh = w_n;
+0072 
+0073 <span class="comment">% threshold consensus coefficients with nonnegative garotte</span>
+0074 
+0075 <span class="keyword">for</span> n = 1:d5
+0076     <span class="keyword">for</span> m = 1:d4
+0077         <span class="keyword">for</span> j = 1:J
+0078             <span class="keyword">for</span> s1 = 1:2
+0079                 <span class="keyword">for</span> s2 = 1:2
+0080                     <span class="keyword">for</span> s3 = 1:7
+0081                         a = w_n{m,n}{j}{1}{s1}{s2}{s3};
+0082                         b = w_n{m,n}{j}{2}{s1}{s2}{s3};
+0083                         thresh = w_sum{j}{1}{s1}{s2}{s3};
+0084                         C = a + 1i*b;
+0085                         C = ( C - T^2 ./ C ) .* (thresh &gt; T);  
+0086                         w_thresh{m,n}{j}{1}{s1}{s2}{s3} = real(C);
+0087                         w_thresh{m,n}{j}{2}{s1}{s2}{s3} = imag(C);
+0088                     <span class="keyword">end</span>
+0089                 <span class="keyword">end</span>
+0090             <span class="keyword">end</span>
+0091         <span class="keyword">end</span>
+0092     <span class="keyword">end</span>
+0093 <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% inverse transform</span>
+0096 
+0097 v_thresh_pad = v_pad;
+0098 
+0099 <span class="keyword">for</span> n = 1:d5
+0100     <span class="keyword">for</span> m = 1:d4
+0101         v_thresh_pad(:,:,:,m,n) = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>(w_thresh{m,n},J,Fsf,sf);
+0102     <span class="keyword">end</span>
+0103 <span class="keyword">end</span>
+0104 
+0105 v_thresh = v_thresh_pad(1:sz(1), 1:sz(2), 1:sz(3), 1:d4, 1:d5);
+0106 
+0107</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of soft</title>
+  <meta name="keywords" content="soft">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; soft.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>soft
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = soft(x,T) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="denC2D.html" class="code" title="function y = denC2D(x,T);">denC2D</a>	% Example</li><li><a href="denR2D.html" class="code" title="function y = denR2D(x,T);">denR2D</a>	% Example</li><li><a href="denS2D.html" class="code" title="function y = denS2D(x,T)">denS2D</a>	% Example</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/Example1.html" class="code" title="">Example1</a>	% Group-sparse denoising by non-convex regularization: 1D example</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/Example2.html" class="code" title="">Example2</a>	% Group-sparse denoising by non-convex regularization: Speech denoising</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/den3D_OGS_demo.html" class="code" title="">den3D_OGS_demo</a>	</li><li><a href="../../../../../MREdge/functions/wavelet/ncogs_software/denC3D_EB_soft.html" class="code" title="function y = denC3D_EB_OGS(x, T)">denC3D_EB_soft</a>	% Example</li><li><a href="../../../../../MREdge/functions/wavelet/stationary_dwt/dtdenoise_2d_undec.html" class="code" title="function u = dtdenoise_2d_undec(u, J, mask)">dtdenoise_2d_undec</a>	2D Dualtree complex denoising</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = soft(x,T)</a>
+0002 
+0003 y = max(abs(x) - T, 0);
+0004 y = y./(y+T) .* x;
+0005</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

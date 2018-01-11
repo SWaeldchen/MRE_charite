@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_default_prefs</title>
+  <meta name="keywords" content="mredge_default_prefs">
+  <meta name="description" content="Sets default preferences for an MREdge preferences structure">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">prefs</a> &gt; mredge_default_prefs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/prefs&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_default_prefs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Sets default preferences for an MREdge preferences structure</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function default_prefs = mredge_default_prefs </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Sets default preferences for an MREdge preferences structure
+
+ INPUTS:
+
+   none
+
+ OUTPUTS:
+
+   default preferences struct object
+
+ SEE ALSO:
+
+   <a href="mredge_prefs.html" class="code" title="function prefs = mredge_prefs(varargin)">mredge_prefs</a>
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.
+
+ set broad strategies</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_prefs.html" class="code" title="function prefs = mredge_prefs(varargin)">mredge_prefs</a>	Creates preferences object for MREdge.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function default_prefs = mredge_default_prefs</a>
+0002 <span class="comment">% Sets default preferences for an MREdge preferences structure</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   none</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% OUTPUTS:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   default preferences struct object</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% SEE ALSO:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   mredge_prefs</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Part of the MREdge software package</span>
+0017 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0018 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0019 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% set broad strategies</span>
+0022     default_prefs.distortion_correction = 0;
+0023     default_prefs.motion_correction = 0;
+0024     default_prefs.phase_unwrap = <span class="string">'laplacian2d'</span>;
+0025     default_prefs.temporal_ft = 1;
+0026     default_prefs.denoise_strategy = <span class="string">'3d_soft_visu'</span>;
+0027     default_prefs.curl_strategy = <span class="string">'none'</span>;
+0028     default_prefs.component_order = <span class="string">'zyx'</span>;
+0029     default_prefs.inversion_strategy = <span class="string">'FV'</span>;
+0030     default_prefs.directional_filter = 0;
+0031     default_prefs.brain_analysis = 0;
+0032     default_prefs.remove_ipds = 1;
+0033     default_prefs.highpass = 1;
+0034     default_prefs.lowpass = 1;
+0035     default_prefs.gradient_strategy = <span class="string">'fd'</span>;
+0036     default_prefs.analysis_descriptor = <span class="string">''</span>;
+0037     default_prefs.analysis_number = 1;
+0038     default_prefs.freq_indices = [];
+0039     default_prefs.sliding_windows = 0;
+0040 <span class="comment">% set outputs</span>
+0041     default_prefs.outputs.elastograms = 1;
+0042     default_prefs.outputs.amplitudes = 0;
+0043     default_prefs.outputs.wavefields = 0;
+0044 <span class="comment">% denoise settings</span>
+0045     default_prefs.denoise_settings.z_level = 2;
+0046     default_prefs.denoise_settings.z_thresh = 1.5;
+0047     default_prefs.denoise_settings.z_hipass_cut = 0.25;
+0048     default_prefs.denoise_settings.xy_level = 3;
+0049     default_prefs.denoise_settings.xy_thresh =  1.5;
+0050     default_prefs.denoise_settings.full3d_thresh = 20;
+0051     default_prefs.denoise_settings.full3d_level = 2;
+0052     default_prefs.denoise_settings.dejitter_norm = 0.5;
+0053     default_prefs.denoise_raw = 0;
+0054     default_prefs.denoise_settings.threshold_gain = 1;
+0055 <span class="comment">% bandpass settings</span>
+0056     default_prefs.highpass_settings.order = 4;
+0057     default_prefs.highpass_settings.cutoff = 0.03;
+0058     default_prefs.highpass_settings.dimensions = 3;
+0059     default_prefs.lowpass_settings.order = 4;
+0060     default_prefs.lowpass_settings.cutoff = 0.4;
+0061 <span class="comment">% directional filter setings</span>
+0062     default_prefs.df_settings.dims = 3;
+0063     default_prefs.df_settings.num_filts = 12;
+0064 <span class="comment">% inversion settings</span>
+0065     default_prefs.inversion_settings.mdev_laplacian_dims = 3;
+0066     default_prefs.inversion_settings.bootstrap = 0;
+0067 <span class="comment">% moco settings</span>
+0068     default_prefs.moco_method = <span class="string">'fsl'</span>;
+0069 <span class="comment">% thresholding settings</span>
+0070     default_prefs.anat_mask_thresh_low = 200;
+0071     default_prefs.anat_mask_thresh_high = 500;
+0072     default_prefs.abs_g_noise_thresh = 500;
+0073     default_prefs.amp_wave_to_noise_thresh = 2;
+0074 <span class="comment">% compatibility settings for other studies</span>
+0075     default_prefs.compat = [];
+0076 <span class="comment">% phase unwrapping settings</span>
+0077     default_prefs.phase_unwrapping_settings.phase_range = [];
+0078     default_prefs.phase_unwrapping_settings.force_prelude_3d = 0;
+0079 <span class="comment">% distortion correction</span>
+0080     default_prefs.dico_method = <span class="string">'raw'</span>;
+0081 <span class="comment">% file operation settings</span>
+0082     default_prefs.convert_3d_to_4d = <span class="string">'fsl'</span>;</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

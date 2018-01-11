@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sfb2D_A</title>
+  <meta name="keywords" content="sfb2D_A">
+  <meta name="description" content="2D Synthesis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; sfb2D_A.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>sfb2D_A
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>2D Synthesis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>function y = sfb2D_A(lo, hi, sf, d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Synthesis Filter Bank
+ (along single dimension only)
+
+ y = sfb2D_A(lo, hi, sf, d);
+ sf - synthesis filters
+ d  - dimension of filtering
+ see afb2D_A</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="cshift2D.html" class="code" title="function y = cshift2D(x, m)">cshift2D</a>	2D Circular Shift</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="sfb2D.html" class="code" title="function y = sfb2D(lo, hi, sf1, sf2)">sfb2D</a>	2D Synthesis Filter Bank</li><li><a href="sfb2D_diff.html" class="code" title="function y = sfb2D_diff(lo, hi, sf1, sf2)">sfb2D_diff</a>	2D Synthesis Filter Bank</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = sfb2D_A(lo, hi, sf, d)</a>
+0002 
+0003 <span class="comment">% 2D Synthesis Filter Bank</span>
+0004 <span class="comment">% (along single dimension only)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% y = sfb2D_A(lo, hi, sf, d);</span>
+0007 <span class="comment">% sf - synthesis filters</span>
+0008 <span class="comment">% d  - dimension of filtering</span>
+0009 <span class="comment">% see afb2D_A</span>
+0010 
+0011 
+0012 lpf = sf(:, 1);     <span class="comment">% lowpass filter</span>
+0013 hpf = sf(:, 2);     <span class="comment">% highpass filter</span>
+0014 
+0015 <span class="keyword">if</span> d == 2
+0016    lo = lo';
+0017    hi = hi';
+0018 <span class="keyword">end</span>
+0019 
+0020 N = 2*size(lo,1);
+0021 L = length(sf);
+0022 y = upfirdn(lo, lpf, 2, 1) + upfirdn(hi, hpf, 2, 1);
+0023 y(1:L-2, :) = y(1:L-2, :) + y(N+[1:L-2], :);
+0024 y = y(1:N, :);
+0025 y = <a href="cshift2D.html" class="code" title="function y = cshift2D(x, m)">cshift2D</a>(y, 1-L/2);
+0026 
+0027 <span class="keyword">if</span> d == 2
+0028    y = y';
+0029 <span class="keyword">end</span>
+0030</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of udwt2</title>
+  <meta name="keywords" content="udwt2">
+  <meta name="description" content="Undecimated Discrete Wavelet Transform 2D">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; udwt2.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>udwt2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Undecimated Discrete Wavelet Transform 2D</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w = udwt2(x, J, h0, h1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Undecimated Discrete Wavelet Transform 2D
+
+ INPUT
+   x  : input signal
+   J  : number of stages
+   h0 : low-pass analysis filter
+   h1 : high-pass analysis filter
+ OUTPUT
+   w  : wavelet coefficients</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = udwt2(x, J, h0, h1)</a>
+0002 
+0003 <span class="comment">% Undecimated Discrete Wavelet Transform 2D</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%   x  : input signal</span>
+0007 <span class="comment">%   J  : number of stages</span>
+0008 <span class="comment">%   h0 : low-pass analysis filter</span>
+0009 <span class="comment">%   h1 : high-pass analysis filter</span>
+0010 <span class="comment">% OUTPUT</span>
+0011 <span class="comment">%   w  : wavelet coefficients</span>
+0012 <span class="comment">%</span>
+0013 
+0014 R = sqrt(2);
+0015 h0 = h0/R;
+0016 h1 = h1/R;
+0017 
+0018 N0 = length(h0);
+0019 N1 = length(h1);
+0020 
+0021 w = cell(1,J);
+0022 <span class="keyword">for</span> j = 1:J
+0023 
+0024     L = length(x);
+0025     M = 2^(j-1);
+0026     lo = zeros(1,L+M*(N0-1));
+0027     hi = zeros(1,L+M*(N1-1));
+0028 
+0029     <span class="comment">% convolution:</span>
+0030     <span class="keyword">for</span> k = 0:N1-1
+0031         hi(M*k+(1:L)) = hi(M*k+(1:L)) + h1(k+1)*x;
+0032     <span class="keyword">end</span>
+0033     <span class="keyword">for</span> k = 0:N0-1
+0034         lo(M*k+(1:L)) = lo(M*k+(1:L)) + h0(k+1)*x;
+0035     <span class="keyword">end</span>
+0036 
+0037     w{j} = hi;
+0038     x = lo;
+0039 <span class="keyword">end</span>
+0040 w{J+1} = x;
+0041 
+0042 
+0043 
+0044 
+0045</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

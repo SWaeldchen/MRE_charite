@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dtdenoise_2d_undec</title>
+  <meta name="keywords" content="dtdenoise_2d_undec">
+  <meta name="description" content="2D Dualtree complex denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; dtdenoise_2d_undec.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>dtdenoise_2d_undec
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>2D Dualtree complex denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function u = dtdenoise_2d_undec(u, J, mask) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 2D Dualtree complex denoising 
+ with NNG thresholding</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/functions/butter_2d.html" class="code" title="function [y, filt] = butter_2d(ord, cut, x, hi)">butter_2d</a>	y = butter_2d(ord, cut, x)</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/soft.html" class="code" title="function y = soft(x,T)">soft</a>	</li><li><a href="../../../../MREdge/functions/wavelet/ncogs_software/soft.html" class="code" title="function y = soft(x, T)">soft</a>	Soft-threshold function (real or complex x)</li><li><a href="cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>	Dual-Tree Complex 2D Discrete Wavelet Transform</li><li><a href="icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>	Inverse Dual-Tree Complex Undecimated 2D Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>	Denoise Fourier-transformed wavefield.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function u_den = cdwt_nng(u, mask, J, Faf, af, Fsf, sf)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function u = dtdenoise_2d_undec(u, J, mask)</a>
+0002 
+0003 <span class="comment">% 2D Dualtree complex denoising</span>
+0004 <span class="comment">% with NNG thresholding</span>
+0005 
+0006 <span class="keyword">if</span> numel(size(u)) &lt; 4
+0007     d4 = 1;
+0008 <span class="keyword">else</span>
+0009     d4 = size(u,4);
+0010 <span class="keyword">end</span>
+0011 <span class="keyword">if</span> numel(size(u)) &lt; 3
+0012     d3 = 1;
+0013 <span class="keyword">else</span>
+0014     d3 = size(u,3);
+0015 <span class="keyword">end</span>
+0016 <span class="keyword">if</span> nargin &lt; 3
+0017     mask = ones(size(u));
+0018 <span class="keyword">end</span>
+0019 
+0020 [Faf, Fsf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0021 [af, sf] = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0022 <span class="keyword">if</span> nargin &lt; 4
+0023     J = 3;
+0024 <span class="keyword">end</span>
+0025 
+0026 
+0027 <span class="keyword">for</span> n = 1:d4
+0028     <span class="keyword">for</span> m = 1:d3
+0029         u(:,:,m,n) = <a href="#_sub1" class="code" title="subfunction u_den = cdwt_nng(u, mask, J, Faf, af, Fsf, sf)">cdwt_nng</a>(real(u(:,:,m,n)), mask(:,:,m), J, Faf, af, Fsf, sf) + 1i*<a href="#_sub1" class="code" title="subfunction u_den = cdwt_nng(u, mask, J, Faf, af, Fsf, sf)">cdwt_nng</a>(imag(u(:,:,m,n)), mask(:,:,m), J, Faf, af, Fsf, sf);
+0030     <span class="keyword">end</span>
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="keyword">end</span>
+0034 
+0035 <a name="_sub1" href="#_subfunctions" class="code">function u_den = cdwt_nng(u, mask, J, Faf, af, Fsf, sf)</a>
+0036     u = <a href="../../../../MREdge/functions/butter_2d.html" class="code" title="function [y, filt] = butter_2d(ord, cut, x, hi)">butter_2d</a>(4, 0.5, u);
+0037     w = <a href="cplxdual2D_u.html" class="code" title="function w = cplxdual2D_u(x, J, Faf, af)">cplxdual2D_u</a>(u, J, Faf, af);
+0038     <span class="comment">% loop thru scales</span>
+0039     <span class="keyword">for</span> j = 1:J
+0040         <span class="comment">% loop thru subbands</span>
+0041         <span class="keyword">for</span> s1 = 1:2
+0042             <span class="keyword">for</span> s2 = 1:3
+0043                 a = w{j}{1}{s1}{s2};
+0044                 b = w{j}{2}{s1}{s2};
+0045                 C = a + 1i*b;
+0046                 <span class="comment">%bayesshrink_noise_est = bayesshrink_eb(abs(C), simplepad(mask, [size(C,1) size(C,2)]));</span>
+0047                 visushrink_noise_est = visushrink_eb(abs(C), simplepad(mask, [size(C,1) size(C,2)]));
+0048                 <span class="comment">%C = nng(C, 1.5*bayesshrink_noise_est);</span>
+0049                 C = <a href="../../../../MREdge/functions/wavelet/dualtreewavelets/allcode/soft.html" class="code" title="function y = soft(x,T)">soft</a>(C, visushrink_noise_est);
+0050                 C(isnan(C)) = 0;
+0051                 w{j}{1}{s1}{s2} = real(C);
+0052                 w{j}{2}{s1}{s2} = imag(C);
+0053             <span class="keyword">end</span>
+0054         <span class="keyword">end</span>
+0055     <span class="keyword">end</span>
+0056     u_den = <a href="icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>(w, J, Fsf, sf);
+0057 <span class="keyword">end</span>
+0058</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

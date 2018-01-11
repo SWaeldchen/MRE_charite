@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotwav1D</title>
+  <meta name="keywords" content="plotwav1D">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; plotwav1D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>plotwav1D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="dwt.html" class="code" title="function w = dwt(x, J, af)">dwt</a>	Discrete 1-D Wavelet Transform</li><li><a href="farras.html" class="code" title="function [af, sf] = farras">farras</a>	Farras nearly symmetric filters for orthogonal</li><li><a href="idwt.html" class="code" title="function y = idwt(w, J, sf)">idwt</a>	Inverse Discrete 1-D Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 clear all 
+0002 close all
+0003 
+0004 [af, sf] = <a href="farras.html" class="code" title="function [af, sf] = farras">farras</a>;              <span class="comment">% analysis and synthesis filter</span>
+0005 x=zeros(1,64);                  <span class="comment">% create generic signal whose values are all 0</span>
+0006 w = <a href="dwt.html" class="code" title="function w = dwt(x, J, af)">dwt</a>(x,3,af);                <span class="comment">% analysis filter banks (3 stages)</span>
+0007 w{3}(4)=1;                      <span class="comment">% setting one of the wavelet coefficients to be 1</span>
+0008 y = <a href="idwt.html" class="code" title="function y = idwt(w, J, sf)">idwt</a>(w,3,sf);               <span class="comment">% synthesis filter banks (3 stages)</span>
+0009 plot(y);            <span class="comment">% Plot the wave</span>
+0010 title(<span class="string">'Standard 1-D wavelet transform'</span>) 
+0011 xlabel(<span class="string">'t'</span>);                    
+0012 ylabel(<span class="string">'\psi(t)'</span>);
+0013 
+0014 
+0015</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

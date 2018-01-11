@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sfb2D_u</title>
+  <meta name="keywords" content="sfb2D_u">
+  <meta name="description" content="Undecimated 2D Synthesis Filter Bank">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; sfb2D_u.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>sfb2D_u
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Undecimated 2D Synthesis Filter Bank</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = sfb2D_u(lo, hi, j, sf1, sf2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Undecimated 2D Synthesis Filter Bank
+
+ USAGE:
+   y = sfb2D(lo, hi, sf1, sf2);
+ INPUT:
+   lo, hi - lowpass, highpass subbands
+   sf1 - synthesis filters for the columns
+   sf2 - synthesis filters for the rows
+ OUTPUT:
+   y - output array
+ See afb2D
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sfb2D_A_u.html" class="code" title="function y = sfb2D_A_u(lo, hi, j, sf, d)">sfb2D_A_u</a>	2D Synthesis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="icplxdual2D_u.html" class="code" title="function y = icplxdual2D_u(w, J, Fsf, sf)">icplxdual2D_u</a>	Inverse Dual-Tree Complex Undecimated 2D Discrete Wavelet Transform</li><li><a href="iudwt2D.html" class="code" title="function y = iudwt2D(w, J, g0, g1)">iudwt2D</a>	Inverse Undecimated 2-D Discrete Wavelet Transform</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function y = sfb2D_A_u(lo, hi, j, sf, d)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = sfb2D_u(lo, hi, j, sf1, sf2)</a>
+0002 
+0003 <span class="comment">% Undecimated 2D Synthesis Filter Bank</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% USAGE:</span>
+0006 <span class="comment">%   y = sfb2D(lo, hi, sf1, sf2);</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   lo, hi - lowpass, highpass subbands</span>
+0009 <span class="comment">%   sf1 - synthesis filters for the columns</span>
+0010 <span class="comment">%   sf2 - synthesis filters for the rows</span>
+0011 <span class="comment">% OUTPUT:</span>
+0012 <span class="comment">%   y - output array</span>
+0013 <span class="comment">% See afb2D</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0016 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0017 
+0018 <span class="comment">% filter along rows</span>
+0019 lo = <a href="sfb2D_A_u.html" class="code" title="function y = sfb2D_A_u(lo, hi, j, sf, d)">sfb2D_A_u</a>(lo,    hi{1}, j, sf2, 2);
+0020 hi = <a href="sfb2D_A_u.html" class="code" title="function y = sfb2D_A_u(lo, hi, j, sf, d)">sfb2D_A_u</a>(hi{2}, hi{3}, j, sf2, 2);
+0021 
+0022 <span class="comment">% filter along columns</span>
+0023 y = <a href="sfb2D_A_u.html" class="code" title="function y = sfb2D_A_u(lo, hi, j, sf, d)">sfb2D_A_u</a>(lo, hi, j, sf1, 1);
+0024 
+0025 <span class="keyword">end</span>
+0026 
+0027 <span class="comment">% LOCAL FUNCTION</span>
+0028 
+0029 <a name="_sub1" href="#_subfunctions" class="code">function y = sfb2D_A_u(lo, hi, j, sf, d)</a>
+0030 
+0031 <span class="comment">% 2D Synthesis Filter Bank</span>
+0032 <span class="comment">% (along single dimension only)</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% y = sfb2D_A(lo, hi, sf, d);</span>
+0035 <span class="comment">% sf - synthesis filters</span>
+0036 <span class="comment">% d  - dimension of filtering</span>
+0037 <span class="comment">% see afb2D_A</span>
+0038 
+0039 
+0040 <span class="keyword">if</span> d == 2
+0041    lo = lo';
+0042    hi = hi';
+0043 <span class="keyword">end</span>
+0044 
+0045 R = sqrt(2);
+0046 g0 = sf(:,1)/R;
+0047 g1 = sf(:,2)/R;
+0048 
+0049 N0 = length(g0);
+0050 N1 = length(g1);
+0051 N = N0 + N1;
+0052 
+0053 sz0 = size(lo);
+0054 L0 = sz0(1);
+0055 sz1 = size(hi);
+0056 L1 = sz1(1);
+0057 
+0058 M = 2^(j-1);
+0059 
+0060 y0 = zeros(L0+M*(N0-1),sz0(2));
+0061 y1 = zeros(L1+M*(N1-1),sz1(2));
+0062 
+0063 <span class="keyword">for</span> k = 0:N0-1
+0064     y0(M*k+(1:L0),:) = y0(M*k+(1:L0),:) + g0(k+1)*lo;
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="keyword">for</span> k = 0:N1-1
+0068     y1(M*k+(1:L1),:) = y1(M*k+(1:L1),:) + g1(k+1)*hi;
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">% Add signals (make sure they are equal length).</span>
+0072 <span class="comment">% We assume 'lo' is longer than 'hi' because</span>
+0073 <span class="comment">% in a wavelet transform the lo/hi split is</span>
+0074 <span class="comment">% iterated on the 'lo' signal which increases its length.</span>
+0075 y = y0(1:size(y1, 1),:);
+0076 y(1:size(y1,1), 1:size(y1,2)) = y(1:size(y1,1), 1:size(y1,2)) + y1;
+0077 
+0078 L = M*(N/2-1);
+0079 y = y(L+1:<span class="keyword">end</span>,:);
+0080 
+0081 
+0082 
+0083 <span class="keyword">if</span> d == 2
+0084    y = y';
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

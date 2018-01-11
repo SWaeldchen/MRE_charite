@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_coreg_param_to_mni_sliding</title>
+  <meta name="keywords" content="mredge_coreg_param_to_mni_sliding">
+  <meta name="description" content="% function coreg_param_to_mni_sliding(info, param)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">neuro</a> &gt; mredge_coreg_param_to_mni_sliding.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/neuro&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_coreg_param_to_mni_sliding
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% function coreg_param_to_mni_sliding(info, param)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_coreg_param_to_mni_sliding(info_an, prefs, param) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function coreg_param_to_mni_sliding(info, param)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_brain_analysis_sliding.html" class="code" title="function mredge_brain_analysis_sliding(info_mag, info_an, prefs)">mredge_brain_analysis_sliding</a>	% function mredge_brain_analysis_sliding(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [MAG_SUB, PARAM_SUB] = set_dirs(info_an, prefs, param)</a></li><li><a href="#_sub2" class="code">function coreg_param_to_mni(mag_file, param_file, voxel_spacing)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function coreg_param_to_mni_sliding(info, param)</span>
+0002 
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Coregisters a parameter map to MNI space using the deformation map</span>
+0012 <span class="comment">% from the averaged magnitude. Requires calling of mredge_average_magnitude</span>
+0013 <span class="comment">% and mredge_avg_mag_to_mni first.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% INPUTS:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% info - an acquisition info structure created by make_acquisition_info</span>
+0018 <span class="comment">% param - Name of elasticity parameter: 'absg', 'phi', 'c', 'a'</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% OUTPUTS:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% none</span>
+0023 
+0024 <span class="comment">%%</span>
+0025 <a name="_sub0" href="#_subfunctions" class="code">function mredge_coreg_param_to_mni_sliding(info_an, prefs, param)</a>
+0026 
+0027     [MAG_SUB, PARAM_SUB] = <a href="#_sub1" class="code" title="subfunction [MAG_SUB, PARAM_SUB] = set_dirs(info_an, prefs, param)">set_dirs</a>(info_an, prefs, param);
+0028     
+0029     yfile_zip = fullfile(MAG_SUB, <span class="string">'y_Avg_Magnitude.nii.gz'</span>);
+0030     yfile_unzip = yfile_zip(1:end-3);
+0031     <span class="keyword">if</span> exist(yfile_zip, <span class="string">'file'</span>)
+0032         gunzip(yfile_zip);
+0033     <span class="keyword">end</span>
+0034 
+0035      [stable_filenames, stable_frequencies] = mredge_invert_sliding(info_an, prefs, 0);
+0036     <span class="keyword">for</span> f = 1:numel(stable_frequencies)
+0037         disp([<span class="string">'Coreg to MNI: '</span>,num2str(stable_frequencies(f)), <span class="string">'Hz'</span>]);
+0038         tic
+0039         freq_file = fullfile(PARAM_SUB, stable_filenames{f});
+0040         <a href="#_sub2" class="code" title="subfunction coreg_param_to_mni(mag_file, param_file, voxel_spacing)">coreg_param_to_mni</a>(yfile_unzip, freq_file, info_an.voxel_spacing*1000);
+0041         toc
+0042     <span class="keyword">end</span>
+0043 <span class="keyword">end</span>
+0044 
+0045 <a name="_sub1" href="#_subfunctions" class="code">function [MAG_SUB, PARAM_SUB] = set_dirs(info_an, prefs, param)</a>
+0046 
+0047     MAG_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info_an, prefs, <span class="string">'Magnitude'</span>);
+0048     PARAM_SUB = <a href="../../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info_an, prefs, param);
+0049     
+0050 <span class="keyword">end</span>
+0051 
+0052 <a name="_sub2" href="#_subfunctions" class="code">function coreg_param_to_mni(mag_file, param_file, voxel_spacing)</a>
+0053 
+0054     spm(<span class="string">'defaults'</span>,<span class="string">'fmri'</span>);
+0055     spm_jobman(<span class="string">'initcfg'</span>);
+0056     matlabbatch{1}.spm.spatial.normalise.write.subj.def = {mag_file};
+0057     matlabbatch{1}.spm.spatial.normalise.write.subj.resample = {param_file};
+0058     matlabbatch{1}.spm.spatial.normalise.write.woptions.bb = [-78 -112 -70
+0059         78 76 85];
+0060     matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = voxel_spacing;
+0061     matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
+0062     matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = <span class="string">'w'</span>;
+0063     spm_jobman(<span class="string">'run'</span>,matlabbatch);
+0064      <span class="comment">% kludge to remove nans</span>
+0065     [a, b, c] = fileparts(param_file);
+0066     w_file = [a, <span class="string">'/'</span>, <span class="string">'w'</span>, b, c];
+0067     w_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(w_file);
+0068     w_vol.img(isnan(w_vol.img)) = 0;
+0069     save_untouch_nii_eb(w_vol, w_file);
+0070 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

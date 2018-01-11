@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_distortion_correction_raw</title>
+  <meta name="keywords" content="mredge_distortion_correction_raw">
+  <meta name="description" content="Performs distortion correction on raw MR signal data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_distortion_correction_raw.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_distortion_correction_raw
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Performs distortion correction on raw MR signal data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_distortion_correction_raw(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Performs distortion correction on raw MR signal data
+
+ INPUTS:
+
+   info - an acquisition info structure created with make_acquisition_info
+   prefs - a preference file structure created with mredge_prefs
+
+ OUTPUTS:
+
+   none
+
+ NOTE:
+
+   Acquisition must have fieldmap time series, specified in the info struct.
+   Slices must have been acquired with synchronized phases (i.e. not newer
+   continuous-motion protocols).
+
+ SEE ALSO:
+
+   <a href="mredge_distortion_correction.html" class="code" title="function mredge_distortion_correction(info, prefs)">mredge_distortion_correction</a>, <a href="mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>	Strips file extension from a nifti file, to allow alteration of filenames.</li><li><a href="../MREdge/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>	Unzips nifti if it is zipped. For navigation between SPM, FSL and other packages.</li><li><a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>	Convert cell array of 3D nii files to single 4D nii file.</li><li><a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>	Converts phase and magnitude data to real and imaginary data for processing of complex MR signal</li><li><a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>	Converts real and imagianry data to phase and magnitude</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="mredge_distortion_correction.html" class="code" title="function mredge_distortion_correction(info, prefs)">mredge_distortion_correction</a>	Correct for distortion in the MRE acquisition using FSL or SPM libraries</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function apply_topup(path, TOPUP_RESULTS)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_distortion_correction_raw(info)</a>
+0002 <span class="comment">% Performs distortion correction on raw MR signal data</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">%   prefs - a preference file structure created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% NOTE:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Acquisition must have fieldmap time series, specified in the info struct.</span>
+0016 <span class="comment">%   Slices must have been acquired with synchronized phases (i.e. not newer</span>
+0017 <span class="comment">%   continuous-motion protocols).</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% SEE ALSO:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   mredge_distortion_correction, mredge_distortion_correction_ft</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% Part of the MREdge software package</span>
+0024 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0025 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0026 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0027 disp(<span class="string">'MREdge Distortion Correction'</span>);
+0028 <span class="keyword">if</span> ~ info.ds.logical(info.ds.enum.fieldmap)
+0029     disp(<span class="string">'MREdge ERROR: No fieldmap directory for this acquisition.'</span>);
+0030     <span class="keyword">return</span>
+0031 <span class="keyword">end</span>
+0032 fieldmap_dir = cell2str(info.ds.list(info.ds.enum.fieldmap));
+0033 cd(fieldmap_dir);
+0034 
+0035 <span class="comment">% Select DICOM files, convert and rename</span>
+0036 <span class="comment">% Files for Distortion correction (taken from separate 10-second scans)</span>
+0037 <span class="comment">% should only be one .nii in each Fieldmap series folder</span>
+0038 RL_series = info.fieldmap(1);
+0039 LR_series = info.fieldmap(2);
+0040 RL_nifti_name = dir(fullfile(fieldmap_dir, [num2str(RL_series), <span class="string">'.nii'</span>]));
+0041 LR_nifti_name = dir(fullfile(fieldmap_dir, [num2str(LR_series), <span class="string">'.nii'</span>]));
+0042 
+0043 cell_array{1} = fullfile(fieldmap_dir, RL_nifti_name.name);
+0044 cell_array{2} = fullfile(fieldmap_dir, LR_nifti_name.name);
+0045 name_4d = fullfile(fieldmap_dir, <span class="string">'Distortion_Map_4d.nii'</span>);
+0046 <a href="mredge_3d_to_4d.html" class="code" title="function mredge_3d_to_4d(path_3d_array, path_4d)">mredge_3d_to_4d</a>(cell_array, name_4d);
+0047 
+0048 disp(<span class="string">'Prepping...'</span>);
+0049 topup_command = [<span class="string">'fsl5.0-topup --imain='</span>, name_4d, <span class="string">' --datain='</span>, getenv(<span class="string">'TOPUP_PARAMS'</span>), <span class="string">' --config=b02b0.cnf --out=topup_results --fout=topup_field --iout=topup_field_map'</span>];
+0050 system(topup_command);
+0051 TOPUP_RESULTS = fullfile(fieldmap_dir, <span class="string">'topup_results'</span>);
+0052 
+0053 <a href="mredge_pm2ri.html" class="code" title="function mredge_pm2ri(info)">mredge_pm2ri</a>(info);
+0054 <span class="keyword">for</span> subdir = info.ds.subdirs_comps_files
+0055     <a href="#_sub1" class="code" title="subfunction apply_topup(path, TOPUP_RESULTS)">apply_topup</a>(cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir)), TOPUP_RESULTS);
+0056     <a href="#_sub1" class="code" title="subfunction apply_topup(path, TOPUP_RESULTS)">apply_topup</a>(cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir)), TOPUP_RESULTS);
+0057 <span class="keyword">end</span>
+0058 <a href="mredge_ri2pm.html" class="code" title="function mredge_ri2pm(info)">mredge_ri2pm</a>(info);
+0059 
+0060 <span class="keyword">end</span>
+0061 
+0062 <a name="_sub1" href="#_subfunctions" class="code">function apply_topup(path, TOPUP_RESULTS)</a>
+0063 
+0064     path_temp = [<a href="../MREdge/file_ops/mredge_remove_nifti_extension.html" class="code" title="function path_trunc = mredge_remove_nifti_extension(path)">mredge_remove_nifti_extension</a>(path) <span class="string">'_temp.nii.gz'</span>];
+0065     copyfile(path, path_temp);
+0066     apply_topup_command = [<span class="string">'fsl5.0-applytopup --imain='</span>, path_temp, <span class="string">' --inindex=1 --datain='</span>, getenv(<span class="string">'TOPUP_PARAMS'</span>) <span class="string">' --topup='</span>, TOPUP_RESULTS, <span class="string">' --method=jac --interp=spline --out='</span>, path];
+0067     system(apply_topup_command);
+0068     <a href="../MREdge/file_ops/mredge_unzip_if_zip.html" class="code" title="function unzip = mredge_unzip_if_zip(zip)">mredge_unzip_if_zip</a>(path);
+0069     delete(path_temp);
+0070             
+0071 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

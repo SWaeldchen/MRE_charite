@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_laplacian_unwrap</title>
+  <meta name="keywords" content="mredge_laplacian_unwrap">
+  <meta name="description" content="% function mredge_laplacian_unwrap(info, prefs);">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_laplacian_unwrap.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_laplacian_unwrap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% function mredge_laplacian_unwrap(info, prefs);</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function w_u = mredge_laplacian_unwrap(w, dims) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_laplacian_unwrap(info, prefs);
+
+ Part of the MREdge software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results, 
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+ for permission to make modifications.
+
+
+ USAGE:
+
+   unwraps data in 2, 3, or 4 dimensions using Discrete Cosine Transform
+    if you use this method, please cite:
+   Barnhill, E., Kennedy, P., Johnson, C. L., Mada, M., &amp; Roberts, N. (2015). Real‐time 4D phase unwrapping applied to magnetic resonance elastography. Magnetic  %   resonance in medicine, 73(6), 2321-2331.
+ 
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   none</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function w_u = unwrap(w, dims)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_laplacian_unwrap(info, prefs);</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% Part of the MREdge software package</span>
+0004 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0005 <span class="comment">% So that we can vouch for results,</span>
+0006 <span class="comment">% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0008 <span class="comment">% for permission to make modifications.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% USAGE:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   unwraps data in 2, 3, or 4 dimensions using Discrete Cosine Transform</span>
+0014 <span class="comment">%    if you use this method, please cite:</span>
+0015 <span class="comment">%   Barnhill, E., Kennedy, P., Johnson, C. L., Mada, M., &amp; Roberts, N. (2015). Real‐time 4D phase unwrapping applied to magnetic resonance elastography. Magnetic  %   resonance in medicine, 73(6), 2321-2331.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% INPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0021 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% OUTPUTS:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   none</span>
+0026 
+0027 <a name="_sub0" href="#_subfunctions" class="code">function w_u = mredge_laplacian_unwrap(w, dims)</a>
+0028 <span class="comment">%parse</span>
+0029 <span class="keyword">if</span> nargin &gt; 1 &amp;&amp; dims ~= 2 &amp;&amp; dims ~= 3 &amp;&amp; dims ~= 4
+0030     display(<span class="string">'MREdge ERROR: Invalid phase unwrapping dimensions.'</span>);
+0031     <span class="keyword">return</span>;
+0032 <span class="keyword">end</span>
+0033 w = double(w);
+0034 phase_range = max(w(:)) - min(w(:));
+0035 <span class="keyword">if</span> phase_range &gt; 2*pi
+0036     w = (w - min(w(:))) ./ (max(w(:)) - min(w(:))) *2*pi - pi;
+0037 <span class="keyword">end</span>
+0038 sz = size(w);
+0039 w_u = zeros(sz);
+0040 <span class="keyword">if</span> (numel(sz) &lt; 6)
+0041     d6 = 1;
+0042 <span class="keyword">else</span>
+0043     d6 = sz(6);
+0044 <span class="keyword">end</span>
+0045 <span class="keyword">if</span> (numel(sz) &lt; 5)
+0046     d5 = 1;
+0047 <span class="keyword">else</span>
+0048     d5 = sz(5);
+0049 <span class="keyword">end</span>
+0050 <span class="keyword">if</span> (numel(sz) &lt; 4)
+0051     d4 = 1;
+0052 <span class="keyword">else</span>
+0053     d4 = sz(4);
+0054 <span class="keyword">end</span>
+0055 <span class="keyword">for</span> f = 1:d6
+0056     <span class="keyword">for</span> c = 1:d5
+0057         <span class="keyword">if</span> dims == 4
+0058             w_u(:,:,:,:,c,f) = <a href="#_sub1" class="code" title="subfunction w_u = unwrap(w, dims)">unwrap</a>(w(:,:,:,:,c,f), 4);
+0059         <span class="keyword">else</span>
+0060             <span class="keyword">for</span> t = 1:d4
+0061                 <span class="keyword">if</span> dims == 3
+0062                     w_u(:,:,:,t,c,f) = <a href="#_sub1" class="code" title="subfunction w_u = unwrap(w, dims)">unwrap</a>(w(:,:,:,t,c,f), 3);
+0063                 <span class="keyword">else</span> 
+0064                     <span class="keyword">for</span> z = 1:sz(3)
+0065                         w_u(:,:,z,t,c,f) = <a href="#_sub1" class="code" title="subfunction w_u = unwrap(w, dims)">unwrap</a>(w(:,:,z,t,c,f), 2);
+0066                     <span class="keyword">end</span>
+0067                 <span class="keyword">end</span>
+0068             <span class="keyword">end</span>
+0069         <span class="keyword">end</span>
+0070     <span class="keyword">end</span>
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="keyword">end</span>
+0074 
+0075 <a name="_sub1" href="#_subfunctions" class="code">function w_u = unwrap(w, dims)</a>
+0076     sz = size(w);
+0077     cosx = cos(w);
+0078     sinx = sin(w);
+0079     <span class="keyword">switch</span> dims
+0080         <span class="keyword">case</span> 2
+0081             [x, y] = meshgrid(1:sz(2), 1:sz(1));
+0082             mask = x.^2 + y.^2;
+0083         <span class="keyword">case</span> 3
+0084             [x, y, z] = meshgrid(1:sz(2), 1:sz(1), 1:sz(3));
+0085             mask = x.^2 + y.^2 + z.^2;
+0086         <span class="keyword">case</span> 4
+0087             [x, y, z, t] = meshgrid(1:sz(2), 1:sz(1), 1:sz(3), 1:sz(4));
+0088             mask = x.^2 + y.^2 + z.^2 + t^2;
+0089     <span class="keyword">end</span>
+0090     
+0091     term1 = sinx;
+0092     term1 = dctn(term1, dims);
+0093     term1 = term1 .* mask;
+0094     term1 = idctn(term1, dims);
+0095     term1 = term1 .* cosx;
+0096     term1 = dctn(term1, dims);
+0097     term1 = term1 ./ mask;
+0098     term1 = idctn(term1, dims);
+0099     
+0100     term2 = cosx;
+0101     term2 = dctn(term2, dims);
+0102     term2 = term2 .* mask;
+0103     term2 = idctn(term2, dims);
+0104     term2 = term2 .* sinx;
+0105     term2 = dctn(term2, dims);
+0106     term2 = term2 ./ mask;
+0107     term2 = idctn(term2, dims);
+0108     
+0109     w_u = term1 - term2;
+0110 
+0111 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

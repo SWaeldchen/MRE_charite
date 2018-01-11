@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_t1_to_mni</title>
+  <meta name="keywords" content="mredge_t1_to_mni">
+  <meta name="description" content="% function mredge_t1_to_mni(info)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge_t1_to_mni.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge_t1_to_mni
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% function mredge_t1_to_mni(info)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mredge_t1_to_mni(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% function mredge_t1_to_mni(info)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function dirs = set_dirs(info)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% function mredge_t1_to_mni(info)</span>
+0002 
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Part of the MREdge software package</span>
+0005 <span class="comment">% Created 2016 at Charite Medical University Berlin</span>
+0006 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0007 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% USAGE:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Organizes DICOM slices into folders, and for MRE acquisitions, 4D nifti files,</span>
+0012 <span class="comment">% guided by acquisition info object.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% INPUTS:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% info - an acquisition info structure created by make_acquisition_info</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% OUTPUTS:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% none</span>
+0021 
+0022 <span class="comment">%% collect series numbers</span>
+0023 
+0024 <a name="_sub0" href="#_subfunctions" class="code">function mredge_t1_to_mni(info)</a>
+0025 
+0026     TPM_dir = fullfile(spm(<span class="string">'Dir'</span>),<span class="string">'tpm'</span>);
+0027     spm(<span class="string">'defaults'</span>,<span class="string">'fmri'</span>);
+0028     spm_jobman(<span class="string">'initcfg'</span>);
+0029     [T1_SUB] = <a href="#_sub1" class="code" title="subfunction dirs = set_dirs(info)">set_dirs</a>(info);
+0030     t1_series =  fullfile(T1_SUB, num2str(info.t1));
+0031     t1_file = dir(fullfile(t1_series, <span class="string">'*.nii'</span>));
+0032     <span class="keyword">if</span> numel(t1_file) &gt; 1
+0033         display(<span class="string">'MREdge ERROR: Too many T1 images. Clean folder?'</span>);
+0034     <span class="keyword">end</span>
+0035     t1_path = fullfile(t1_series, t1_file.name);
+0036     <span class="comment">% align</span>
+0037     matlabbatch{1}.spm.spatial.preproc.channel.vols = {t1_path};
+0038     matlabbatch{1}.spm.spatial.preproc.channel.biasreg = 0.001;
+0039     matlabbatch{1}.spm.spatial.preproc.channel.biasfwhm = 60;
+0040     matlabbatch{1}.spm.spatial.preproc.channel.write = [0 0];
+0041     matlabbatch{1}.spm.spatial.preproc.tissue(1).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,1'</span>)};
+0042     matlabbatch{1}.spm.spatial.preproc.tissue(1).ngaus = 1;
+0043     matlabbatch{1}.spm.spatial.preproc.tissue(1).native = [1 0];
+0044     matlabbatch{1}.spm.spatial.preproc.tissue(1).warped = [0 0];
+0045     matlabbatch{1}.spm.spatial.preproc.tissue(2).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,2'</span>)};
+0046     matlabbatch{1}.spm.spatial.preproc.tissue(2).ngaus = 1;
+0047     matlabbatch{1}.spm.spatial.preproc.tissue(2).native = [1 0];
+0048     matlabbatch{1}.spm.spatial.preproc.tissue(2).warped = [0 0];
+0049     matlabbatch{1}.spm.spatial.preproc.tissue(3).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,3'</span>)};
+0050     matlabbatch{1}.spm.spatial.preproc.tissue(3).ngaus = 2;
+0051     matlabbatch{1}.spm.spatial.preproc.tissue(3).native = [1 0];
+0052     matlabbatch{1}.spm.spatial.preproc.tissue(3).warped = [0 0];
+0053     matlabbatch{1}.spm.spatial.preproc.tissue(4).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,4'</span>)};
+0054     matlabbatch{1}.spm.spatial.preproc.tissue(4).ngaus = 3;
+0055     matlabbatch{1}.spm.spatial.preproc.tissue(4).native = [1 0];
+0056     matlabbatch{1}.spm.spatial.preproc.tissue(4).warped = [0 0];
+0057     matlabbatch{1}.spm.spatial.preproc.tissue(5).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,5'</span>)};
+0058     matlabbatch{1}.spm.spatial.preproc.tissue(5).ngaus = 4;
+0059     matlabbatch{1}.spm.spatial.preproc.tissue(5).native = [1 0];
+0060     matlabbatch{1}.spm.spatial.preproc.tissue(5).warped = [0 0];
+0061     matlabbatch{1}.spm.spatial.preproc.tissue(6).tpm = {fullfile(TPM_dir,<span class="string">'TPM.nii,6'</span>)};
+0062     matlabbatch{1}.spm.spatial.preproc.tissue(6).ngaus = 2;
+0063     matlabbatch{1}.spm.spatial.preproc.tissue(6).native = [0 0];
+0064     matlabbatch{1}.spm.spatial.preproc.tissue(6).warped = [0 0];
+0065     matlabbatch{1}.spm.spatial.preproc.warp.mrf = 1;
+0066     matlabbatch{1}.spm.spatial.preproc.warp.cleanup = 1;
+0067     matlabbatch{1}.spm.spatial.preproc.warp.reg = [0 0.001 0.5 0.05 0.2];
+0068     matlabbatch{1}.spm.spatial.preproc.warp.affreg = <span class="string">'mni'</span>;
+0069     matlabbatch{1}.spm.spatial.preproc.warp.fwhm = 0;
+0070     matlabbatch{1}.spm.spatial.preproc.warp.samp = 3;
+0071     matlabbatch{1}.spm.spatial.preproc.warp.write = [1 1];
+0072     spm_jobman(<span class="string">'run'</span>,matlabbatch);
+0073 
+0074 <span class="keyword">end</span>
+0075 
+0076 <a name="_sub1" href="#_subfunctions" class="code">function dirs = set_dirs(info)</a>
+0077     dirs = fullfile(info.path, <span class="string">'T1'</span>);
+0078 <span class="keyword">end</span>
+0079</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

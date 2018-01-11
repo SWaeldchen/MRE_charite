@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Example3</title>
+  <meta name="keywords" content="Example3">
+  <meta name="description" content="% NCOGS Example 3 (3D group-sparse shrinkage)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">ncogs_software</a> &gt; Example3.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/ncogs_software&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>Example3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>% NCOGS Example 3 (3D group-sparse shrinkage)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% NCOGS Example 3 (3D group-sparse shrinkage)
+ This example illustrates 3D sparse signal denoising using non-convex
+ overlapping group sparsity (OGS).
+
+ Ivan Selesnick, July 2014
+
+  Reference:
+ Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization 
+ Po-Yu Chen and Ivan Selesnick 
+ IEEE Transactions on Signal Processing, vol.62, no.13, pp. 3464-3478, July 1, 2014. 
+
+ http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=6826555&amp;isnumber=6826603
+
+ Preprint: http://arxiv.org/abs/1308.5038</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="ogs3.html" class="code" title="function [x, cost] = ogs3(y, K, lam, pen, rho, Nit)">ogs3</a>	[x, cost] = ogs3(y, K, lam, pen, rho, Nit)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% NCOGS Example 3 (3D group-sparse shrinkage)</span>
+0002 <span class="comment">% This example illustrates 3D sparse signal denoising using non-convex</span>
+0003 <span class="comment">% overlapping group sparsity (OGS).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Ivan Selesnick, July 2014</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Reference:</span>
+0008 <span class="comment">% Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization</span>
+0009 <span class="comment">% Po-Yu Chen and Ivan Selesnick</span>
+0010 <span class="comment">% IEEE Transactions on Signal Processing, vol.62, no.13, pp. 3464-3478, July 1, 2014.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=6826555&amp;isnumber=6826603</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Preprint: http://arxiv.org/abs/1308.5038</span>
+0015 
+0016 <span class="comment">%% Set up</span>
+0017 
+0018 clear all
+0019 close all
+0020 
+0021 <span class="comment">% Set state for reproducibility</span>
+0022 rng(<span class="string">'default'</span>)
+0023 rng(1);
+0024 
+0025 rmse = @(err) sqrt(mean(abs(err(:)).^2));
+0026 
+0027 <span class="comment">%% Make data</span>
+0028 
+0029 <span class="comment">% N : size of 3D data</span>
+0030 N = [30, 40, 20];
+0031 
+0032 <span class="comment">% x : noise-free data</span>
+0033 x = zeros(N);              
+0034 x(10+[1:4], 10+[1:4], 10+[1:4]) = rand(4,4,4)-0.5;
+0035 x(15+[1:4], 25+[1:4], 8+[1:4]) = rand(4,4,4)-0.5;
+0036 
+0037 <span class="comment">% y : noisy data</span>
+0038 sigma = 0.1;
+0039 y = x + sigma * randn(N);
+0040 
+0041 <span class="comment">%% Denoising using OGS</span>
+0042 
+0043 Nit = 30;          <span class="comment">% Nit : number of iterations.</span>
+0044 
+0045 K = [3 3 3];       <span class="comment">% K : group size</span>
+0046 <span class="comment">% Note: the group size does not need to be the same as</span>
+0047 <span class="comment">% the true groups in the data. Usually, the specified</span>
+0048 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.size should be smaller. (Also, in many real data,</span>
+0049 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications. are of different sizes anyway, there is not</span>
+0050 <span class="comment">% single group size to identify.)</span>
+0051 
+0052 <span class="comment">% OGS[abs]</span>
+0053 pen = <span class="string">'abs'</span>;
+0054 rho = 0;
+0055 lam_abs = 0.020;
+0056 [f_abs, cost_abs] = <a href="ogs3.html" class="code" title="function [x, cost] = ogs3(y, K, lam, pen, rho, Nit)">ogs3</a>(y, K, lam_abs, pen, rho, Nit);
+0057 rmse(f_abs - x)
+0058 
+0059 <span class="comment">% OGS[atan]</span>
+0060 pen = <span class="string">'atan'</span>;
+0061 rho = 1;
+0062 lam_atan = 0.023;
+0063 [f_atan, cost_atan] = <a href="ogs3.html" class="code" title="function [x, cost] = ogs3(y, K, lam, pen, rho, Nit)">ogs3</a>(y, K, lam_atan, pen, rho, Nit);
+0064 rmse(f_atan - x)
+0065 
+0066 <span class="comment">%% Display 2D slices</span>
+0067 <span class="comment">% Show 2D slices through the data as images</span>
+0068 
+0069 Clim = [-1 1]/2;
+0070 
+0071 set(0, <span class="string">'DefaultAxesFontSize'</span>, 8);
+0072 
+0073 figure(1)
+0074 clf
+0075 
+0076 subplot(2, 2, 1)
+0077 imagesc(x(:,:,11), Clim)
+0078 <span class="comment">% colorbar</span>
+0079 axis image
+0080 title(<span class="string">'Noise-free data'</span>);
+0081 colormap(gray(256))
+0082 axis off
+0083 
+0084 subplot(2, 2, 2)
+0085 imagesc(y(:,:,11), Clim)
+0086 title(sprintf(<span class="string">'Noisy data (sigma = %3.2f )'</span>, sigma));
+0087 <span class="comment">% colorbar</span>
+0088 axis image
+0089 axis off
+0090 
+0091 subplot(2, 2, 3)
+0092 imagesc(f_abs(:,:,11), Clim)
+0093 title(sprintf(<span class="string">'Denoised using OGS[abs] (\\lambda = %.2e )'</span>, lam_abs));
+0094 <span class="comment">% colorbar</span>
+0095 axis image
+0096 axis off
+0097 
+0098 subplot(2, 2, 4)
+0099 imagesc(f_atan(:,:,11), Clim)
+0100 title(sprintf(<span class="string">'Denoised using OGS[atan] (\\lambda = %.2e )'</span>, lam_atan));
+0101 <span class="comment">% colorbar</span>
+0102 axis image
+0103 axis off
+0104 
+0105 orient landscape
+0106 print -dps figures/Example3_fig1
+0107 
+0108 set(0, <span class="string">'DefaultAxesFontSize'</span>, <span class="string">'remove'</span>);
+0109 
+0110 
+0111 <span class="comment">%% Display 1D lines</span>
+0112 <span class="comment">% Display 1D lines through the data as plots.</span>
+0113 <span class="comment">% It can be seen that OGS[abs] substantially underestimates the data (as</span>
+0114 <span class="comment">% would soft thresholding). OGS[atan] estimates the data more accurately.</span>
+0115 
+0116 figure(2)
+0117 
+0118 subplot(2, 2, 1)
+0119 plot(x(:,26,11))
+0120 title(<span class="string">'Noise-free data'</span>);
+0121 ylim(Clim)
+0122 
+0123 subplot(2, 2, 2)
+0124 plot(y(:,26,11))
+0125 title(sprintf(<span class="string">'Noisy data (sigma = %3.2f )'</span>, sigma));
+0126 ylim(Clim)
+0127 
+0128 subplot(2, 2, 3)
+0129 plot(f_abs(:,26,11))
+0130 title(sprintf(<span class="string">'Denoised using OGS[abs] (\\lambda = %.2e )'</span>, lam_abs));
+0131 ylim(Clim)
+0132 
+0133 subplot(2, 2, 4)
+0134 plot(f_atan(:,26,11))
+0135 title(sprintf(<span class="string">'Denoised using OGS[atan] (\\lambda = %.2e )'</span>, lam_atan));
+0136 ylim(Clim)
+0137 
+0138 orient landscape
+0139 print -dpdf figures/Example3_fig2
+0140 
+0141 
+0142</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

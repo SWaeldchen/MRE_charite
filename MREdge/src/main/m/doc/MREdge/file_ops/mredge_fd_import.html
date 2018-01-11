@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_fd_import</title>
+  <meta name="keywords" content="mredge_fd_import">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_fd_import.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_fd_import
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mredge_fd_import(info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_dicom_to_nifti.html" class="code" title="function mredge_dicom_to_nifti(info)">mredge_dicom_to_nifti</a>	Converts raw DICOM files into NIfTI objects, which are used for all MREdge processing.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_fd_import(info)</a>
+0002 tic
+0003 disp(<span class="string">'Dittmann import routine...'</span>);
+0004 <span class="comment">%% create image series</span>
+0005 imSer = createImageSeriesFromDicomFiles( info.path );
+0006 
+0007 <span class="comment">%% convert image series to data cubes</span>
+0008 dataCubes = convertAllImageSeriesToDataCubes( imSer );
+0009 
+0010 <span class="comment">%% split mosaics</span>
+0011 dataCubeWithSplitMosaics = splitAllMosaicDataCubes( dataCubes );
+0012 
+0013 <span class="comment">%% sort data cubes and convert MRE data to complex cube</span>
+0014 tic;
+0015 complexCubes = convertMreDataToComplexCubes( dataCubeWithSplitMosaics );
+0016 toc;
+0017 
+0018 <span class="comment">%% extract meta information from dicom headers</span>
+0019 complexCubes=autoExtractMetaInformationFromDicomHeaders(complexCubes);
+0020 complexCubes = autoReshapeAndExtractMreInfoInComplexCubes( complexCubes );
+0021 mreCubes = transform3DWaveFieldsIntoImageCoordinateSystem( complexCubes );
+0022 phase_filepath = fullfile(info.path, [num2str(info.phase), <span class="string">'.nii'</span>]);
+0023 mag_filepath = fullfile(info.path, [num2str(info.magnitude), <span class="string">'.nii'</span>]);
+0024 phase_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(phase_filepath);
+0025 mag_vol = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(mag_filepath);
+0026 dims = phase_vol.hdr.dime.dim;
+0027 dim_swap = [dims(1) dims(3) dims(2) dims(4:end)]; 
+0028 <span class="comment">% first entry is how many dims there are, so 2 and 3 are swapped</span>
+0029 phase_vol.hdr.dime.dim = dim_swap;
+0030 mag_vol.hdr.dime.dim = dim_swap;
+0031 
+0032 <span class="comment">% now put the imported data in the phase NIfTI</span>
+0033 successful_import = 0;
+0034 <span class="keyword">for</span> n = 1:numel(mreCubes)
+0035     <span class="keyword">if</span> mreCubes(n).SeriesNumber_phase == info.phase &amp;&amp; <span class="keyword">...</span>
+0036             mreCubes(n).SeriesNumber_magn == info.magnitude
+0037         successful_import = 1;  
+0038         phase_vol.img = angle(mreCubes(n).cube);
+0039         phase_vol.hdr.dime.datatype = 64;
+0040         save_untouch_nii_eb(phase_vol, phase_filepath);
+0041         mag_vol.img = abs(mreCubes(n).cube);
+0042         mag_vol.hdr.dime.datatype = 64;
+0043         save_untouch_nii_eb(mag_vol, mag_filepath);
+0044     <span class="keyword">end</span>
+0045 <span class="keyword">end</span>
+0046 <span class="keyword">if</span> successful_import
+0047     disp(<span class="string">'FD Import Successful'</span>);
+0048 <span class="keyword">else</span>
+0049     disp(<span class="string">'MREdge ERROR: FD Import Failure.'</span>);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">%{</span>
+0053 <span class="comment">%TURN ON TO SAVE CUBES - NEED TO PASS PREFS AS ARG</span>
+0054 dataCubeDir = fullfile(<a href="mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs),<span class="string">'dataCubes'</span>);
+0055 <span class="keyword">if</span> ~exist(dataCubeDir, <span class="string">'dir'</span>)
+0056     mkdir(dataCubeDir);
+0057 <span class="keyword">end</span>
+0058 save(fullfile(dataCubeDir, <span class="string">'dataCubes.mat'</span>), <span class="string">'mreCubes'</span>);
+0059 <span class="comment">%}</span>
+0060 
+0061 
+0062 toc
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

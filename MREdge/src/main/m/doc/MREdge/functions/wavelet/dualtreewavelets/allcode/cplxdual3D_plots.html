@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cplxdual3D_plots</title>
+  <meta name="keywords" content="cplxdual3D_plots">
+  <meta name="description" content="cplxdual3D_plots">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../../index.html">Home</a> &gt;  <a href="../../../../index.html">MREdge</a> &gt; <a href="../../../index.html">functions</a> &gt; <a href="../../index.html">wavelet</a> &gt; <a href="#">dualtreewavelets</a> &gt; <a href="index.html">allcode</a> &gt; cplxdual3D_plots.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../../index.html"><img alt="<" border="0" src="../../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/dualtreewavelets/allcode&nbsp;<img alt=">" border="0" src="../../../../../right.png"></a></td></tr></table>-->
+
+<h1>cplxdual3D_plots
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>cplxdual3D_plots</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> cplxdual3D_plots
+ DISPLAY 3D WAVELETS OF CPLXDUAL3D.M</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+<li><a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>	Farras filters organized for the dual-tree</li><li><a href="cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>	3D Complex Dual-Tree Discrete Wavelet Transform</li><li><a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>	Kingsbury Q-filters for the dual-tree complex DWT</li><li><a href="icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>	Inverse 3D Complex Dual-Tree Discrete Wavelet Transform</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% cplxdual3D_plots</span>
+0002 <span class="comment">% DISPLAY 3D WAVELETS OF CPLXDUAL3D.M</span>
+0003 
+0004 [Faf, Fsf] = <a href="FSfarras.html" class="code" title="function [af, sf] = FSfarras">FSfarras</a>;
+0005 [af, sf] = <a href="dualfilt1.html" class="code" title="function [af, sf] = dualfilt1">dualfilt1</a>;
+0006 J = 4;
+0007 L = 2*2^(J+1);
+0008 N = L/2^J;
+0009 x = zeros(L,L,L);
+0010 w = <a href="cplxdual3D.html" class="code" title="function w = cplxdual3D(x, J, Faf, af)">cplxdual3D</a>(x, J, Faf, af);
+0011 w{J}{1}{1}{1}{3}(N/2,N/2,N/2) = 1;
+0012 y = <a href="icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>(w, J, Fsf, sf);
+0013 figure(1)
+0014 clf
+0015 v = 1:L;
+0016 S = 0.0010;
+0017 p1 = patch(isosurface(v,v,v,y,S));
+0018 isonormals(v,v,v,y,p1);
+0019 set(p1,<span class="string">'FaceColor'</span>,<span class="string">'red'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0020 hold on
+0021 p2 = patch(isosurface(v,v,v,y,-S));
+0022 isonormals(v,v,v,y,p2);
+0023 set(p2,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0024 hold off
+0025 daspect([1 1 1]);
+0026 view(-30,30); 
+0027 camlight;
+0028 lighting phong
+0029 grid
+0030 axis([12 38 12 38 12 38])
+0031 set(gca,<span class="string">'fontsize'</span>,7)
+0032 title(<span class="string">'3-D WAVELET ISOSURFACE (REAL PART)'</span>)
+0033 set(gcf,<span class="string">'paperposition'</span>,[0.5 0.5 0 0]+[0 0 3 3])
+0034 print -djpeg95 cplxdual3D_plots_1
+0035 print -depsc cplxdual3D_plots_1
+0036 yr = y;
+0037 
+0038 w{J}{1}{1}{1}{3}(N/2,N/2,N/2) = 0;
+0039 w{J}{2}{2}{2}{3}(N/2,N/2,N/2) = 1;
+0040 y = <a href="icplxdual3D.html" class="code" title="function y = icplxdual3D(w, J, Fsf, sf)">icplxdual3D</a>(w, J, Fsf, sf);
+0041 figure(2)
+0042 clf
+0043 v = 1:L;
+0044 S = 0.0010;
+0045 p1 = patch(isosurface(v,v,v,y,S));
+0046 isonormals(v,v,v,y,p1);
+0047 set(p1,<span class="string">'FaceColor'</span>,<span class="string">'red'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0048 hold on
+0049 p2 = patch(isosurface(v,v,v,y,-S));
+0050 isonormals(v,v,v,y,p2);
+0051 set(p2,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0052 hold off
+0053 daspect([1 1 1]);
+0054 view(-30,30); 
+0055 camlight;
+0056 lighting phong
+0057 grid
+0058 axis([12 38 12 38 12 38])
+0059 set(gca,<span class="string">'fontsize'</span>,7)
+0060 title(<span class="string">'3-D WAVELET ISOSURFACE (IMAGINARY PART)'</span>)
+0061 set(gcf,<span class="string">'paperposition'</span>,[0.5 0.5 0 0]+[0 0 3 3])
+0062 print -djpeg95 cplxdual3D_plots_2
+0063 print -depsc cplxdual3D_plots_2
+0064 yi = y;
+0065 
+0066 y = sqrt(yr.^2 + yi.^2);
+0067 figure(3)
+0068 clf
+0069 v = 1:L;
+0070 S = 0.0010;
+0071 p1 = patch(isosurface(v,v,v,y,S));
+0072 isonormals(v,v,v,y,p1);
+0073 set(p1,<span class="string">'FaceColor'</span>,<span class="string">'red'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0074 hold on
+0075 p2 = patch(isosurface(v,v,v,y,-S));
+0076 isonormals(v,v,v,y,p2);
+0077 set(p2,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>); 
+0078 hold off
+0079 daspect([1 1 1]);
+0080 view(-30,30); 
+0081 camlight;
+0082 lighting phong
+0083 grid
+0084 axis([12 38 12 38 12 38])
+0085 set(gca,<span class="string">'fontsize'</span>,7)
+0086 title(<span class="string">'3-D WAVELET ISOSURFACE (MAGNITUDE)'</span>)
+0087 set(gcf,<span class="string">'paperposition'</span>,[0.5 0.5 0 0]+[0 0 3 3])
+0088 print -djpeg95 cplxdual3D_plots_3
+0089 print -depsc cplxdual3D_plots_3
+0090</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

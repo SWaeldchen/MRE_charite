@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of iudwt2D</title>
+  <meta name="keywords" content="iudwt2D">
+  <meta name="description" content="Inverse Undecimated 2-D Discrete Wavelet Transform">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="../../index.html">functions</a> &gt; <a href="../index.html">wavelet</a> &gt; <a href="index.html">stationary_dwt</a> &gt; iudwt2D.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/functions/wavelet/stationary_dwt&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>iudwt2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Inverse Undecimated 2-D Discrete Wavelet Transform</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function y = iudwt2D(w, J, g0, g1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Inverse Undecimated 2-D Discrete Wavelet Transform
+
+ INPUT
+   w : wavelet coefficients
+   J : number of stages
+   sf : synthesis filters
+
+ OUTPUT
+   y : output array
+
+ See: udwt2D, idwt2D
+
+ WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY
+ http://taco.poly.edu/WaveletSoftware/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="sfb2D_u.html" class="code" title="function y = sfb2D_u(lo, hi, j, sf1, sf2)">sfb2D_u</a>	Undecimated 2D Synthesis Filter Bank</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="testing.html" class="code" title="">testing</a>	% TESTING MODULE</li><li><a href="udwt_derivative_demo.html" class="code" title="">udwt_derivative_demo</a>	</li><li><a href="udwt_laplacian_demo.html" class="code" title="">udwt_laplacian_demo</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function y = iudwt2D(w, J, g0, g1)</a>
+0002 
+0003 <span class="comment">% Inverse Undecimated 2-D Discrete Wavelet Transform</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT</span>
+0006 <span class="comment">%   w : wavelet coefficients</span>
+0007 <span class="comment">%   J : number of stages</span>
+0008 <span class="comment">%   sf : synthesis filters</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% OUTPUT</span>
+0011 <span class="comment">%   y : output array</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See: udwt2D, idwt2D</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% WAVELET SOFTWARE AT POLYTECHNIC UNIVERSITY, BROOKLYN, NY</span>
+0016 <span class="comment">% http://taco.poly.edu/WaveletSoftware/</span>
+0017 
+0018 y = w{J+1}; <span class="comment">% y is the lowpass</span>
+0019 <span class="keyword">for</span> j = J:-1:1
+0020    y = <a href="sfb2D_u.html" class="code" title="function y = sfb2D_u(lo, hi, j, sf1, sf2)">sfb2D_u</a>(y, w{j}, j, [g0, g1], [g0, g1]);
+0021 <span class="keyword">end</span>
+0022 
+0023 m = numel(g0) - 1;
+0024 y = y(1:end-m, 1:end-m);</pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

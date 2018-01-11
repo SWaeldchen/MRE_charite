@@ -1,0 +1,7 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  mredge_amplitudes [URL="mredge_amplitudes.html"];
+  mredge_masked_median [URL="mredge_masked_median.html"];
+  mredge_snr [URL="mredge_snr.html"];
+}

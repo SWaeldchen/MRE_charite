@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge</title>
+  <meta name="keywords" content="mredge">
+  <meta name="description" content="Base function for the processing and analysis of MRE data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">MREdge</a> &gt; mredge.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>mredge
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Base function for the processing and analysis of MRE data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function outputs = mredge(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Base function for the processing and analysis of MRE data
+
+ INPUTS:
+
+   info - MREdge acquisition info structure generated with mredge_acquisition_info
+   prefs - MREdge preferences structure generated with mredge_prefs
+
+ OUTPUTS:
+
+   returns a structure containing outputs as specified by prefs
+
+ EXAMPLE USAGE:
+
+   local_data_path = pwd; % copy raw data locally before running MREdge!
+   info = mredge_info('path', local_data_path, 'magnitude', 2, 'phase',
+   3);
+   prefs = mredge_prefs('outputs.elastograms', 1);
+   elastograms = mredge(info, prefs);
+
+ Part of the MREdge software package
+ Created 2016 by Eric Barnhill for Charite Medical University Berlin
+ Private usage only. Distribution only by permission of Elastography working
+ group.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>	Generates uniform analysis folder path names</li><li><a href="../MREdge/file_ops/mredge_clean_acquisition_folder.html" class="code" title="function mredge_clean_acquisition_folder(info)">mredge_clean_acquisition_folder</a>	Cleans all processing files from local acquisition folder, leaving only DICOMs.</li><li><a href="../MREdge/file_ops/mredge_dicom_to_nifti.html" class="code" title="function mredge_dicom_to_nifti(info)">mredge_dicom_to_nifti</a>	Converts raw DICOM files into NIfTI objects, which are used for all MREdge processing.</li><li><a href="../MREdge/file_ops/mredge_load_FT_as_5d.html" class="code" title="function data_5d = mredge_load_FT_as_5d (info, prefs)">mredge_load_FT_as_5d</a>	Load Fourier-transformed wavefield into MATLAB.</li><li><a href="../MREdge/file_ops/mredge_load_amplitudes.html" class="code" title="function amplitudes = mredge_load_amplitudes(info, prefs)">mredge_load_amplitudes</a>	Load amplitude maps into MATLAB.</li><li><a href="../MREdge/file_ops/mredge_load_elastograms.html" class="code" title="function elastograms = mredge_load_elastograms(info, prefs)">mredge_load_elastograms</a>	Load elastograms into MATLAB.</li><li><a href="../MREdge/file_ops/mredge_organize_acquisition.html" class="code" title="function mredge_organize_acquisition(info)">mredge_organize_acquisition</a>	Creates nested folder structure for NIfTI files</li><li><a href="mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>	Creates a single, averaged t2 magnitude map from an MRE acquisition, the preferred volume to use for co-registration and segmentation.</li><li><a href="mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>	Applies highpass and lowpass butterworth filters if they are set in prefs</li><li><a href="mredge_compat_cisnmo.html" class="code" title="function matlab_outputs = mredge_compat_cisnmo(info, prefs)">mredge_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li><li><a href="mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>	Denoise Fourier-transformed wavefield.</li><li><a href="mredge_denoise_raw.html" class="code" title="function mredge_denoise_raw(info, prefs)">mredge_denoise_raw</a>	Denoises raw complex data prior to phase unwrapping</li><li><a href="mredge_distortion_correction.html" class="code" title="function mredge_distortion_correction(info, prefs)">mredge_distortion_correction</a>	Correct for distortion in the MRE acquisition using FSL or SPM libraries</li><li><a href="mredge_invert_and_stats.html" class="code" title="function mredge_invert_and_stats(info, prefs)">mredge_invert_and_stats</a>	Performs wave inversion and inversion-related statistical measures</li><li><a href="mredge_motion_correction.html" class="code" title="function mredge_motion_correction(info, prefs)">mredge_motion_correction</a>	Performs motion correction on raw MRE acquisitions, using FSL or SPM.</li><li><a href="mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>	Applies phase unwrapping methods.</li><li><a href="mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>	Numerical divergence removal of the wave field</li><li><a href="mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>	Removes interslice phase discontinuities.</li><li><a href="mredge_set_environment.html" class="code" title="function mredge_set_environment">mredge_set_environment</a>	Set environment variables for MREdge</li><li><a href="mredge_slice_align.html" class="code" title="function mredge_slice_align(info, prefs)">mredge_slice_align</a>	Dejitters slices using adaptation of Nikolova et al 2001 dejitter algorithm</li><li><a href="mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>	Temporally Fourier-transforms the complex wave field.</li><li><a href="../MREdge/neuro/mredge_load_amplitudes.html" class="code" title="">mredge_load_amplitudes</a>	</li><li><a href="../MREdge/stats/mredge_snr.html" class="code" title="function mredge_snr(info, prefs)">mredge_snr</a>	Calculates SNR maps and records SNR values in stats folder.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function outputs = mredge(info, prefs)</a>
+0002 <span class="comment">% Base function for the processing and analysis of MRE data</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - MREdge acquisition info structure generated with mredge_acquisition_info</span>
+0007 <span class="comment">%   prefs - MREdge preferences structure generated with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   returns a structure containing outputs as specified by prefs</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% EXAMPLE USAGE:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   local_data_path = pwd; % copy raw data locally before running MREdge!</span>
+0016 <span class="comment">%   info = mredge_info('path', local_data_path, 'magnitude', 2, 'phase',</span>
+0017 <span class="comment">%   3);</span>
+0018 <span class="comment">%   prefs = mredge_prefs('outputs.elastograms', 1);</span>
+0019 <span class="comment">%   elastograms = mredge(info, prefs);</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% Part of the MREdge software package</span>
+0022 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0023 <span class="comment">% So that we can vouch for results, 
+% this code is source-available but not open source.</span>
+0024 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
+% for permission to make modifications.</span>
+0025 
+0026 <span class="comment">%% prepare data</span>
+0027 a = tic;
+0028 <a href="mredge_set_environment.html" class="code" title="function mredge_set_environment">mredge_set_environment</a>;
+0029 <a href="../MREdge/file_ops/mredge_clean_acquisition_folder.html" class="code" title="function mredge_clean_acquisition_folder(info)">mredge_clean_acquisition_folder</a>(info);
+0030 <a href="../MREdge/file_ops/mredge_dicom_to_nifti.html" class="code" title="function mredge_dicom_to_nifti(info)">mredge_dicom_to_nifti</a>(info);
+0031 <a href="../MREdge/file_ops/mredge_organize_acquisition.html" class="code" title="function mredge_organize_acquisition(info)">mredge_organize_acquisition</a>(info);
+0032 <a href="mredge_average_magnitude.html" class="code" title="function mredge_average_magnitude(info, prefs)">mredge_average_magnitude</a>(info, prefs);
+0033 save(fullfile(info.path, <span class="string">'infoprefs.mat'</span>), <span class="string">'info'</span>, <span class="string">'prefs'</span>);
+0034 
+0035 <span class="comment">% check for compabitility routines</span>
+0036 <span class="keyword">if</span> strcmp(prefs.compat, <span class="string">'cisnmo'</span>)
+0037     outputs = <a href="mredge_compat_cisnmo.html" class="code" title="function matlab_outputs = mredge_compat_cisnmo(info, prefs)">mredge_compat_cisnmo</a>(info, prefs);
+0038 <span class="keyword">else</span>
+0039     <span class="comment">%% preprocess</span>
+0040     <span class="keyword">if</span> prefs.distortion_correction &amp;&amp; strcmpi(prefs.dico_method, <span class="string">'raw'</span>)
+0041         <a href="mredge_distortion_correction.html" class="code" title="function mredge_distortion_correction(info, prefs)">mredge_distortion_correction</a>(info, prefs);
+0042     <span class="keyword">end</span>
+0043     <span class="keyword">if</span> prefs.motion_correction
+0044         <a href="mredge_motion_correction.html" class="code" title="function mredge_motion_correction(info, prefs)">mredge_motion_correction</a>(info, prefs);
+0045     <span class="keyword">end</span>
+0046     <span class="keyword">if</span> prefs.denoise_raw
+0047         <a href="mredge_denoise_raw.html" class="code" title="function mredge_denoise_raw(info, prefs)">mredge_denoise_raw</a>(info, prefs);
+0048     <span class="keyword">end</span>
+0049     <span class="keyword">if</span> ~strcmp(prefs.phase_unwrap, <span class="string">'none'</span>)
+0050         <a href="mredge_phase_unwrap.html" class="code" title="function mredge_phase_unwrap(info, prefs)">mredge_phase_unwrap</a>(info, prefs);
+0051     <span class="keyword">end</span>
+0052     <a href="mredge_temporal_ft.html" class="code" title="function mredge_temporal_ft(info, prefs)">mredge_temporal_ft</a>(info, prefs);
+0053     <span class="keyword">if</span> prefs.remove_ipds
+0054         <a href="mredge_slice_align.html" class="code" title="function mredge_slice_align(info, prefs)">mredge_slice_align</a>(info,prefs);
+0055         <a href="mredge_remove_ipds.html" class="code" title="function mredge_remove_ipds(info, prefs)">mredge_remove_ipds</a>(info, prefs);
+0056     <span class="keyword">end</span>
+0057     <span class="keyword">if</span> ~prefs.denoise_raw &amp;&amp; ~strcmpi(prefs.denoise_strategy, <span class="string">'none'</span>)
+0058         <a href="mredge_denoise.html" class="code" title="function mredge_denoise(info, prefs)">mredge_denoise</a>(info, prefs);
+0059     <span class="keyword">end</span>
+0060     <span class="keyword">if</span> ~strcmpi(prefs.curl_strategy, <span class="string">'none'</span>)
+0061         <a href="mredge_remove_divergence.html" class="code" title="function mredge_remove_divergence(info, prefs)">mredge_remove_divergence</a>(info, prefs);
+0062     <span class="keyword">end</span>
+0063     <span class="keyword">if</span> prefs.highpass || prefs.lowpass
+0064         <a href="mredge_bandpass.html" class="code" title="function mredge_bandpass(info, prefs)">mredge_bandpass</a>(info, prefs);
+0065     <span class="keyword">end</span>
+0066     <a href="../MREdge/stats/mredge_snr.html" class="code" title="function mredge_snr(info, prefs)">mredge_snr</a>(info, prefs);
+0067 
+0068     <span class="comment">%% invert and generate outputs</span>
+0069     <a href="mredge_invert_and_stats.html" class="code" title="function mredge_invert_and_stats(info, prefs)">mredge_invert_and_stats</a>(info,prefs)
+0070     <span class="comment">% set outputs</span>
+0071     outputs = [];
+0072     <span class="keyword">if</span> prefs.outputs.elastograms
+0073         outputs.elastograms = <a href="../MREdge/file_ops/mredge_load_elastograms.html" class="code" title="function elastograms = mredge_load_elastograms(info, prefs)">mredge_load_elastograms</a>(info, prefs);
+0074     <span class="keyword">end</span>
+0075     <span class="keyword">if</span> prefs.outputs.amplitudes
+0076         outputs.amplitudes = <a href="../MREdge/file_ops/mredge_load_amplitudes.html" class="code" title="function amplitudes = mredge_load_amplitudes(info, prefs)">mredge_load_amplitudes</a>(info, prefs);
+0077     <span class="keyword">end</span>
+0078     <span class="keyword">if</span> prefs.outputs.wavefields
+0079         outputs.wavefields = <a href="../MREdge/file_ops/mredge_load_FT_as_5d.html" class="code" title="function data_5d = mredge_load_FT_as_5d (info, prefs)">mredge_load_FT_as_5d</a>(info, prefs);
+0080     <span class="keyword">end</span>
+0081   
+0082 <span class="keyword">end</span>
+0083 disp([<span class="string">'Total MREdge time: '</span> num2str(toc(a)) ]);
+0084 cd(<a href="../MREdge/file_ops/mredge_analysis_path.html" class="code" title="function path = mredge_analysis_path(info, prefs, subdir)">mredge_analysis_path</a>(info, prefs));
+0085 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

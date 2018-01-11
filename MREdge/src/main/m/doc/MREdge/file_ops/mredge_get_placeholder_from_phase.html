@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_get_placeholder_from_phase</title>
+  <meta name="keywords" content="mredge_get_placeholder_from_phase">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="../index.html">MREdge</a> &gt; <a href="index.html">file_ops</a> &gt; mredge_get_placeholder_from_phase.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/file_ops&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_get_placeholder_from_phase
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function nifti_placeholder = mredge_get_placeholder_from_phase (info) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>	Splits a 4D NIfTI into 3D images and passes the list of the 3d image paths. For FSL and SPM applications.</li><li><a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>	Load NIFTI or ANALYZE dataset, but not applying any appropriate affine</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../MREdge/mredge_compat_cisnmo.html" class="code" title="function matlab_outputs = mredge_compat_cisnmo(info, prefs)">mredge_compat_cisnmo</a>	% function mredge_invert(info, prefs);</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function PHASE_SUB = set_dirs(info)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function nifti_placeholder = mredge_get_placeholder_from_phase (info)</a>
+0002 
+0003     PHASE_SUB = <a href="#_sub1" class="code" title="subfunction PHASE_SUB = set_dirs(info)">set_dirs</a>(info);
+0004     <span class="keyword">for</span> f = info.driving_frequencies(1)
+0005       <span class="keyword">for</span> c = 1
+0006         <span class="comment">% split to get a 3D file</span>
+0007         file_list_mag = <a href="mredge_split_4d.html" class="code" title="function path_list = mredge_split_4d(path_4d)">mredge_split_4d</a>(PHASE_SUB, f, c, info);
+0008         nifti_placeholder = <a href="../../MREdge/functions/load_untouch_nii_eb.html" class="code" title="function nii = load_untouch_nii_eb(filename, img_idx, dim5_idx, dim6_idx, dim7_idx,old_RGB, slice_idx)">load_untouch_nii_eb</a>(file_list_mag{1});
+0009         nifti_placeholder.img = double(nifti_placeholder.img);
+0010         nifti_placeholder.hdr.dime.datatype = 64;
+0011       <span class="keyword">end</span>
+0012     <span class="keyword">end</span>
+0013     
+0014 
+0015 <span class="keyword">end</span>
+0016 
+0017 <a name="_sub1" href="#_subfunctions" class="code">function PHASE_SUB = set_dirs(info)</a>
+0018     PHASE_SUB = fullfile(info.path, <span class="string">'Phase'</span>);
+0019 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 04-Jan-2018 15:10:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

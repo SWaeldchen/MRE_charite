@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mredge_distortion_correction</title>
+  <meta name="keywords" content="mredge_distortion_correction">
+  <meta name="description" content="Correct for distortion in the MRE acquisition using FSL or SPM libraries">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">MREdge</a> &gt; <a href="#">src</a> &gt; <a href="#">main</a> &gt; <a href="index.html">m</a> &gt; mredge_distortion_correction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for MREdge/src/main/m&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>mredge_distortion_correction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>Correct for distortion in the MRE acquisition using FSL or SPM libraries</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function mredge_distortion_correction(info, prefs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Correct for distortion in the MRE acquisition using FSL or SPM libraries
+
+ INPUTS:
+
+   info - an acquisition info structure created with make_acquisition_info
+   prefs - a preference file structure created with mredge_prefs
+
+ OUTPUTS:
+
+   none
+    
+ SEE ALSO:
+
+   <a href="mredge_distortion_correction_raw.html" class="code" title="function mredge_distortion_correction_raw(info)">mredge_distortion_correction_raw</a>, <a href="mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>
+
+ NOTE:
+
+   This requires fieldmaps in the acquisition, specified in the info
+   struct.
+   At present the FT distortion correction is not recommended.
+
+
+ Part of the <a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">MREdge</a> software package
+ Copyright (c) 2018 Eric Barnhill. All Rights Reserved
+ So that we can vouch for results,
+ this code is source-available but not open source.
+ Please contact Eric Barnhill at ericbarnhill@protonmail.ch
+ for permission to make modifications.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../MREdge/src/main/m/file_ops/mredge_combine_ft.html" class="code" title="function mredge_combine_ft(info, prefs)">mredge_combine_ft</a>	Combines real and imaginary parts of complex wave field. Needed for FSL FT distortion correction.</li><li><a href="../../../../MREdge/src/main/m/file_ops/mredge_split_ft.html" class="code" title="function mredge_split_ft(info, prefs)">mredge_split_ft</a>	Splits the FT images into real and imaginary parts. Needed for FSL FT distortion correction</li><li><a href="mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>	Correct distortion, applied to the Fourier-transformed wavefield</li><li><a href="mredge_distortion_correction_raw.html" class="code" title="function mredge_distortion_correction_raw(info)">mredge_distortion_correction_raw</a>	Performs distortion correction on raw MR signal data</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="mredge.html" class="code" title="function outputs = mredge(info, prefs)">mredge</a>	Base function for the processing and analysis of MRE data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mredge_distortion_correction(info, prefs)</a>
+0002 <span class="comment">% Correct for distortion in the MRE acquisition using FSL or SPM libraries</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTS:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   info - an acquisition info structure created with make_acquisition_info</span>
+0007 <span class="comment">%   prefs - a preference file structure created with mredge_prefs</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% OUTPUTS:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   none</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SEE ALSO:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   mredge_distortion_correction_raw, mredge_distortion_correction_ft</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% NOTE:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   This requires fieldmaps in the acquisition, specified in the info</span>
+0020 <span class="comment">%   struct.</span>
+0021 <span class="comment">%   At present the FT distortion correction is not recommended.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Part of the MREdge software package</span>
+0025 <span class="comment">% Copyright (c) 2018 Eric Barnhill. All Rights Reserved</span>
+0026 <span class="comment">% So that we can vouch for results,</span>
+0027 <span class="comment">% this code is source-available but not open source.</span>
+0028 <span class="comment">% Please contact Eric Barnhill at ericbarnhill@protonmail.ch</span>
+0029 <span class="comment">% for permission to make modifications.</span>
+0030 <span class="comment">%</span>
+0031 disp(<span class="string">'Distortion correction'</span>);
+0032 tic
+0033 <span class="keyword">if</span> strcmpi(prefs.dico_method,<span class="string">'ft'</span>)
+0034     <a href="../../../../MREdge/src/main/m/file_ops/mredge_split_ft.html" class="code" title="function mredge_split_ft(info, prefs)">mredge_split_ft</a>(info, prefs);
+0035     <a href="mredge_distortion_correction_ft.html" class="code" title="function mredge_distortion_correction_ft(info, prefs)">mredge_distortion_correction_ft</a>(info, prefs);
+0036     <a href="../../../../MREdge/src/main/m/file_ops/mredge_combine_ft.html" class="code" title="function mredge_combine_ft(info, prefs)">mredge_combine_ft</a>(info, prefs);
+0037 <span class="keyword">elseif</span> strcmpi(prefs.dico_method,<span class="string">'raw'</span>)
+0038     <a href="mredge_distortion_correction_raw.html" class="code" title="function mredge_distortion_correction_raw(info)">mredge_distortion_correction_raw</a>(info);
+0039 <span class="keyword">else</span>
+0040     disp(<span class="string">'MREdge ERROR: Invalid distortion correction method.'</span>);
+0041 <span class="keyword">end</span>
+0042 toc</pre></div>
+<hr><address>Generated on Fri 05-Jan-2018 10:09:54 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
