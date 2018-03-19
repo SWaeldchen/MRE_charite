@@ -14,7 +14,7 @@ function [s_d, stats] = dejitter_phase_mask(s, mask, NORM, TOTAL_SHIFTS)
     if nargin < 4
         TOTAL_SHIFTS = 256;
         if nargin < 3
-         NORM = 2;
+         NORM = 0.5;
         end
     end
                 

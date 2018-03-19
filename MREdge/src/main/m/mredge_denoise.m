@@ -33,8 +33,8 @@ mask = mredge_load_mask(info, prefs);
 denoise_log_path = mredge_analysis_path(info, prefs, 'denoise_log.txt');
 fileID = fopen(denoise_log_path, 'w');
 fprintf(fileID, '%s \n %s \n %s \n', 'Denoise Log', string(datetime), prefs.denoise_strategy);
-parfor s = 1:numel(info.ds.subdirs_comps_files)
-  subdir = info.ds.subdirs_comps_files(s); %#ok<PFBNS>
+parfor s = 1:numel(prefs.ds.subdirs_comps_files)
+  subdir = prefs.ds.subdirs_comps_files(s); %#ok<PFBNS>
   wavefield_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
   wavefield_vol = load_untouch_nii_eb(wavefield_path);
   wavefield_img = wavefield_vol.img;
@@ -44,11 +44,12 @@ parfor s = 1:numel(info.ds.subdirs_comps_files)
       wavefield_img = dtdenoise_z_mad_u(wavefield_img, prefs.denoise_settings.z_thresh, prefs.denoise_settings.z_level, 1);
       wavefield_img = dtdenoise_xy_pca_mad_u(wavefield_img, prefs.denoise_settings.xy_thresh, prefs.denoise_settings.xy_level, 1, mask);
   elseif strcmpi(prefs.denoise_strategy, '3d_soft_visu') == 1
-      wavefield_img = dtdenoise_3d_undec(wavefield_img, prefs.denoise_settings.full3d_level, mask, prefs.denoise_settings.threshold_gain);
-   elseif strcmpi(prefs.denoise_strategy, '3d_nng_visu') == 1
+      GAIN = 1/64;
+      wavefield_img = dtdenoise_3d_undec(wavefield_img, prefs.denoise_settings.full3d_level, mask, GAIN);
+  elseif strcmpi(prefs.denoise_strategy, '3d_nng_visu') == 1
       wavefield_img = dtdenoise_3d_nng(wavefield_img, prefs.denoise_settings.full3d_level, mask, prefs.denoise_settings.threshold_gain);
   elseif strcmpi(prefs.denoise_strategy, '3d_ogs') == 1
-      wavefield_img = dtdenoise_3d_mad_ogs_undec_log(wavefield_img, prefs.denoise_settings.full3d_thresh, prefs.denoise_settings.full3d_level, mask, fileID, prefs.base1, prefs.base2);
+      wavefield_img = dtdenoise_3d_ogs(wavefield_img, prefs.denoise_settings.full3d_level, mask);
   elseif strcmpi(prefs.denoise_strategy, '2d_soft_visu')
       wavefield_img = dtdenoise_2d_undec(wavefield_img,  prefs.denoise_settings.xy_level, mask);
       wavefield_img(isnan(wavefield_img)) = 0;

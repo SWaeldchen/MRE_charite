@@ -29,16 +29,16 @@ disp_snr = zeros(nfreqs, 1);
 strain_snr = zeros(nfreqs, 1);
 lap_snr = zeros(nfreqs, 1);
 tally = 0;
-for s = 1:3:numel(info.ds.subdirs_comps_files)
+for s = 1:3:numel(prefs.ds.subdirs_comps_files)
     tally = tally + 1;
     wavefield_img = [];
     for n = 0:2
-        subdir = info.ds.subdirs_comps_files(s+n);
+        subdir = prefs.ds.subdirs_comps_files(s+n);
         wavefield_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
         wavefield_vol = load_untouch_nii_eb(wavefield_path);
         wavefield_img = cat(4, wavefield_img, wavefield_vol.img);
     end
-    [disp_snr(tally), strain_snr(tally), lap_snr(tally)] = mre_snr(wavefield_img, info.voxel_spacing, mask);
+    [disp_snr(tally), strain_snr(tally), lap_snr(tally)] = mre_snr(wavefield_img, mask);
 end
 filepath = fullfile(mredge_mkdir(mredge_analysis_path(info, prefs, 'stats')), 'snr_measures.csv');
 fID = fopen(filepath, 'w');		

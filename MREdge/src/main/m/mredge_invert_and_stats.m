@@ -26,6 +26,7 @@ tic
 disp('Wave Inversion...');
 if prefs.sliding_windows == 1
     [~, freq_indices] = sort(info.driving_frequencies, 'ascend');
+    nf = numel(freq_indices);
     for n = 1:nf-2
         sliding_group_indices = [freq_indices(n), freq_indices(n+1), freq_indices(n+2)];
         invert_and_stats(info,prefs,sliding_group_indices);

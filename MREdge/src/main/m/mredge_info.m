@@ -107,7 +107,6 @@ function info = mredge_info(varargin)
     if has_phase == 0
         disp('MREdge WARNING: Acquisition must have at least one phase series to be processed');
     end
-    info.ds = mredge_dir_struct(info);
 end
 
 function info = initialize_info

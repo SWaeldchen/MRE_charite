@@ -1,0 +1,66 @@
+function maps = windowed_snr(imgs, window_dims)
+%%
+% produces quality maps based on windowed SNR calculations
+% using noise estimation method of Donoho 1995
+%
+% Assumes channels to be calculated together are along dim 3
+% if not please reshape or permute your data before calling
+%
+% (c) Eric Barnhill 2018 for Charite Medical University Berlin
+% GNU Public License
+%
+%%
+% one window_dim means square
+if numel(window_dims) == 1
+    window_dims = [window_dims window_dims];
+end
+% deal with singletons
+sz = size(imgs);
+[d3, d4, d5, ~] = sort_singletons(sz);
+
+sz_img  = prod(sz(1:2));
+% window_dims is a 2d vector with the 2d window dimensions
+%
+% try to speed up with some unrolling
+img_indices = zeros(window_dims);
+for i = 1:window_dims(1)
+    for j = 1:window_dims(2)
+        img_indices(i,j) = (i-1)*sz(2) + j;
+    end
+end
+img_indices = img_indices(:);
+max_index = max(img_indices(:));
+max_conv = sz_img - max_index;
+
+maps = zeros(sz(1), sz(2), d4, d5);
+for p = 1:d5
+    for n = 1:d4
+        map_slc = zeros(sz_img, 1);
+        bar = waitbar(0, ['SNR map for image ', num2str(n), ' ', num2str(p)]);
+        % take vectorial SNR along dim 3
+        for c = 1:sz_img
+            if mod(c, 100) == 0
+                waitbar(c/max_conv, bar);
+            end
+            indices = img_indices + c;
+            ind_over = find(indices > sz_img);
+            indices(ind_over) = indices(ind_over) - sz_img;
+            vec_window = zeros(numel(indices), d3);
+            for m = 1:d3
+                img = vec(imgs(:,:,m,n,p));
+                vec_window(:,m) = img(indices);
+            end
+            vec_window = vec_window(vec_window ~= 0 & ~isnan(vec_window));
+            if numel(vec_window > 1) 
+                map_slc(c) = donoho_method_snr_multichannel_vec(vec_window);
+            else
+                map_slc(c) = nan;
+            end
+        end
+        close(bar)
+        map_slc = reshape(map_slc, sz(1:2));
+        maps(:,:,n,p) = map_slc;
+    end
+end   
+                    
+

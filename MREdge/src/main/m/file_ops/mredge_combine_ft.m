@@ -24,7 +24,7 @@ function mredge_combine_ft(info, prefs)
 ft = mredge_analysis_path(info, prefs, 'FT');
 ft_r = mredge_analysis_path(info, prefs, 'FT_R');
 ft_i = mredge_analysis_path(info, prefs, 'FT_I');
-for subdir = info.ds.subdirs_comps_files
+for subdir = prefs.ds.subdirs_comps_files
     ft_r_dir = fullfile(ft_r, subdir);    
     ft_r_vol = load_untouch_nii(ft_r_dir, subdir);
     ft_i_dir = fullfile(ft_i, subdir);    

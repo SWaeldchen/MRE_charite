@@ -18,8 +18,8 @@ function mredge_bandpass(info, prefs)
 % for permission to make modifications.
 %
 mask = mredge_load_mask(info, prefs);
-parfor s = 1:numel(info.ds.subdirs_comps_files)
-    subdir = info.ds.subdirs_comps_files(s);
+for s = 1:numel(prefs.ds.subdirs_comps_files)
+    subdir = prefs.ds.subdirs_comps_files(s);
     wavefield_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
     wavefield_vol = load_untouch_nii_eb(wavefield_path);
     wavefield_img = wavefield_vol.img;
@@ -36,7 +36,7 @@ parfor s = 1:numel(info.ds.subdirs_comps_files)
     if prefs.highpass
         if prefs.lowpass_settings.dimensions == 2
             for z=1:size(wavefield_img,3)
-               wavefield_img(:,:,z) = butter_2d(prefs.highpasspass_settings.order, prefs.highpass_settings.cutoff, wavefield_img(:,:,z), 1);
+               wavefield_img(:,:,z) = butter_2d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, wavefield_img(:,:,z), 1);
             end
         elseif prefs.lowpass_settings.dimensions == 3
             wavefield_img = butter_3d(prefs.highpass_settings.order, prefs.highpass_settings.cutoff, wavefield_img, 1);

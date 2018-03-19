@@ -1,4 +1,4 @@
-function mredge_mag2double(info)
+function mredge_mag2double(prefs)
 % Converts values in magnitude NIfTI objects to double type, to avoid type conflicts.
 %
 % INPUTS:
@@ -21,8 +21,8 @@ function mredge_mag2double(info)
 % for permission to make modifications.
 %
 
-for subdir = info.ds.subdirs_comps_files
-    mag_path = cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir));
+for subdir = prefs.ds.subdirs_comps_files
+    mag_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.magnitude), subdir));
     mag_vol = load_untouch_nii_eb(mag_path);
     mag_vol.img = double(mag_vol.img);
     mag_vol.hdr.dime.datatype = 64;

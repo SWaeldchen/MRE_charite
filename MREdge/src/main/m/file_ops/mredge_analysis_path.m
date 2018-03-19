@@ -22,10 +22,10 @@ function path = mredge_analysis_path(info, prefs, subdir)
 % for permission to make modifications.
 %
 if numel(prefs.analysis_descriptor) > 0
-    prefs.analysis_descriptor = ['_', prefs.analysis_descriptor];
+    %prefs.analysis_descriptor = ['_', prefs.analysis_descriptor];
 end
 if nargin < 3
-    path = fullfile(info.path, ['AN_', sprintf('%.3d', prefs.analysis_number), sprintf('%s', prefs.analysis_descriptor)]);
+    path = fullfile(info.path, mredge_analysis_folder_name(prefs));
 else
-    path = fullfile(info.path, ['AN_', sprintf('%.3d', prefs.analysis_number), sprintf('%s', prefs.analysis_descriptor)], subdir);
+    path = fullfile(info.path, mredge_analysis_folder_name(prefs), subdir);
 end  

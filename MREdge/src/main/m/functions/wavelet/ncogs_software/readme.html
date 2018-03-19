@@ -1,0 +1,107 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+
+	<title>
+	Group-sparse signal denoising
+	</title>
+</head>
+
+<body>
+
+
+<!--
+<h3>
+Group-sparse denoising with non-convex regularization
+</h3>
+-->
+
+<h3>
+Non-convex shrinkage/thresholding of group sparse signals
+</h3>
+
+<p>
+Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization
+</br>
+Po-Yu Chen and Ivan Selesnick
+</br>
+<a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6826555&isnumber=6826603">
+IEEE Transactions on Signal Processing, vol.62, no.13, pp. 3464-3478, July 1, 2014.</a>
+
+</br>
+Preprint: 
+<a href="http://arxiv.org/abs/1308.5038">http://arxiv.org/abs/1308.5038</a>
+</br>
+
+Web: <a href="http://eeweb.poly.edu/iselesni/ncogs/">
+http://eeweb.poly.edu/iselesni/ncogs/
+</a>
+</p>
+
+<p>
+Software version: 5
+</p>
+
+<p>
+This algorithm performs group-sparse thresholding. 
+The algorithm is intended for denoising signals that posses a group sparse structure.
+The approach is based on overlapping group sparsity (OGS).
+Although the regularizer is non-convex, it is constrained such that the total cost function is convex.
+The comparison to convex-regularized OGS demonstrates the improvement obtained by non-convex regularization.
+</p>
+
+</p>
+
+<h4>
+Matlab programs for non-convex OGS
+</h4>
+<ul>
+<li>
+<a href="ogs1.m">ogs1.m</a>: OGS for 1D signals
+</li>
+<li>
+<a href="ogs2.m">ogs2.m</a>: OGS for 2D signals
+</li>
+<li>
+<a href="ogs3.m">ogs3.m</a>: OGS for 3D signals
+</li>
+</ul>
+
+
+<h4>Examples in Matlab</h4>
+
+<ul>
+	<li>
+	<a href="html/Example1.html">Example 1</a>
+	Signal denoising using 1D OGS
+	</li>
+
+	<li>
+	<a href="html/Example2.html">Example 2</a>
+	Speech enhancement using 2D OGS in time-frequency (spectrogram) domain.
+	</li>
+
+	<li>
+	<a href="html/Example3.html">Example 3</a>
+	Denoising group-sparse 3D data
+	</li>
+
+</ul>
+
+<h4>Acknowledgment</h4>
+
+<p>
+This research was support by the NSF under Grant No. CCF-1018020.
+</p>
+
+
+</body>
+
+</html>
+
+

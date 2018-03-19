@@ -24,7 +24,7 @@ for d = 1:dims
     sz = size(x);
 	[x_resh, num_cols] = resh(x, 2);
 	for n = 1:num_cols
-		x_resh(:,n) = dct(x_resh(:,n));
+		x_resh(:,n) = dct_eb(x_resh(:,n));
 	end
 	x = reshape(x_resh, sz);
 	x = shiftdim(x, 1);

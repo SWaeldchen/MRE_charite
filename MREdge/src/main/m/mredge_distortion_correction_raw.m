@@ -27,11 +27,11 @@ function mredge_distortion_correction_raw(info)
 % Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
 % for permission to make modifications.
 disp('MREdge Distortion Correction');
-if ~ info.ds.logical(info.ds.enum.fieldmap)
+if ~ prefs.ds.logical(prefs.ds.enum.fieldmap)
     disp('MREdge ERROR: No fieldmap directory for this acquisition.');
     return
 end
-fieldmap_dir = cell2str(info.ds.list(info.ds.enum.fieldmap));
+fieldmap_dir = cell2str(prefs.ds.list(prefs.ds.enum.fieldmap));
 cd(fieldmap_dir);
 
 % Select DICOM files, convert and rename
@@ -53,9 +53,9 @@ system(topup_command);
 TOPUP_RESULTS = fullfile(fieldmap_dir, 'topup_results');
 
 mredge_pm2ri(info);
-for subdir = info.ds.subdirs_comps_files
-    apply_topup(cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir)), TOPUP_RESULTS);
-    apply_topup(cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir)), TOPUP_RESULTS);
+for subdir = prefs.ds.subdirs_comps_files
+    apply_topup(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.real), subdir)), TOPUP_RESULTS);
+    apply_topup(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.imaginary), subdir)), TOPUP_RESULTS);
 end
 mredge_ri2pm(info);
 

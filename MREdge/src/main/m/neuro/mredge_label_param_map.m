@@ -28,7 +28,7 @@ PARAM_SUB =  mredge_analysis_path(info, prefs, param);
 STATS_SUB = mredge_analysis_path(info, prefs, 'stats');
 tpm_image_path = fullfile(spm('Dir'), 'tpm', 'labels_Neuromorphometrics.nii');
 
-all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['rw', mredge_freq_indices_to_filename(info,prefs,freq_indices)]));
+all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ['r_w_t_', mredge_freq_indices_to_filename(info,prefs,freq_indices)]));
 if strcmp(param, 'phi')
     noise_thresh = eps;
 else
@@ -38,7 +38,7 @@ label_param_map(STATS_SUB, param, tpm_image_path, all_file, noise_thresh, freq_i
 
 end
 
-function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, f)
+function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, noise_thresh, freq_indices)
  
 	param_coreg_vol = load_untouch_nii_eb(param_file_path);
     param_img = param_coreg_vol.img;
@@ -47,8 +47,9 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
     labels_file = importdata('labels_Neuromorphometrics.xls');
     label_nums = labels_file.data;
     labels = labels_file.textdata(:,2);
-    freq_label = mredge_remove_nifti_extension(filename);
-    label_stats_path = fullfile(STATS_SUB, ['brain_analysis_', param, '_', freq_label, '.csv']);
+    %freq_label = mredge_freq_indices_to_filename(freq_indices);
+    [~, b, ~] = fileparts(param_file_path);
+    label_stats_path = fullfile(STATS_SUB, ['brain_analysis_', param, '_', b, '.csv']);
     num_labels = numel(label_nums);
     WM = 'White Matter';
     wm_path = fullfile(STATS_SUB, ['wm_stats_', param, '.csv']);
@@ -68,7 +69,11 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         stats(n).max = max(param_values);
     end
  
-    label_fileID = fopen(label_stats_path, 'a');
+    if ~exist(label_stats_path, 'file')
+        label_fileID = fopen(label_stats_path, 'w');
+    else
+        label_fileID = fopen(label_stats_path, 'a');
+    end
     fprintf(label_fileID, '%s\n', 'Label,NumVoxels,Mean,Median,Std,Min,Max');
     wm_cat = [];
     wm_voxnum_cat = [];
@@ -89,7 +94,7 @@ function label_param_map(STATS_SUB, param, tpm_image_path, param_file_path, nois
         fprintf(label_fileID, '%s,%d,%1.3f,%1.3f,%d\n', 'ALL', sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
     else
         label_fileID = fopen(wm_path, 'a');
-        fprintf(label_fileID, '%s,%d,%1.3f,%1.3f%d\n', num2str(f), sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
+        fprintf(label_fileID, '%s,%d,%1.3f,%1.3f%d\n', num2str(b), sum(wm_voxnum_cat), mean(wm_cat), std(wm_cat));
     end
     fclose('all');
     

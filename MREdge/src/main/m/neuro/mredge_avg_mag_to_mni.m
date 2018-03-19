@@ -28,9 +28,10 @@ function mredge_avg_mag_to_mni(info, prefs)
     NIF_EXT = getenv('NIFTI_EXTENSION');
     AVG_MAG_SUB = mredge_analysis_path(info, prefs, 'magnitude');
     STATS_DIR = mredge_analysis_path(info, prefs, 'stats');
-    avg_mag_path = fullfile(AVG_MAG_SUB, ['avg_magnitude', NIF_EXT]);
+    avg_mag_path = fullfile(AVG_MAG_SUB, ['t_avg_magnitude', NIF_EXT]);
     % align
-    if exist(fullfile(AVG_MAG_SUB, ['y_avg_magnitude', NIF_EXT]), 'file')
+    if false
+    %if exist(fullfile(AVG_MAG_SUB, ['y_t_avg_magnitude', NIF_EXT]), 'file')
         disp('MREdge: Magnitude appears to already be co-registered to MNI SPACE. Skipping this step');
         return
     else 
@@ -94,7 +95,7 @@ function calc_segmented_voxels(AVG_MAG_SUB, seg_filepath)
     fileID = fopen(seg_filepath, 'a');
     pcts = zeros(5,1);
     for n = 1:5
-        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 'Avg_Magnitude', NIF_EXT]);
+        file_path = fullfile(AVG_MAG_SUB, ['c', num2str(n), 't_avg_magnitude', NIF_EXT]);
         seg_vol = load_untouch_nii_eb(file_path);
         seg_img = seg_vol.img;
         num_vox = numel(seg_img);
@@ -105,7 +106,7 @@ end
 
 function calc_deformation_variance(AVG_MAG_SUB, deform_filepath)
     fileID = fopen(deform_filepath, 'a');
-    seg8 = load(fullfile(AVG_MAG_SUB, 'Avg_Magnitude_seg8.mat'));
+    seg8 = load(fullfile(AVG_MAG_SUB, 't_avg_magnitude_seg8.mat'));
     vars = zeros(3, 1);
     for n = 1:3
         field = seg8.Twarp(:,:,:,n);

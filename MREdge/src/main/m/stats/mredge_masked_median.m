@@ -38,7 +38,7 @@ for p = 1:numel(params)
     mask = double(mredge_load_mask(info,prefs));
     masked = double(simplecrop(mask, size(param_img))).*double(param_img);
     % TODO: add prefs to establish boundary conditions
-    % masked = masked(:,:,4:end-3); 
+    masked = masked(:,:,4:end-3); 
     masked(masked == 0) = nan;
     masked_nonan = masked(~isnan(masked));
     if strcmp(param, 'phi')

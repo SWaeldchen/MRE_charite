@@ -23,11 +23,11 @@ function mredge_distortion_correction_ft(info, prefs)
 %
 tic
 disp('MREdge Distortion Correction');
-if ~ info.ds.logical(info.ds.enum.fieldmap)
+if ~ prefs.ds.logical(prefs.ds.enum.fieldmap)
     disp('MREdge ERROR: No fieldmap directory for this acquisition.');
     return
 end
-fieldmap_dir = fullfile(info.path, info.ds.list(info.ds.enum.fieldmap));
+fieldmap_dir = fullfile(info.path, prefs.ds.list(prefs.ds.enum.fieldmap));
 ftr_dir = mredge_analysis_path(info, prefs, 'FT_R');
 fti_dir = mredge_analysis_path(info, prefs, 'FT_I');
 cd(fieldmap_dir);
@@ -50,7 +50,7 @@ disp('Prepping...');
 topup_command = ['fsl5.0-topup --imain=', name_4d, ' --datain=', getenv('TOPUP_PARAMS'), ' --config=b02b0.cnf --out=topup_results --fout=topup_field --iout=topup_field_map'];
 system(topup_command);
 TOPUP_RESULTS = fullfile(fieldmap_dir, 'topup_results');
-for subdir = info.ds.subdirs_comps_files
+for subdir = prefs.ds.subdirs_comps_files
     apply_topup(fullfile(ftr_dir, subdir), TOPUP_RESULTS);
     apply_topup(fullfile(fti_dir, subdir), TOPUP_RESULTS);
 end

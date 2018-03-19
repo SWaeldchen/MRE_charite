@@ -45,10 +45,10 @@ function default_prefs = mredge_default_prefs
     default_prefs.outputs.wavefields = 1;
 % denoise settings
     default_prefs.denoise_settings.z_level = 2;
-    default_prefs.denoise_settings.z_thresh = 1.5;
+    default_prefs.denoise_settings.z_thresh = 1.2;
     default_prefs.denoise_settings.z_hipass_cut = 0.25;
     default_prefs.denoise_settings.xy_level = 3;
-    default_prefs.denoise_settings.xy_thresh =  1.5;
+    default_prefs.denoise_settings.xy_thresh =  1.2;
     default_prefs.denoise_settings.full3d_thresh = 20;
     default_prefs.denoise_settings.full3d_level = 2;
     default_prefs.denoise_settings.dejitter_norm = 0.5;
@@ -71,7 +71,7 @@ function default_prefs = mredge_default_prefs
     default_prefs.moco_method = 'fsl';
 % thresholding settings
     default_prefs.anat_mask_thresh_low = 200;
-    default_prefs.anat_mask_thresh_high = 500;
+    default_prefs.anat_mask_thresh_high = 1e8; % no high cap
     default_prefs.abs_g_noise_thresh = 500;
     default_prefs.amp_wave_to_noise_thresh = 2;
 % compatibility settings for other studies
@@ -83,3 +83,7 @@ function default_prefs = mredge_default_prefs
     default_prefs.dico_method = 'raw';
 % file operation settings
     default_prefs.convert_3d_to_4d = 'fsl';
+% other settings
+    default_prefs.fft_bin = 2;
+% set empty dir struct
+    default_prefs.ds = [];

@@ -1,0 +1,21 @@
+function [full, trunc] = gabor1d(lambda)
+
+sigma = 0.65*lambda;
+nstds = 5;
+length = lambda*nstds;
+offset = pi/2;
+midpt = ceil(length/2);
+vec = (1:length) - ceil(length/2);
+gauss = exp(- (vec.^2) ./ (2*sigma^2));
+%truncVec = [-2 -1 0 1 2];
+%truncSigma = 1.3;
+%truncGauss = exp(- (truncVec.^2) ./ (2*truncSigma^2));
+wave = exp(1i*(2*pi*vec/lambda + offset));
+truncGauss = gauss(max(midpt-2,1):max(midpt+2,3));
+truncWave = wave(max(midpt-2,1):max(midpt+2,3));
+gauss = gauss ./ sum(gauss);
+truncGauss = truncGauss ./ sum(truncGauss);
+wave = wave ./ max(wave);
+truncWave = truncWave ./ max(truncWave);
+full = gauss.*wave;
+trunc = truncGauss.*truncWave;

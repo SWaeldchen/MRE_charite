@@ -20,10 +20,10 @@ function mredge_pm2ri(info)
 % Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
 % for permission to make modifications.
 %
-for subdir = info.ds.subdirs_comps_files
+for subdir = prefs.ds.subdirs_comps_files
     % load p and m
-    p = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir)));
-    m = load_untouch_nii_eb(cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir)));
+    p = load_untouch_nii_eb(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.phase), subdir)));
+    m = load_untouch_nii_eb(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.magnitude), subdir)));
     % create placeholder re and im
     re = p;
     im = m;
@@ -36,10 +36,10 @@ for subdir = info.ds.subdirs_comps_files
     re.hdr.dime.datatype = 64;
     im.hdr.dime.datatype = 64;
     % write re and im
-    re_path = cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir));
+    re_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.real), subdir));
     mredge_mkdir(fileparts(re_path));
     save_untouch_nii_eb(re, re_path);
-    im_path = cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir));
+    im_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.imaginary), subdir));
     mredge_mkdir(fileparts(im_path));
     save_untouch_nii_eb(im, im_path);
 end

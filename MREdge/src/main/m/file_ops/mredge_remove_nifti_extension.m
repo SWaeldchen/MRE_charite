@@ -3,7 +3,7 @@ function path_trunc = mredge_remove_nifti_extension(path)
 %
 % INPUTS:
 %
-% path - a nifti file path, probably from info.ds.subdirs_comps_files
+% path - a nifti file path, probably from prefs.ds.subdirs_comps_files
 %
 % OUTPUTS:
 %

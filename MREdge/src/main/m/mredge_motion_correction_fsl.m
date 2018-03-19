@@ -32,16 +32,16 @@ function mredge_motion_correction_fsl(info)
 tic
 disp('MREdge Motion Correction with FSL');
 mredge_pm2ri(info);
-for subdir = info.ds.subdirs_comps_files
+for subdir = prefs.ds.subdirs_comps_files
     % make a copy, motion correct with copy in, original out
     subdir_temp = [mredge_remove_nifti_extension(subdir), '_temp', NIF_EXT];
-    copyfile([info.ds.list(info.ds.enum.magnitude), subdir], [info.ds.list(info.ds.enum.magnitude), subdir_temp]);
+    copyfile([prefs.ds.list(prefs.ds.enum.magnitude), subdir], [prefs.ds.list(prefs.ds.enum.magnitude), subdir_temp]);
     mcflirt_command = ['fsl5.0-mcflirt -in ', subdir_temp, ' -out ', subdir,' -smooth 0.5 -mats -stats' ];
     system(mcflirt_command);
     delete(subdir_temp);
     subdir_mat = [mredge_remove_nifti_extension(subdir), '.mat'];
-    apply_moco(info.ds.list(info.ds.enum.real), subdir, subdir_mat, info);
-    apply_moco(info.ds.list(info.ds.enum.imaginary), subdir, subdir_mat, info);
+    apply_moco(prefs.ds.list(prefs.ds.enum.real), subdir, subdir_mat, info);
+    apply_moco(prefs.ds.list(prefs.ds.enum.imaginary), subdir, subdir_mat, info);
 end
 mredge_ri2pm(info);
 toc

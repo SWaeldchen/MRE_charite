@@ -1,4 +1,4 @@
-function mredge_phase2double(info)
+function mredge_phase2double(prefs)
 % Converts values in phase NIfTI objects to double type, to avoid type conflicts
 %
 % INPUTS:
@@ -20,8 +20,8 @@ function mredge_phase2double(info)
 % Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
 % for permission to make modifications.
 %
-for subdir = info.ds.subdirs_comps_files
-    phase_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+for subdir = prefs.ds.subdirs_comps_files
+    phase_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.phase), subdir));
     phase_vol = load_untouch_nii_eb(phase_path);
     phase_vol.img = double(phase_vol.img);
     phase_vol.hdr.dime.datatype = 64;

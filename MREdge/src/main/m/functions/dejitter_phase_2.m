@@ -77,7 +77,8 @@ function norms = get_phase_shift_norms(shifted_next_slices, curr_slice, prev_sli
     for n = 1 : TOTAL_SHIFTS
         % phase arithmetic
         second_order_diff = angle( (shifted_next_slices(:,:,n) ./ curr_slice) .* (prev_slice ./ curr_slice) );
-        norms(n) = norm(second_order_diff(:), NORM);
+        second_order_diff = second_order_diff(~isnan(second_order_diff));
+        norms(n) = norm(second_order_diff, NORM);
     end
 end
 
@@ -86,7 +87,8 @@ function norms = get_phase_shift_norms_firstord(shifted_next_slices, curr_slice,
     for n = 1 : TOTAL_SHIFTS
         % phase arithmetic
         first_order_diff = angle(shifted_next_slices(:,:,n) ./ curr_slice);
-        norms(n) = norm(first_order_diff(:), NORM);
+        first_order_diff = first_order_diff(~isnan(first_order_diff));
+        norms(n) = norm(first_order_diff, NORM);
     end
 end
 

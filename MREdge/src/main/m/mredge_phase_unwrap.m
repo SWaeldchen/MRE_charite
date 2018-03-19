@@ -29,9 +29,9 @@ disp('Phase Unwrapping...')
 %else
     mredge_normalize_phase(info, prefs);
 %end
-for s = 1:numel(info.ds.subdirs_comps_files)
-    subdir = info.ds.subdirs_comps_files(s);
-    vol_path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+for s = 1:numel(prefs.ds.subdirs_comps_files)
+    subdir = prefs.ds.subdirs_comps_files(s);
+    vol_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.phase), subdir));
     vol = load_untouch_nii_eb(vol_path);
     if strcmp(prefs.phase_unwrap, 'laplacian')
         pu6d = com.ericbarnhill.magnitude.Unwrapper6D;
@@ -57,7 +57,7 @@ for s = 1:numel(info.ds.subdirs_comps_files)
     elseif strcmp(prefs.phase_unwrap, 'prelude') == 1
         MAG_SUB = mredge_analysis_path(info, prefs, 'Magnitude');
         NIF_EXT = getenv('NIFTI_EXTENSION');
-        phase_dir = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+        phase_dir = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.phase), subdir));
         avg_path = fullfile(MAG_SUB, ['Avg_Magnitude', NIF_EXT]);
         path_list = mredge_split_4d(phase_dir);
         if prefs.phase_unwrapping_settings.force_prelude_3d == 1

@@ -27,8 +27,8 @@ function mredge_remove_ipds(info, prefs)
 %
 tic
 disp('IPD Removal');
-parfor s = 1:numel(info.ds.subdirs_comps_files)
-    subdir = info.ds.subdirs_comps_files(s); %#ok<PFBNS>
+parfor s = 1:numel(prefs.ds.subdirs_comps_files)
+    subdir = prefs.ds.subdirs_comps_files(s); %#ok<PFBNS>
     img_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
     img_vol = load_untouch_nii_eb(img_path);
     mask = mredge_load_mask(info, prefs);

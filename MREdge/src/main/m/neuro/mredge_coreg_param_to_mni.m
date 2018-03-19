@@ -24,15 +24,22 @@ function mredge_coreg_param_to_mni(info, prefs, param, freq_indices)
 % Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
 % for permission to make modifications.
 %
+disp('Coreg param to MNI')
 MAG_SUB = mredge_analysis_path(info, prefs, 'magnitude');
 PARAM_SUB = mredge_analysis_path(info, prefs, param);
 NIF_EXT = getenv('NIFTI_EXTENSION');
 
-y_file = mredge_unzip_if_zip(fullfile(MAG_SUB, ['y_avg_magnitude', NIF_EXT]));
-all_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ...
-    mredge_freq_indices_to_filename(info,prefs,freq_indices)));
-
-coreg_param_to_mni(y_file, all_file, info.voxel_spacing*1000); % convert to millimeters
+y_file = mredge_unzip_if_zip(fullfile(MAG_SUB, ['y_t_avg_magnitude', NIF_EXT]));
+param_file = mredge_unzip_if_zip(fullfile(PARAM_SUB, ...
+    ['t_', mredge_freq_indices_to_filename(info,prefs,freq_indices)]));
+% ensure data is single precision
+all_vol = load_untouch_nii_eb(param_file);
+if ~strcmpi(class(all_vol.img), 'single')
+    disp('MREdge ERROR: Parameter map not single precision');
+end
+all_vol.hdr.dime.datatype=16;
+save_untouch_nii_eb(all_vol, param_file);
+coreg_param_to_mni(y_file, param_file, info.voxel_spacing*1000); % convert to millimeters
 
 end
 
@@ -45,11 +52,11 @@ function coreg_param_to_mni(mag_file, param_file, voxel_spacing)
         78 76 85];
     matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = voxel_spacing;
     matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
-    matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'w';
+    matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'w_';
     spm_jobman('run',matlabbatch);
     % kludge to remove nans
     [a, b, c] = fileparts(param_file);
-    w_file = [a, '/', 'w', b, c];
+    w_file = [a, '/', 'w_', b, c];
     w_vol = load_untouch_nii_eb(w_file);
     w_vol.img(isnan(w_vol.img)) = 0;
     save_untouch_nii_eb(w_vol, w_file);

@@ -21,8 +21,8 @@ NIF_EXT = getenv('NIFTI_EXTENSION');
 avg_sub = mredge_analysis_path(info,prefs, 'magnitude');
 avg_vol = [];
 
-for subdir = info.ds.subdirs_comps_files
-    mag_path = cell2str(fullfile(info.ds.list(info.ds.enum.magnitude), subdir));
+for subdir = prefs.ds.subdirs_comps_files
+    mag_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.magnitude), subdir));
     mag_vol = load_untouch_nii_eb(mag_path);
     if isempty(avg_vol) % use first volume of first image as placeholder
         avg_vol = load_untouch_nii_eb(mag_path);
@@ -35,14 +35,18 @@ for subdir = info.ds.subdirs_comps_files
     end
 end
 
+% Changed to aid SPM co-registration 15 Mar 2018
+avg_path = fullfile(avg_sub, ['avg_magnitude', NIF_EXT]);
 avg_vol.img = avg_vol.img ./ ( numel(info.driving_frequencies) * 3 * info.time_steps);
-avg_path = fullfile(avg_sub, 'avg_magnitude', NIF_EXT);
 save_untouch_nii_eb(avg_vol, avg_path);
+%avg_vol = make_nii(avg_vol.img ./ ( numel(info.driving_frequencies) * 3 * info.time_steps));
+%save_nii(avg_vol, avg_path);
+mredge_mkdir(avg_sub);
 mask_vol = avg_vol;
 mask_vol.img(mask_vol.img <= prefs.anat_mask_thresh_low) = nan;
 mask_vol.img(mask_vol.img >= prefs.anat_mask_thresh_high) = nan;
 mask_vol.img(~isnan(mask_vol.img)) = 1;
 mask_vol.img(isnan(mask_vol.img)) = 0;
 mask_vol.img = double(mask_vol.img);
-mask_path = fullfile(avg_sub, 'magnitude_mask', NIF_EXT);
-save_untouch_nii_eb(mask_vol, mask_path);
+mask_path = fullfile(avg_sub, ['magnitude_mask', NIF_EXT]);
+save_untouch_nii(mask_vol, mask_path);

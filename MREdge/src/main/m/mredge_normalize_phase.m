@@ -17,8 +17,8 @@ function mredge_normalize_phase(info, prefs)
 % Please contact Eric Barnhill at ericbarnhill@protonmail.ch 
 % for permission to make modifications.
 %
-for subdir = info.ds.subdirs_comps_files
-    path = cell2str(fullfile(info.ds.list(info.ds.enum.phase), subdir));
+for subdir = prefs.ds.subdirs_comps_files
+    path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.phase), subdir));
     phase_vol = load_untouch_nii_eb(path);
     if ~isempty(prefs.phase_unwrapping_settings.phase_range)
         range_array = prefs.phase_unwrapping_settings.phase_range;

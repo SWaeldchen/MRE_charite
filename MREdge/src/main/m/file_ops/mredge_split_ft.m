@@ -24,7 +24,7 @@ function mredge_split_ft(info, prefs)
 ft = fullfile(mredge_analysis_path(info, prefs, 'FT'));
 ft_r = fullfile(mredge_analysis_path(info, prefs, 'FT_R'));
 ft_i = fullfile(mredge_analysis_path(info, prefs, 'FT_I'));
-for subdir = info.ds.subdirs_comps_files
+for subdir = prefs.ds.subdirs_comps_files
     ft_vol = load_untouch_nii(ft, subdir);
     % real
     ft_r_vol = ft_vol;

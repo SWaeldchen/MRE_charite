@@ -34,7 +34,7 @@ if info.fd_import
     ft_corr = sliceOffsetCorrection(ft, mre_info);
     mredge_save_5d_as_FT(ft_corr, info, prefs);
 else
-    for subdir = info.ds.subdirs_comps_files
+    for subdir = prefs.ds.subdirs_comps_files
         vol_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
         vol = load_untouch_nii_eb(vol_path);
         vol.img = dejitter_phase_mask(vol.img, logical(mredge_load_mask(info, prefs)), 0.5, 256);

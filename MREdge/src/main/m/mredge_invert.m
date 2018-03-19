@@ -20,7 +20,7 @@ function mredge_invert(info, prefs, freq_indices)
 ft = mredge_analysis_path(info, prefs, 'ft');
 wavefields = [];
 for f_ind = 1:numel(freq_indices)
-    f = info.driving_frequencies(f_ind);
+    f = info.driving_frequencies(freq_indices(f_ind));
     wavefield =[];
     for c = 1:3
         comp_path = fullfile(ft, num2str(f), num2str(c), mredge_filename(f, c));
@@ -36,7 +36,7 @@ end
 filename = mredge_freq_indices_to_filename(info, prefs, freq_indices);
 if strcmpi(prefs.inversion_strategy, 'mdev')
     [absg, phi] = helm_inv_phi(wavefields, info.driving_frequencies(freq_indices), ...
-        info.voxel_spacing);
+        info.voxel_spacing, prefs.inversion_settings.mdev_laplacian_dims);
     absg_vol = dummy;
     absg_vol.img = absg;
     absg_vol.hdr.dime.datatype = 64;

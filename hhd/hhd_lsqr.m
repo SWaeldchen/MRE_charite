@@ -41,8 +41,6 @@ I = speye(size(gradx3,1),size(gradx3,2));
 
 s1 = 1e-8*I;
 A =[2*[r -gradz3 +grady3 s1 r r];2*[+gradz3 r -gradx3 r s1 r];2*[-grady3 +gradx3 r r r s1];[s1 s1 s1 +gradx3 +grady3 +gradz3];10*[I r r I r r];10*[r I r r I r];10*[r r I r r I]];
-%A =[[r -gradz3 +grady3 r r r];[+gradz3 r -gradx3 r r r];[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];[I r r I r r];[r I r r I r];[r r I r r I]];
-%A =[2*[r -gradz3 +grady3 r r r];2*[+gradz3 r -gradx3 r r r];2*[-grady3 +gradx3 r r r r];[r r r +gradx3 +grady3 +gradz3];10*[I r r I r r];10*[r I r r I r];10*[r r I r r I]];
 r =zeros(szy*szx*szz,1);
 b =[r;r;r;r;Fx(:);Fy(:);Fz(:)];
 

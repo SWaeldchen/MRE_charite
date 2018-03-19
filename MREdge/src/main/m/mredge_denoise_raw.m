@@ -20,11 +20,11 @@ function mredge_denoise_raw(info, prefs)
 tic
 disp('Raw data denoise');
 mredge_pm2ri(info);
-parfor s = 1:numel(info.ds.subdirs_comps_files)
-    subdir = info.ds.subdirs_comps_files(s); %#ok<PFBNS>
-    real_path = cell2str(fullfile(info.ds.list(info.ds.enum.real), subdir));
+parfor s = 1:numel(prefs.ds.subdirs_comps_files)
+    subdir = prefs.ds.subdirs_comps_files(s); %#ok<PFBNS>
+    real_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.real), subdir));
     real = load_untouch_nii_eb(real_path);
-    imag_path = cell2str(fullfile(info.ds.list(info.ds.enum.imaginary), subdir));
+    imag_path = cell2str(fullfile(prefs.ds.list(prefs.ds.enum.imaginary), subdir));
     imag = load_untouch_nii_eb(imag_path);
     if strcmpi(prefs.denoise_strategy, '2d_raw') %#ok<PFBNS>
         real.img = den_2d_preunwrap(real.img);

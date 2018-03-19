@@ -30,9 +30,10 @@ a = tic;
 if isempty(getenv('MREDGE_ENV_SET'))
     mredge_set_environment;
 end
+prefs.ds = mredge_dir_struct(info, prefs);
 mredge_clean_acquisition_folder(info);
 mredge_dicom_to_nifti(info, prefs);
-mredge_organize_acquisition(info);
+mredge_organize_acquisition(info, prefs);
 mredge_average_magnitude(info, prefs);
 save(fullfile(info.path, 'infoprefs.mat'), 'info', 'prefs');
 

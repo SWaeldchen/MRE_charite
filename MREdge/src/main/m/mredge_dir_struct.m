@@ -1,4 +1,4 @@
-function dir_struct = mredge_dir_struct(info)
+function dir_struct = mredge_dir_struct(info, prefs)
 % Creates dir_struct object, which enables clean looping in mredge methods.
 %
 % INPUTS:
@@ -48,6 +48,12 @@ function dir_struct = mredge_dir_struct(info)
 
 NIF_EXT = getenv('NIFTI_EXTENSION');
 
+
+if isempty(prefs.freq_indices) 
+    prefs.freq_indices = 1:numel(info.driving_frequencies);
+end
+nfreqs = numel(prefs.freq_indices);
+
 % ACQ LIST
 list = {'phase', 'magnitude', 't1', 't2', 'localizer', 'fieldmap', ...
     'dti', 'other', 'real', 'imaginary'};
@@ -82,12 +88,12 @@ for d = 1:numel(series_nums)
     end
 end
 
-nfreqs = numel(info.driving_frequencies);
 ncomps = 3;
 subdirs = cell(nfreqs,1);
 subdirs_files = cell(nfreqs,1);
 subdirs_comps = cell(nfreqs*3,1);
 subdirs_comps_files = cell(nfreqs*3,1);
+
 for n = 1:nfreqs
     df = info.driving_frequencies(n);
     subdirs{n} = df;

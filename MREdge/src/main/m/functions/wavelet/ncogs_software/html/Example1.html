@@ -1,0 +1,436 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Group-sparse denoising by non-convex regularization: 1D example</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-06-02"><meta name="DC.source" content="Example1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Group-sparse denoising by non-convex regularization: 1D example</h1><!--introduction--><p>This example illustrates 1D signal denoising using overlapping group sparsity (OGS) with a non-convex regularizer (the 'atan' function). Although the regularizer is non-convex, it is chosen such that the total cost function is convex. The comparison to convex-regularized OGS demonstrates the improvement obtained by non-convex regularization.</p><p>Po-Yu Chen and Ivan Selesnick, August 2013</p><p>Reference: 'Group-Sparse Signal Denoising: Non-Convex Regularization, Convex Optimization' <a href="http://arxiv.org/abs/1308.5038">http://arxiv.org/abs/1308.5038</a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Set up</a></li><li><a href="#2">Make signals</a></li><li><a href="#3">Plot signals</a></li><li><a href="#4">Denoising using the soft threshold</a></li><li><a href="#6">Denoising using OGS[abs]</a></li><li><a href="#8">Denoising using OGS[atan]</a></li><li><a href="#10">Input-output graph</a></li><li><a href="#11">Sorted error functions</a></li></ul></div><h2>Set up<a name="1"></a></h2><pre class="codeinput">clear <span class="string">all</span>
+close <span class="string">all</span>
+
+printme = @(txt) <span class="keyword">...</span>
+   print(<span class="string">'-dpdf'</span>, sprintf(<span class="string">'figures/Example1_%s'</span>, txt));
+</pre><h2>Make signals<a name="2"></a></h2><pre class="codeinput"><span class="comment">% N : length of signal</span>
+N = 100;
+
+<span class="comment">% x : noise-free signal</span>
+x = zeros(N,1);
+x(20+(-3:3)) = [2 3 4 5 4 3 2];
+x(40+(-3:3)) = [3 -2 -4 5 2 4 -3];
+x(60+(-3:3)) = [3 4 2 5 -4 -2 -3];
+x(80+(-3:3)) = [3 -4 -2 5 4 2 -3];
+
+<span class="comment">% Set state for reproducibility</span>
+randn(<span class="string">'state'</span>, 0)
+
+<span class="comment">% y : signal + noise</span>
+y = x + (2/3) * randn(N, 1);
+
+snr_y = get_snr(x, y);
+</pre><h2>Plot signals<a name="3"></a></h2><pre class="codeinput">ylim1 = [-8 8];
+
+figure(1)
+clf
+subplot(2, 1, 1)
+stem(x, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+ylim(ylim1);
+title(<span class="string">'Signal'</span>);
+
+subplot(2, 1, 2)
+stem(y, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+title(sprintf(<span class="string">'Signal + noise (SNR = %3.2f dB)'</span>, snr_y));
+ylim(ylim1);
+xlabel(<span class="string">'n'</span>)
+printme(<span class="string">'data'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_01.png" alt=""> <h2>Denoising using the soft threshold<a name="4"></a></h2><p>Compute SNR as a function of lambda.</p><pre class="codeinput">L = 50;
+lam = linspace(0.01, 0.8, L);
+SNR = zeros(1, L);
+
+<span class="keyword">for</span> i = 1:L
+    f = soft(y, lam(i));
+    SNR(i) = get_snr(x, f);
+<span class="keyword">end</span>
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel(<span class="string">'\lambda'</span>)
+title(<span class="string">'Soft-thresholding'</span>)
+ylabel(<span class="string">'SNR (dB)'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_02.png" alt=""> <p>Find the lambda that maximizes the SNR.</p><pre class="codeinput">[~, k] = max(SNR);
+lam_soft = lam(k);
+x_soft = soft(y,  lam_soft);
+snr_soft = get_snr(x, x_soft);
+
+figure(2)
+clf
+subplot(2, 1, 1)
+stem(x_soft, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+ylim(ylim1);
+title(sprintf(<span class="string">'Soft thr. (SNR = %3.2f dB)'</span>, snr_soft));
+text(5, -6, sprintf(<span class="string">'\\lambda = %3.2f'</span>, lam_soft))
+xlabel(<span class="string">'n'</span>)
+printme(<span class="string">'soft'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_03.png" alt=""> <h2>Denoising using OGS[abs]<a name="6"></a></h2><p>Compute SNR as a function of lambda.</p><pre class="codeinput">K = 5;             <span class="comment">% K : group size</span>
+Nit = 30;          <span class="comment">% Nit : number of iterations.</span>
+
+lam = linspace(0.01, 0.3, L);
+SNR = zeros(1, L);
+pen = <span class="string">'abs'</span>;
+rho = 0;
+<span class="keyword">for</span> i = 1:L
+    f = ogs1(y, K, lam(i), pen, rho, Nit);
+    SNR(i) = get_snr(x, f);
+<span class="keyword">end</span>
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel(<span class="string">'\lambda'</span>)
+title(<span class="string">'OGS[abs]'</span>)
+ylabel(<span class="string">'SNR (dB)'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_04.png" alt=""> <p>Find the lambda that maximizes the SNR.</p><pre class="codeinput">[~, k] = max(SNR);
+lam_abs = lam(k);
+[x_abs, cost_abs] = ogs1(y, K, lam_abs, <span class="string">'abs'</span>, 0, Nit);
+snr_abs = get_snr(x, x_abs);
+
+figure(2)
+clf
+subplot(2, 1, 1)
+stem(x_abs, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+ylim(ylim1);
+title(sprintf(<span class="string">'OGS[abs] (SNR = %3.2f dB)'</span>, snr_abs));
+text(5, -6, sprintf(<span class="string">'\\lambda = %3.2f, K = %d'</span>, lam_abs, K));
+xlabel(<span class="string">'n'</span>)
+printme(<span class="string">'ogs_abs'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_05.png" alt=""> <h2>Denoising using OGS[atan]<a name="8"></a></h2><p>Compute SNR as a function of lambda.</p><pre class="codeinput">lam = linspace(0.01, 0.8, L);
+pen = <span class="string">'atan'</span>;
+SNR = zeros(1, L);
+
+<span class="keyword">for</span> i = 1:L
+    f = ogs1(y, K, lam(i), pen, 1, Nit);
+    SNR(i) = get_snr(x, f);
+<span class="keyword">end</span>
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel(<span class="string">'\lambda'</span>)
+title(<span class="string">'OGS[atan]'</span>)
+ylabel(<span class="string">'SNR (dB)'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_06.png" alt=""> <p>Find the lambda that maximizes the SNR.</p><pre class="codeinput">[~, k] = max(SNR);
+lam_atan = lam(k);
+[x_atan, cost_atan] = ogs1(y, K, lam_atan, <span class="string">'atan'</span>, 1, Nit);
+snr_atan = get_snr(x, x_atan);
+
+figure(2)
+subplot(2, 1, 1)
+stem(x_atan, <span class="string">'marker'</span>, <span class="string">'none'</span>)
+ylim(ylim1);
+title(sprintf(<span class="string">'OGS[atan] (SNR = %3.2f dB)'</span>, snr_atan));
+text(5, -6, <span class="keyword">...</span>
+    sprintf(<span class="string">'\\lambda = %3.2f, K = %d'</span>, lam_atan, K))
+xlabel(<span class="string">'n'</span>)
+printme(<span class="string">'ogs_atan'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_07.png" alt=""> <h2>Input-output graph<a name="10"></a></h2><pre class="codeinput">figure(3)
+clf
+h = plot( abs(y), abs(x_atan), <span class="string">'ko'</span>, <span class="keyword">...</span>
+    abs(y), abs(x_abs), <span class="string">'kx'</span> );
+set(h(1), <span class="string">'markersize'</span>, 5)
+set(h(2), <span class="string">'markersize'</span>, 4)
+line([0 5], [0 5], <span class="string">'linestyle'</span>, <span class="string">':'</span>, <span class="string">'color'</span>, <span class="string">'black'</span>)
+axis <span class="string">square</span>
+xlabel(<span class="string">'y'</span>)
+ylabel(<span class="string">'x'</span>)
+title(<span class="string">'Output versus input'</span>);
+
+legend(h, <span class="string">'OGS[atan]'</span>, <span class="string">'OGS[abs]'</span>)
+legend(h, <span class="string">'location'</span>, <span class="string">'southeast'</span>)
+
+printme(<span class="string">'Input_Output'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_08.png" alt=""> <h2>Sorted error functions<a name="11"></a></h2><pre class="codeinput">err_abs = x - x_abs;
+err_atan = x - x_atan;
+
+figure(4)
+clf
+n = 1:N;
+plot(n, sort(abs(err_abs), <span class="string">'descend'</span>), <span class="string">'--'</span>, <span class="keyword">...</span>
+    n, sort(abs(err_atan), <span class="string">'descend'</span>))
+ylim([0 1.25])
+xlabel(<span class="string">' '</span>)
+legend(<span class="string">'OGS[abs]'</span>, <span class="string">'OGS[atan]'</span>, <span class="string">'location'</span>, <span class="string">'east'</span>)
+title(<span class="string">'Sorted error'</span>);
+printme(<span class="string">'sorted_error'</span>)
+</pre><img vspace="5" hspace="5" src="Example1_09.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Group-sparse denoising by non-convex regularization: 1D example
+% This example illustrates 1D signal denoising using overlapping
+% group sparsity (OGS) with a non-convex regularizer (the 'atan' function). 
+% Although the regularizer is non-convex, it is chosen such that
+% the total cost function is convex. The comparison to convex-regularized
+% OGS demonstrates the improvement obtained by non-convex regularization.
+%
+% Po-Yu Chen and Ivan Selesnick, August 2013
+%
+% Reference: 'Group-Sparse Signal Denoising: Non-Convex Regularization,
+% Convex Optimization'
+% http://arxiv.org/abs/1308.5038
+
+%% Set up
+
+clear all
+close all
+
+printme = @(txt) ...
+   print('-dpdf', sprintf('figures/Example1_%s', txt));
+
+
+%% Make signals
+
+% N : length of signal
+N = 100;                     
+
+% x : noise-free signal
+x = zeros(N,1);              
+x(20+(-3:3)) = [2 3 4 5 4 3 2];
+x(40+(-3:3)) = [3 -2 -4 5 2 4 -3];
+x(60+(-3:3)) = [3 4 2 5 -4 -2 -3];
+x(80+(-3:3)) = [3 -4 -2 5 4 2 -3];
+
+% Set state for reproducibility
+randn('state', 0)               
+
+% y : signal + noise
+y = x + (2/3) * randn(N, 1);
+
+snr_y = get_snr(x, y);
+
+
+%% Plot signals
+
+ylim1 = [-8 8];
+
+figure(1)
+clf
+subplot(2, 1, 1)
+stem(x, 'marker', 'none')
+ylim(ylim1);
+title('Signal');
+
+subplot(2, 1, 2)
+stem(y, 'marker', 'none')
+title(sprintf('Signal + noise (SNR = %3.2f dB)', snr_y));
+ylim(ylim1);
+xlabel('n')
+printme('data')
+
+
+%% Denoising using the soft threshold
+% Compute SNR as a function of lambda.
+
+L = 50;
+lam = linspace(0.01, 0.8, L);
+SNR = zeros(1, L);
+
+for i = 1:L
+    f = soft(y, lam(i));
+    SNR(i) = get_snr(x, f); 
+end
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel('\lambda')
+title('Soft-thresholding')
+ylabel('SNR (dB)')
+
+%%
+% Find the lambda that maximizes the SNR.
+
+[~, k] = max(SNR);
+lam_soft = lam(k);
+x_soft = soft(y,  lam_soft);
+snr_soft = get_snr(x, x_soft);
+
+figure(2)
+clf
+subplot(2, 1, 1)
+stem(x_soft, 'marker', 'none')
+ylim(ylim1);
+title(sprintf('Soft thr. (SNR = %3.2f dB)', snr_soft));
+text(5, -6, sprintf('\\lambda = %3.2f', lam_soft))
+xlabel('n')
+printme('soft')
+
+
+%% Denoising using OGS[abs]
+% Compute SNR as a function of lambda.
+
+K = 5;             % K : group size
+Nit = 30;          % Nit : number of iterations. 
+
+lam = linspace(0.01, 0.3, L);
+SNR = zeros(1, L);
+pen = 'abs';
+rho = 0;
+for i = 1:L
+    f = ogs1(y, K, lam(i), pen, rho, Nit);
+    SNR(i) = get_snr(x, f);    
+end
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel('\lambda')
+title('OGS[abs]')
+ylabel('SNR (dB)')
+
+%%
+% Find the lambda that maximizes the SNR.
+
+[~, k] = max(SNR);
+lam_abs = lam(k);
+[x_abs, cost_abs] = ogs1(y, K, lam_abs, 'abs', 0, Nit);
+snr_abs = get_snr(x, x_abs);
+
+figure(2)
+clf
+subplot(2, 1, 1)
+stem(x_abs, 'marker', 'none')
+ylim(ylim1);
+title(sprintf('OGS[abs] (SNR = %3.2f dB)', snr_abs));
+text(5, -6, sprintf('\\lambda = %3.2f, K = %d', lam_abs, K));
+xlabel('n')
+printme('ogs_abs')
+
+
+%% Denoising using OGS[atan]
+% Compute SNR as a function of lambda.
+
+lam = linspace(0.01, 0.8, L);
+pen = 'atan';
+SNR = zeros(1, L);
+
+for i = 1:L
+    f = ogs1(y, K, lam(i), pen, 1, Nit);
+    SNR(i) = get_snr(x, f);    
+end
+
+figure(1)
+clf
+plot(lam, SNR)
+xlabel('\lambda')
+title('OGS[atan]')
+ylabel('SNR (dB)')
+
+%%
+% Find the lambda that maximizes the SNR.
+
+[~, k] = max(SNR);
+lam_atan = lam(k);
+[x_atan, cost_atan] = ogs1(y, K, lam_atan, 'atan', 1, Nit);
+snr_atan = get_snr(x, x_atan);
+
+figure(2)
+subplot(2, 1, 1)
+stem(x_atan, 'marker', 'none')
+ylim(ylim1);
+title(sprintf('OGS[atan] (SNR = %3.2f dB)', snr_atan));
+text(5, -6, ...
+    sprintf('\\lambda = %3.2f, K = %d', lam_atan, K))
+xlabel('n')
+printme('ogs_atan')
+
+
+
+%% Input-output graph
+
+figure(3)
+clf
+h = plot( abs(y), abs(x_atan), 'ko', ...
+    abs(y), abs(x_abs), 'kx' );
+set(h(1), 'markersize', 5)
+set(h(2), 'markersize', 4)
+line([0 5], [0 5], 'linestyle', ':', 'color', 'black')
+axis square
+xlabel('y')
+ylabel('x')
+title('Output versus input');
+
+legend(h, 'OGS[atan]', 'OGS[abs]')
+legend(h, 'location', 'southeast')
+
+printme('Input_Output')
+
+
+%% Sorted error functions
+
+err_abs = x - x_abs;
+err_atan = x - x_atan;
+
+figure(4)
+clf
+n = 1:N;
+plot(n, sort(abs(err_abs), 'descend'), 'REPLACE_WITH_DASH_DASH', ...
+    n, sort(abs(err_atan), 'descend'))
+ylim([0 1.25])
+xlabel(' ')
+legend('OGS[abs]', 'OGS[atan]', 'location', 'east')
+title('Sorted error');
+printme('sorted_error')
+
+
+
+##### SOURCE END #####
+--></body></html>

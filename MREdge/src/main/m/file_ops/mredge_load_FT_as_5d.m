@@ -26,8 +26,8 @@ function data_5d = mredge_load_FT_as_5d (info, prefs)
 % for permission to make modifications.
 %   
 data_4d = [];
-for s = 1:numel(info.ds.subdirs_comps_files)
-  subdir = info.ds.subdirs_comps_files(s);
+for s = 1:numel(prefs.ds.subdirs_comps_files)
+  subdir = prefs.ds.subdirs_comps_files(s);
   wavefield_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'ft'), subdir));
   wavefield_vol = load_untouch_nii_eb(wavefield_path);
   wavefield_img = wavefield_vol.img;
