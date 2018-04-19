@@ -27,13 +27,14 @@ end
 
 function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, sigma_n)
 %function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, gain)
+    L = numel(Faf{1}(:,1));
     w = cplxdual3D_u(u, J, Faf, af);
     % loop thru scales
     for j = 1:J
         % loop thru subbands
         %disp(['--',num2str(j),'--'])
         %noise_mean = 0;
-        [local_mask, box_ranges] = pad_mask(mask, j);
+        [local_mask, box_ranges] = pad_mask(mask, j, L);
         for s1 = 1:2
             for s2 = 1:2
                 for s3 = 1:7
@@ -46,8 +47,8 @@ function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, sigma_n)
                     %else
                     %    noise_est = 0.04;
                     %end
-                    thresh = visushrink_eb(a, local_mask);
-                    %thresh = quantile(a(local_mask), 0.95);
+                    %thresh = visushrink_eb(a, local_mask) / 2;
+                    thresh = 2*simplemad(a(local_mask));
                     C(box_ranges{1}, box_ranges{2}, box_ranges{3}) = ...
                         soft(C(box_ranges{1}, box_ranges{2}, box_ranges{3}), ...
                             thresh);
@@ -63,15 +64,16 @@ function u_den = cdwt_den(u, mask, J, Faf, af, Fsf, sf, sigma_n)
 end
 
 
-function [local_mask, box_ranges] = pad_mask(mask,level)
+function [local_mask, box_ranges] = pad_mask(mask,level,L)
     sz = size(mask);
     pad1 = 0;
     pad2 = 0;
-    for n = 1*level
-        pad1 = pad1 + 4*2^(level-1);
-        pad2 = pad2 + 5*2^(level-1);
+    for n = 1:level
+        pad1 = pad1 + 4*n;
+        pad2 = pad2 + 5*n;
+        sz = sz + (L-1)*n;
     end
-    local_mask = zeros(sz(1)+pad1+pad2, sz(2)+pad1+pad2, sz(3)+pad1+pad2);
+    local_mask = zeros(sz(1), sz(2), sz(3));
     box_ranges = {pad1+1:(sz(1)-pad2), pad1+1:(sz(2)-pad2), pad1+1:(sz(3)-pad2)};
     local_mask(pad1+1:end-pad2, pad1+1:end-pad2, pad1+1:end-pad2) = mask;
     local_mask = logical(local_mask);

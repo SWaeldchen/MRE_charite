@@ -34,8 +34,11 @@ prefs.ds = mredge_dir_struct(info, prefs);
 mredge_clean_acquisition_folder(info);
 mredge_dicom_to_nifti(info, prefs);
 mredge_organize_acquisition(info, prefs);
+if prefs.downsample
+    mredge_downsample(prefs);
+end
 mredge_average_magnitude(info, prefs);
-save(fullfile(info.path, 'infoprefs.mat'), 'info', 'prefs');
+save(fullfile(mredge_analysis_path(info, prefs), 'infoprefs.mat'), 'info', 'prefs');
 
 % check for compabitility routines
 if strcmp(prefs.compat, 'cisnmo')
@@ -69,7 +72,9 @@ else
         mredge_bandpass(info, prefs);
     end
     mredge_snr(info, prefs);
-
+    if prefs.slicewise_snr
+        mredge_slicewise_snr(info,prefs);
+    end
     %% invert and generate outputs
     mredge_invert_and_stats(info,prefs)
     % set outputs

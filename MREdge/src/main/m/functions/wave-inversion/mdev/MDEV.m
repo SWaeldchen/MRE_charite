@@ -6,7 +6,7 @@ function [ABSG PHI AMP]=MDEV(W_wrap,freqs,Nf,Nc,pixel_spacing)
 % i.s. 26.11.13 
 
 
-lowpassthreshold=50;
+lowpassthreshold=100;
 
 Nt=size(W_wrap,4);
                 

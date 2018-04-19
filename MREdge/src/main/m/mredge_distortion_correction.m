@@ -35,7 +35,7 @@ if strcmpi(prefs.dico_method,'ft')
     mredge_distortion_correction_ft(info, prefs);
     mredge_combine_ft(info, prefs);
 elseif strcmpi(prefs.dico_method,'raw')
-    mredge_distortion_correction_raw(info);
+    mredge_distortion_correction_raw(info, prefs);
 else
     disp('MREdge ERROR: Invalid distortion correction method.');
 end

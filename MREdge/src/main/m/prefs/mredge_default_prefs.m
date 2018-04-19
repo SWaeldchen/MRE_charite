@@ -87,3 +87,6 @@ function default_prefs = mredge_default_prefs
     default_prefs.fft_bin = 2;
 % set empty dir struct
     default_prefs.ds = [];
+% project-specific prefs
+    default_prefs.downsample = 0;
+    default_prefs.slicewise_snr = 0;

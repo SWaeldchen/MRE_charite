@@ -124,7 +124,7 @@ function [new_img, new_M] = affine(old_img, old_M, new_elem_size, verbose, bg, m
    end
 
    if ~exist('verbose','var') | isempty(verbose)
-      verbose = 1;
+      verbose = 0;
    end
 
    if ndims(old_img) == 2

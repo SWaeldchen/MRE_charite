@@ -40,7 +40,11 @@ if strcmpi(prefs.inversion_strategy, 'mdev')
     absg_vol = dummy;
     absg_vol.img = absg;
     absg_vol.hdr.dime.datatype = 64;
-    absg_path = fullfile(mredge_analysis_path(info, prefs, 'absg'), filename);
+    if (prefs.inversion_settings.mdev_laplacian_dims == 2)
+        absg_path = fullfile(mredge_analysis_path(info, prefs, 'absg_2d'), filename);
+    else
+        absg_path = fullfile(mredge_analysis_path(info, prefs, 'absg'), filename);
+    end
     save_untouch_nii_eb(absg_vol, absg_path);
     phi_vol = dummy;
     phi_vol.img = phi;

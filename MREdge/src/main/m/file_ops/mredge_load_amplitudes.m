@@ -18,10 +18,10 @@ function amplitudes = mredge_load_amplitudes(info, prefs)
 % for permission to make modifications.
 %   
 amplitudes = cell(0);
-amp_path = cell2str(fullfile(mredge_analysis_path(info, prefs, 'amp')));
+amp_path = fullfile(mredge_analysis_path(info, prefs, 'amp'));
 amp_dir = mredge_dir(amp_path);
 tally = 1;
-for n = 1:numel(amp_path)
+for n = 1:numel(amp_dir)
     filename = amp_dir(n).name;
     if strcmpi(filename((end-3):end), '.nii')
         vol = load_untouch_nii(fullfile(amp_path, filename));

@@ -1,4 +1,4 @@
-function mredge_ri2pm(info)
+function mredge_ri2pm(prefs)
 % Converts real and imagianry data to phase and magnitude
 %
 % INPUTS:

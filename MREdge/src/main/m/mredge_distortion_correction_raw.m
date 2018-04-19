@@ -1,4 +1,4 @@
-function mredge_distortion_correction_raw(info)
+function mredge_distortion_correction_raw(info, prefs)
 % Performs distortion correction on raw MR signal data
 %
 % INPUTS:
@@ -52,12 +52,12 @@ topup_command = ['fsl5.0-topup --imain=', name_4d, ' --datain=', getenv('TOPUP_P
 system(topup_command);
 TOPUP_RESULTS = fullfile(fieldmap_dir, 'topup_results');
 
-mredge_pm2ri(info);
+mredge_pm2ri(prefs);
 for subdir = prefs.ds.subdirs_comps_files
     apply_topup(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.real), subdir)), TOPUP_RESULTS);
     apply_topup(cell2str(fullfile(prefs.ds.list(prefs.ds.enum.imaginary), subdir)), TOPUP_RESULTS);
 end
-mredge_ri2pm(info);
+mredge_ri2pm(prefs);
 
 end
 

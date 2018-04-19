@@ -22,7 +22,7 @@ function outputs = mredge_invert_to_end(info, prefs)
 %   returns a structure containing outputs as specified by prefs
 
     a = tic;
-    
+    prefs.ds = mredge_dir_struct(info, prefs);
     if ~strcmp(prefs.inversion_strategy, 'none')
         mredge_invert_and_stats(info, prefs);
     end
