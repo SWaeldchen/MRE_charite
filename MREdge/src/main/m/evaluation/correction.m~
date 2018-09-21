@@ -1,0 +1,14 @@
+function [outputArg1,outputArg2] = correction(M, dir)
+%CORRECTION Summary of this function goes here
+%   Detailed explanation goes here
+
+shape = size(M);
+
+ind = cell(lenth(shape),1);
+
+for i=1:length(
+
+outputArg1 = inputArg1;
+outputArg2 = inputArg2;
+end
+
